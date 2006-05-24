@@ -13,6 +13,8 @@ use Catalyst::Exception;
 
 my %cache;
 
+our $VERSION = '1.00';
+
 =head1 NAME
 
 Catalyst::Helper - Bootstrap a Catalyst application
@@ -65,14 +67,15 @@ sub mk_app {
         warn "Error: Invalid application name.\n";
         return 0;
     }
-    $self->{name} = $name;
-    $self->{dir}  = $name;
-    $self->{dir} =~ s/\:\:/-/g;
-    $self->{script}    = File::Spec->catdir( $self->{dir}, 'script' );
-    $self->{appprefix} = Catalyst::Utils::appprefix($name);
-    $self->{startperl} = "#!$Config{perlpath} -w";
-    $self->{scriptgen} = $Catalyst::CATALYST_SCRIPT_GEN || 4;
-    $self->{author}    = $self->{author} = $ENV{'AUTHOR'}
+    $self->{name            } = $name;
+    $self->{dir             } = $name;
+    $self->{dir             } =~ s/\:\:/-/g;
+    $self->{script          } = File::Spec->catdir( $self->{dir}, 'script' );
+    $self->{appprefix       } = Catalyst::Utils::appprefix($name);
+    $self->{startperl       } = "#!$Config{perlpath} -w";
+    $self->{scriptgen       } = $Catalyst::CATALYST_SCRIPT_GEN || 4;
+    $self->{catalyst_version} = $Catalyst::VERSION;
+    $self->{author          } = $self->{author} = $ENV{'AUTHOR'}
       || eval { @{ [ getpwuid($<) ] }[6] }
       || 'Catalyst developer';
 
@@ -670,7 +673,7 @@ use inc::Module::Install;
 name '[% dir %]';
 all_from '[% path %]';
 
-requires Catalyst => '5.64';
+requires Catalyst => '[% catalyst_version %]';
 
 catalyst;
 
