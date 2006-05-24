@@ -14,5 +14,6 @@ requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'YAML'        => '0.55';
 requires 'Module::Install' => '0.62';
+requires 'File::Copy::Recursive';
 
 WriteAll;
