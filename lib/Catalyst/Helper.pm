@@ -674,7 +674,8 @@ name '[% dir %]';
 all_from '[% path %]';
 
 requires Catalyst => '[% catalyst_version %]';
-
+requires YAML; # This should reflect the config file format you've chosen
+               # See Catalyst::Plugin::ConfigLoader for supported formats
 catalyst;
 
 install_script glob('script/*.pl');
