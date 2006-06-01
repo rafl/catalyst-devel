@@ -559,7 +559,12 @@ use Catalyst qw/-Debug ConfigLoader Static::Simple/;
 our $VERSION = '0.01';
 
 #
-# Configure the application 
+# Configure the application. 
+#
+# Note that settings in [% name %].yml take precedence over
+# this when using ConfigLoader. Thus configuration details
+# given here can function as a default configuration, with a
+# YAML file acting as an override for local deployment.
 #
 __PACKAGE__->config( name => '[% name %]' );
 
