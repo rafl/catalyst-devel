@@ -2,8 +2,8 @@ use inc::Module::Install 0.62;
 
 perl_version '5.8.1';
 
-name 'Catalyst::Helper';
-all_from 'lib/Catalyst/Helper.pm';
+name 'Catalyst-Devel';
+all_from 'lib/Catalyst/Devel.pm';
 
 requires 'perl'        => '5.8.1';
 requires 'Class::Accessor::Fast';

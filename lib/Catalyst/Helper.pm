@@ -1,6 +1,7 @@
 package Catalyst::Helper;
 
 use strict;
+use warnings;
 use base 'Class::Accessor::Fast';
 use Config;
 use File::Spec;
@@ -545,6 +546,8 @@ package [% name %];
 use strict;
 use warnings;
 
+use Catalyst::Runtime '5.70';
+
 #
 # Set flags and add plugins for the application
 #
@@ -732,6 +735,7 @@ __cgi__
 BEGIN { $ENV{CATALYST_ENGINE} ||= 'CGI' }
 
 use strict;
+use warnings;
 use FindBin;
 use lib "$FindBin::Bin/../lib";
 use [% name %];
@@ -770,6 +774,7 @@ __fastcgi__
 BEGIN { $ENV{CATALYST_ENGINE} ||= 'FastCGI' }
 
 use strict;
+use warnings;
 use Getopt::Long;
 use Pod::Usage;
 use FindBin;
@@ -850,6 +855,7 @@ BEGIN {
 }  
 
 use strict;
+use warnings;
 use Getopt::Long;
 use Pod::Usage;
 use FindBin;
@@ -956,6 +962,7 @@ __test__
 [% startperl %]
 
 use strict;
+use warnings;
 use Getopt::Long;
 use Pod::Usage;
 use FindBin;
@@ -1011,6 +1018,7 @@ __create__
 [% startperl %]
 
 use strict;
+use warnings;
 use Getopt::Long;
 use Pod::Usage;
 use Catalyst::Helper;
