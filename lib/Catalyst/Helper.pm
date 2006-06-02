@@ -9,6 +9,7 @@ use File::Path;
 use IO::File;
 use FindBin;
 use Template;
+use Catalyst::Devel;
 use Catalyst::Utils;
 use Catalyst::Exception;
 
@@ -74,7 +75,7 @@ sub mk_app {
     $self->{script          } = File::Spec->catdir( $self->{dir}, 'script' );
     $self->{appprefix       } = Catalyst::Utils::appprefix($name);
     $self->{startperl       } = "#!$Config{perlpath} -w";
-    $self->{scriptgen       } = $Catalyst::CATALYST_SCRIPT_GEN || 4;
+    $self->{scriptgen       } = $Catalyst::Devel::CATALYST_SCRIPT_GEN || 4;
     $self->{catalyst_version} = $Catalyst::VERSION;
     $self->{author          } = $self->{author} = $ENV{'AUTHOR'}
       || eval { @{ [ getpwuid($<) ] }[6] }
