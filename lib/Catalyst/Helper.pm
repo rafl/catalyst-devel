@@ -565,10 +565,12 @@ our $VERSION = '0.01';
 #
 # Configure the application. 
 #
-# Note that settings in [% name %].yml take precedence over
-# this when using ConfigLoader. Thus configuration details
-# given here can function as a default configuration, with a
-# YAML file acting as an override for local deployment.
+# Note that settings in [% name %].yml (or other external
+# configuration file that you set up manually) take precedence
+# over this when using ConfigLoader. Thus configuration
+# details given here can function as a default configuration,
+# with a external configuration file acting as an override for
+# local deployment.
 #
 __PACKAGE__->config( name => '[% name %]' );
 
