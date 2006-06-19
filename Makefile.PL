@@ -10,6 +10,7 @@ requires 'Class::Accessor::Fast';
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
 requires 'Catalyst'    => '5.66';
+requires 'Catalyst::Action::RenderView';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'YAML'        => '0.55';

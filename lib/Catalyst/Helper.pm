@@ -6,8 +6,9 @@ use base 'Class::Accessor::Fast';
 use Config;
 use File::Spec;
 use File::Path;
-use IO::File;
 use FindBin;
+use IO::File;
+use POSIX 'strftime';
 use Template;
 use Catalyst::Devel;
 use Catalyst::Utils;
@@ -387,7 +388,7 @@ sub _mk_readme {
 sub _mk_changes {
     my $self = shift;
     my $dir  = $self->{dir};
-    my $time = localtime time;
+    my $time = strftime('%Y-%m-%d %T', localtime time);
     $self->render_file( 'changes', "$dir\/Changes", { time => $time } );
 }
 
@@ -549,7 +550,6 @@ use warnings;
 
 use Catalyst::Runtime '5.70';
 
-#
 # Set flags and add plugins for the application
 #
 #         -Debug: activates the debug mode for very useful log messages
@@ -557,12 +557,11 @@ use Catalyst::Runtime '5.70';
 #                 application's home directory
 # Static::Simple: will serve static files from the application's root 
 #                 directory
-#
+
 use Catalyst qw/-Debug ConfigLoader Static::Simple/;
 
 our $VERSION = '0.01';
 
-#
 # Configure the application. 
 #
 # Note that settings in [% name %].yml (or other external
@@ -571,17 +570,12 @@ our $VERSION = '0.01';
 # details given here can function as a default configuration,
 # with a external configuration file acting as an override for
 # local deployment.
-#
+
 __PACKAGE__->config( name => '[% name %]' );
 
-#
 # Start the application
-#
 __PACKAGE__->setup;
 
-#
-# IMPORTANT: Please look into [% rootname %] for more
-#
 
 =head1 NAME
 
@@ -593,7 +587,7 @@ __PACKAGE__->setup;
 
 =head1 DESCRIPTION
 
-Catalyst based application.
+[enter your description here]
 
 =head1 SEE ALSO
 
@@ -626,15 +620,11 @@ __PACKAGE__->config->{namespace} = '';
 
 =head1 NAME
 
-[% rootname %] - Root Controller for this Catalyst based application
-
-=head1 SYNOPSIS
-
-See L<[% name %]>.
+[% rootname %] - Root Controller for [% name %]
 
 =head1 DESCRIPTION
 
-Root Controller for this Catalyst based application.
+[enter your description here]
 
 =head1 METHODS
 
@@ -644,9 +634,6 @@ Root Controller for this Catalyst based application.
 
 =cut
 
-#
-# Output a friendly welcome message
-#
 sub default : Private {
     my ( $self, $c ) = @_;
 
@@ -654,19 +641,13 @@ sub default : Private {
     $c->response->body( $c->welcome_message );
 }
 
-#
-# Uncomment and modify this end action after adding a View component
-#
-#=head2 end
-#
-#=cut
-#
-#sub end : Private {
-#    my ( $self, $c ) = @_;
-#
-#    # Forward to View unless response body is already defined
-#    $c->forward( $c->view('') ) unless $c->response->body;
-#}
+=head2 end
+
+Attempt to render a view, if needed.
+
+=cut 
+
+sub end : ActionClass('RenderView') {}
 
 =head1 AUTHOR
 
@@ -689,6 +670,7 @@ all_from '[% path %]';
 requires 'Catalyst' => '[% catalyst_version %]';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
+requires 'Catalyst::Action::RenderView';
 requires 'YAML'; # This should reflect the config file format you've chosen
                  # See Catalyst::Plugin::ConfigLoader for supported formats
 catalyst;
@@ -759,7 +741,7 @@ See L<Catalyst::Manual>
 
 =head1 DESCRIPTION
 
-Run a Catalyst application as cgi.
+Run a Catalyst application as a cgi script.
 
 =head1 AUTHOR
 
@@ -767,7 +749,6 @@ Sebastian Riedel, C<sri@oook.de>
 
 =head1 COPYRIGHT
 
-Copyright 2004 Sebastian Riedel. All rights reserved.
 
 This library is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
@@ -842,10 +823,9 @@ Run a Catalyst application as fastcgi.
 =head1 AUTHOR
 
 Sebastian Riedel, C<sri@oook.de>
+Maintained by the Catalyst Core Team.
 
 =head1 COPYRIGHT
-
-Copyright 2004 Sebastian Riedel. All rights reserved.
 
 This library is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
@@ -933,7 +913,7 @@ require [% name %];
       -host           host (defaults to all)
    -p -port           port (defaults to 3000)
    -k -keepalive      enable keep-alive connections
-   -r -restart        restart when files got modified
+   -r -restart        restart when files get modified
                       (defaults to false)
    -rd -restartdelay  delay between file checks
    -rr -restartregex  regex match files that trigger
@@ -954,10 +934,9 @@ Run a Catalyst Testserver for this application.
 =head1 AUTHOR
 
 Sebastian Riedel, C<sri@oook.de>
+Maintained by the Catalyst Core Team.
 
 =head1 COPYRIGHT
-
-Copyright 2004 Sebastian Riedel. All rights reserved.
 
 This library is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
@@ -1010,10 +989,9 @@ Run a Catalyst action from the command line.
 =head1 AUTHOR
 
 Sebastian Riedel, C<sri@oook.de>
+Maintained by the Catalyst Core Team.
 
 =head1 COPYRIGHT
-
-Copyright 2004 Sebastian Riedel. All rights reserved.
 
 This library is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
@@ -1066,8 +1044,10 @@ pod2usage(1) unless $helper->mk_component( '[% name %]', @ARGV );
    [% appprefix %]_create.pl view MyView TT
    [% appprefix %]_create.pl view TT TT
    [% appprefix %]_create.pl model My::Model
-   [% appprefix %]_create.pl model SomeDB DBIC::SchemaLoader dbi:SQLite:/tmp/my.db
-   [% appprefix %]_create.pl model AnotherDB DBIC::SchemaLoader dbi:Pg:dbname=foo root 4321
+   [% appprefix %]_create.pl model SomeDB DBIC::Schema MyApp::Schema create=dynamic\
+   dbi:SQLite:/tmp/my.db
+   [% appprefix %]_create.pl model AnotherDB DBIC::Schema MyApp::Schema create=static\
+   dbi:Pg:dbname=foo root 4321
 
  See also:
    perldoc Catalyst::Manual
@@ -1084,10 +1064,9 @@ This behavior can be suppressed with the C<-force> option.
 =head1 AUTHOR
 
 Sebastian Riedel, C<sri@oook.de>
+Maintained by the Catalyst Core Team.
 
 =head1 COPYRIGHT
-
-Copyright 2004 Sebastian Riedel. All rights reserved.
 
 This library is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
@@ -1104,10 +1083,6 @@ use base 'Catalyst::[% long_type %]';
 
 [% class %] - Catalyst [% long_type %]
 
-=head1 SYNOPSIS
-
-See L<[% app %]>
-
 =head1 DESCRIPTION
 
 Catalyst [% long_type %].
@@ -1116,19 +1091,16 @@ Catalyst [% long_type %].
 
 =cut
 
-#
-# Uncomment and modify this or add new actions to fit your needs
-#
-#=head2 default
-#
-#=cut
-#
-#sub default : Private {
-#    my ( $self, $c ) = @_;
-#
-#    # Hello World
-#    $c->response->body('[% class %] is on Catalyst!');
-#}
+
+=head2 index 
+
+=cut
+
+sub index : Private {
+    my ( $self, $c ) = @_;
+
+    $c->response->body('Matched [% class %] in [%name%].');
+}
 
 [% END %]
 =head1 AUTHOR
