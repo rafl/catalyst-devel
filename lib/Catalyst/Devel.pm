@@ -10,6 +10,10 @@ our $CATALYST_SCRIPT_GEN = 28;
 
 Catalyst::Devel - Catalyst Development Tools
 
+=head1 AUTHOR
+
+The Catalyst Core Team - see http://catalyst.perl.org/
+
 =head1 LICENSE
 
 This library is free software, you can redistribute it and/or modify
