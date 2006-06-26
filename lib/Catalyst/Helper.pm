@@ -28,7 +28,7 @@ See L<Catalyst::Manual::Intro>
 
 =head1 DESCRIPTION
 
-Bootstrap a Catalyst application. Autogenerates scripts
+Bootstrap a Catalyst application. Autogenerates scripts.
 
 =head2 METHODS
 
