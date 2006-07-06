@@ -16,7 +16,6 @@ use Catalyst::Exception;
 
 my %cache;
 
-our $VERSION = '1.00';
 
 =head1 NAME
 
