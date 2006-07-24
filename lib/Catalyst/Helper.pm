@@ -836,6 +836,7 @@ __server__
 BEGIN { 
     $ENV{CATALYST_ENGINE} ||= 'HTTP';
     $ENV{CATALYST_SCRIPT_GEN} = [% scriptgen %];
+    require Catalyst::Engine::HTTP;
 }  
 
 use strict;
