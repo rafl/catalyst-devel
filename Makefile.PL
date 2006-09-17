@@ -1,4 +1,4 @@
-use inc::Module::Install 0.63;
+use inc::Module::Install 0.64;
 
 perl_version '5.8.1';
 
@@ -14,7 +14,7 @@ requires 'Catalyst::Action::RenderView' => '0.04';
 requires 'Catalyst::Plugin::Static::Simple' => '0.14';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'YAML'        => '0.55';
-requires 'Module::Install' => '0.63';
+requires 'Module::Install' => '0.64';
 requires 'File::Copy::Recursive';
 
 WriteAll;

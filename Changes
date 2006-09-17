@@ -1,4 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.01	2006-09-17 23:49:00
+	- Upped M::I dependency
+	- fix for warnings
+
 1.00    2006-07-06 19:23:00
         - Initial release
