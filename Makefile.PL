@@ -1,8 +1,9 @@
 use strict;
 use warnings;
-use inc::Module::Install;
 
-name 'Catalyst-Devel';
+use inc::Module::Install 0.64;
+
+name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
 
 requires 'Class::Accessor::Fast';
@@ -16,4 +17,5 @@ requires 'Catalyst::Plugin::ConfigLoader';
 requires 'YAML'        => '0.55';
 requires 'Module::Install' => '0.64';
 requires 'File::Copy::Recursive';
-WriteAll();
+
+WriteAll;
