@@ -563,7 +563,7 @@ our $VERSION = '0.01';
 
 # Configure the application. 
 #
-# Note that settings in [% name %].yml (or other external
+# Note that settings in [% appprefix %].yml (or other external
 # configuration file that you set up manually) take precedence
 # over this when using ConfigLoader. Thus configuration
 # details given here can function as a default configuration,
