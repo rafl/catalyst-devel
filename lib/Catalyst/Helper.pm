@@ -388,7 +388,7 @@ sub _mk_readme {
 sub _mk_changes {
     my $self = shift;
     my $dir  = $self->{dir};
-    my $time = strftime('%Y-%m-%d %T', localtime time);
+    my $time = strftime('%Y-%m-%d %H:%M:%S', localtime time);
     $self->render_file( 'changes', "$dir\/Changes", { time => $time } );
 }
 
