@@ -667,7 +667,7 @@ use inc::Module::Install;
 name '[% dir %]';
 all_from '[% path %]';
 
-requires 'Catalyst' => '[% catalyst_version %]';
+requires 'Catalyst::Runtime' => '[% catalyst_version %]';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Action::RenderView';
@@ -1044,6 +1044,7 @@ pod2usage(1) unless $helper->mk_component( '[% name %]', @ARGV );
 
  Examples:
    [% appprefix %]_create.pl controller My::Controller
+   [% appprefix %]_create.pl controller My::Controller BindLex
    [% appprefix %]_create.pl -mechanize controller My::Controller
    [% appprefix %]_create.pl view My::View
    [% appprefix %]_create.pl view MyView TT
