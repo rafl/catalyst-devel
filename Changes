@@ -2,14 +2,16 @@ This file documents the revision history for Perl extension Catalyst-Devel.
 
         - Changed default dependency to Catalyst::Runtime
         - Added BindLex example to create script
+        - Don't change a manually-specified engine when using the
+          -r switch with server.pl
         
 1.02    2006-11-15
         - Added dep to Catalyst::Manual
         - added option to send errors to STDOUT in fastcgi script
 
 1.01	2006-09-17 23:49:00
-	- Upped M::I dependency
-	- fix for warnings
+       - Upped M::I dependency
+	   - fix for warnings
 
 1.00    2006-07-06 19:23:00
         - Initial release

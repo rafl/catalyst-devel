@@ -879,7 +879,7 @@ GetOptions(
 
 pod2usage(1) if $help;
 
-if ( $restart ) {
+if ( $restart && $ENV{CATALYST_ENGINE} eq 'HTTP' ) {
     $ENV{CATALYST_ENGINE} = 'HTTP::Restarter';
 }
 if ( $debug ) {
