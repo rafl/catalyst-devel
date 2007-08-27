@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Patch Helper.pm so Module::Pluggable::Object ignores emacs temp files appropriately for restarting server
         - Changed default dependency to Catalyst::Runtime
         - Added BindLex example to create script
         - Don't change a manually-specified engine when using the
