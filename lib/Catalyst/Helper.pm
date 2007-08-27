@@ -859,7 +859,7 @@ my $port              = $ENV{[% appenv %]_PORT} || $ENV{CATALYST_PORT} || 3000;
 my $keepalive         = 0;
 my $restart           = $ENV{[% appenv %]_RELOAD} || $ENV{CATALYST_RELOAD} || 0;
 my $restart_delay     = 1;
-my $restart_regex     = '\.yml$|\.yaml$|\.pm$';
+my $restart_regex     = '(?:/|^)(?!\.#).+(?:\.yml$|\.yaml$|\.pm)$';
 my $restart_directory = undef;
 
 my @argv = @ARGV;
