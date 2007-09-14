@@ -18,4 +18,6 @@ requires 'YAML'        => '0.55';
 requires 'Module::Install' => '0.64';
 requires 'File::Copy::Recursive';
 
+auto_install;
+
 WriteAll;
