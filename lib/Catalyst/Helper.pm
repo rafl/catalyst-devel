@@ -16,24 +16,13 @@ use Catalyst::Exception;
 
 my %cache;
 
-
 =head1 NAME
 
 Catalyst::Helper - Bootstrap a Catalyst application
 
 =head1 SYNOPSIS
 
-See L<Catalyst::Manual::Intro>
-
-=head1 DESCRIPTION
-
-Bootstrap a Catalyst application. Autogenerates scripts.
-
-=head2 METHODS
-
-=head3 get_file
-
-Slurp file from DATA.
+  catalyst.pl <myappname>
 
 =cut
 
@@ -52,12 +41,6 @@ sub get_file {
     }
     return 0;
 }
-
-=head3 mk_app
-
-Create the main application skeleton.
-
-=cut
 
 sub mk_app {
     my ( $self, $name ) = @_;
@@ -110,13 +93,6 @@ sub mk_app {
     return $self->{dir};
 }
 
-=head3 mk_component
-
-This method is called by create.pl to make new components
-for your application.
-
-=cut
-
 sub mk_component {
     my $self = shift;
     my $app  = shift;
@@ -145,7 +121,7 @@ sub mk_component {
         my $name   = shift || "Missing name for model/view/controller";
         my $helper = shift;
         my @args   = @_;
-        return 0 if $name =~ /[^\w\:]/;
+       return 0 if $name =~ /[^\w\:]/;
         $type              = lc $type;
         $self->{long_type} = ucfirst $type;
         $type              = 'M' if $type =~ /model/i;
@@ -207,12 +183,6 @@ sub mk_component {
     return 1;
 }
 
-=head3 mk_dir
-
-Surprisingly, this function makes a directory.
-
-=cut
-
 sub mk_dir {
     my ( $self, $dir ) = @_;
     if ( -d $dir ) {
@@ -226,12 +196,6 @@ sub mk_dir {
 
     Catalyst::Exception->throw( message => qq/Couldn't create "$dir", "$!"/ );
 }
-
-=head3 mk_file
-
-writes content to a file.
-
-=cut
 
 sub mk_file {
     my ( $self, $file, $content ) = @_;
@@ -259,10 +223,6 @@ sub mk_file {
     Catalyst::Exception->throw( message => qq/Couldn't create "$file", "$!"/ );
 }
 
-=head3 next_test
-
-=cut
-
 sub next_test {
     my ( $self, $tname ) = @_;
     if ($tname) { $tname = "$tname.t" }
@@ -282,13 +242,6 @@ sub next_test {
     $self->mk_dir($dir);
     return File::Spec->catfile( $dir, "$type\_$tname" );
 }
-
-=head3 render_file
-
-Render and create a file from a template in DATA using 
-Template Toolkit.
-
-=cut
 
 sub render_file {
     my ( $self, $file, $path, $vars ) = @_;
@@ -496,15 +449,54 @@ sub _deprecate_file {
     }
 }
 
+=head1 DESCRIPTION
+
+This module is used by B<catalyst.pl> to create a set of scripts for a
+new catalyst application. The scripts each contain documentation and
+will output help on how to use them if called incorrectly or in some
+cases, with no arguments.
+
+It also provides some useful methods for a Helper module to call when
+creating a component. See L</METHODS>.
+
+=head1 SCRIPTS
+
+=head2 _create.pl
+
+Used to create new components for a catalyst application at the
+development stage.
+
+=head2 _server.pl
+
+The catalyst test server, starts an HTTPD which outputs debugging to
+the terminal.
+
+=head2 _test.pl
+
+A script for running tests from the command-line.
+
+=head2 _cgi.pl
+
+Run your application as a CGI.
+
+=head2 _fastcgi.pl
+
+Run the application as a fastcgi app. Either by hand, or call this
+from FastCgiServer in your http server config.
+
 =head1 HELPERS
+
+The L</_create.pl> script creates application components using Helper
+modules. The Catalyst team provides a good number of Helper modules
+for you to use. You can also add your own.
 
 Helpers are classes that provide two methods.
 
     * mk_compclass - creates the Component class
     * mk_comptest  - creates the Component test
 
-So when you call C<bin/create view MyView TT>, create would try to execute
-Catalyst::Helper::View::TT->mk_compclass and
+So when you call C<scripts/myapp_create.pl view MyView TT>, create
+will try to execute Catalyst::Helper::View::TT->mk_compclass and
 Catalyst::Helper::View::TT->mk_comptest.
 
 See L<Catalyst::Helper::View::TT> and L<Catalyst::Helper::Model::DBIC> for
@@ -515,6 +507,73 @@ All helper classes should be under one of the following namespaces.
     Catalyst::Helper::Model::
     Catalyst::Helper::View::
     Catalyst::Helper::Controller::
+
+=head2 mk_compclass
+
+This method in your Helper module is called with C<$helper>
+which is a L<Catalyst::Helper> object, and whichever other arguments
+the user added to the command-line. You can use the $helper to call methods
+described below.
+
+If the Helper module does not contain a C<mk_compclass> method, it
+will fall back to calling L</render_file>, with an argument of
+C<compclass>.
+
+=head2 mk_comptest
+
+This method in your Helper module is called with C<$helper>
+which is a L<Catalyst::Helper> object, and whichever other arguments
+the user added to the command-line. You can use the $helper to call methods
+described below.
+
+If the Helper module does not contain a C<mk_compclass> method, it
+will fall back to calling L</render_file>, with an argument of
+C<comptest>.
+
+=head2 mk_stuff
+
+This method is called if the user does not supply any of the usual
+component types C<view>, C<controller>, C<model>. It is passed the
+C<$helper> object (an instance of L<Catalyst::Helper>), and any other
+arguments the user typed.
+
+There is no fallback for this method.
+
+=head1 METHODS
+
+These are the methods that the Helper classes can call on the
+<$helper> object passed to them.
+
+=head2 render_file
+
+Render and create a file from a template in DATA using 
+Template Toolkit.
+
+=head2 get_file
+
+Fetch file contents from the DATA section. This is used internally by
+L</render_file>.
+
+=head2 mk_app
+
+Create the main application skeleton. This is called by L<catalyst.pl>.
+
+=head2 mk_component
+
+This method is called by L<create.pl> to make new components
+for your application.
+
+=head3 mk_dir
+
+Surprisingly, this function makes a directory.
+
+=head2 mk_file
+
+Writes content to a file. Called by L</render_file>.
+
+=head2 next_test
+
+Calculates the name of the next numbered test file and returns it.
 
 =head1 NOTE
 
