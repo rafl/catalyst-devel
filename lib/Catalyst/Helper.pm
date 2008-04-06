@@ -617,7 +617,9 @@ use Catalyst::Runtime '5.70';
 # Static::Simple: will serve static files from the application's root 
 #                 directory
 
-use Catalyst qw/-Debug ConfigLoader Static::Simple/;
+use parent qw/Catalyst/;
+
+[% name %]->plugins(qw/-Debug ConfigLoader Static::Simple/);
 
 our $VERSION = '0.01';
 
@@ -669,7 +671,7 @@ package [% rootname %];
 
 use strict;
 use warnings;
-use base 'Catalyst::Controller';
+use parent 'Catalyst::Controller';
 
 #
 # Sets the actions in this controller to be registered with no prefix
@@ -1153,7 +1155,7 @@ package [% class %];
 
 use strict;
 use warnings;
-use base 'Catalyst::[% long_type %]';
+use parent 'Catalyst::[% long_type %]';
 
 =head1 NAME
 

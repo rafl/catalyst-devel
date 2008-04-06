@@ -1,6 +1,9 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
-1.04	2007-XX-XX
+        - Change from use Catalyst to use parent and load plugins  in setup call
+        - Remove Catalyst::Manual dependency.
+
+1.04	2008-02-07 16:04:00
         - Update default actions in Root.pm
         - Patch Helper.pm so Module::Pluggable::Object ignores emacs temp
           files appropriately for restarting server
