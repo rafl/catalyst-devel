@@ -1,6 +1,3 @@
-use strict;
-use warnings;
-
 use inc::Module::Install 0.64;
 
 name     'Catalyst-Devel';
