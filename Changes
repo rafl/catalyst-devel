@@ -1,5 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.06	2008-04-09 08:19:00
+        - load plugins in setup, not plugins. (ema_zep@libero.it)
 1.05	2008-04-07 11:55:00
         - Add missing parent dependency to created projects.
 1.04	2008-04-06 16:04:00
