@@ -689,7 +689,7 @@ __PACKAGE__->config->{namespace} = '';
 
 =cut
 
-=head2 default
+=head2 index
 
 =cut
 
