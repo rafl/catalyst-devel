@@ -728,6 +728,8 @@ it under the same terms as Perl itself.
 
 1;
 __makefile__
+# IMPORTANT: if you delete this file your app will not work as
+# expected.  you have been warned
 use inc::Module::Install;
 
 name '[% dir %]';
