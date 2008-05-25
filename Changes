@@ -1,6 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
-1.05    2008-05-11
+1.07    2008-05-11
         - Moved Helper.pm to generate .conf rather than YAML
         - Made a warning in the generated Makefile.PL not to delete it.
         -  Incorrect generated pod.
