@@ -1176,7 +1176,7 @@ Catalyst [% long_type %].
 
 =cut
 
-sub index : Private {
+sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
     $c->response->body('Matched [% class %] in [%name%].');
