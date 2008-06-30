@@ -29,7 +29,7 @@ L<Catalyst|Catalyst::Runtime>.
 
 =head1 AUTHOR
 
-The Catalyst Core Team - see http://catalyst.perl.org/
+Catalyst Contributors, see Catalyst.pm
 
 =head1 LICENSE
 
