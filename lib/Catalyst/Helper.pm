@@ -618,7 +618,9 @@ use Catalyst::Runtime '5.70';
 #                 directory
 
 use parent qw/Catalyst/;
-
+use Catalyst qw/-Debug
+                ConfigLoader
+                Static::Simple/;
 our $VERSION = '0.01';
 
 # Configure the application. 
@@ -633,7 +635,7 @@ our $VERSION = '0.01';
 __PACKAGE__->config( name => '[% name %]' );
 
 # Start the application
-__PACKAGE__->setup(qw/-Debug ConfigLoader Static::Simple/);
+__PACKAGE__->setup();
 
 
 =head1 NAME
