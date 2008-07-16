@@ -1,5 +1,5 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
-1.09    2008-07-13 18:000
+1.08    2008-07-13 18:000
         - Revert to use Catalyst qw/@plugins/
         - Require Config::General instead of YAML
 
