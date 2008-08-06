@@ -1,4 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
+
+        - Fix warning when devel is not installed.
+        
 1.08    2008-07-13 18:000
         - Revert to use Catalyst qw/@plugins/
         - Require Config::General instead of YAML

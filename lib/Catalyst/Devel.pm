@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 our $VERSION             = '1.08';
-our $CATALYST_SCRIPT_GEN = 31;
+our $CATALYST_SCRIPT_GEN = 32;
 
 =head1 NAME
 
