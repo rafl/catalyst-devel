@@ -31,6 +31,10 @@ L<Catalyst|Catalyst::Runtime>.
 
 Catalyst Contributors, see Catalyst.pm
 
+=head1 PROJECT FOUNDER
+
+sri: Sebastian Riedel <sri@cpan.org>
+
 =head1 LICENSE
 
 This library is free software, you can redistribute it and/or modify

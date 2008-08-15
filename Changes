@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Add Sebastian's PROJECT FOUNDER note to Devel.pm as requested
         - Fix warning when devel is not installed.
         
 1.08    2008-07-13 18:000
