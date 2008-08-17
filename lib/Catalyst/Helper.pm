@@ -499,8 +499,8 @@ So when you call C<scripts/myapp_create.pl view MyView TT>, create
 will try to execute Catalyst::Helper::View::TT->mk_compclass and
 Catalyst::Helper::View::TT->mk_comptest.
 
-See L<Catalyst::Helper::View::TT> and L<Catalyst::Helper::Model::DBIC> for
-examples.
+See L<Catalyst::Helper::View::TT> and
+L<Catalyst::Helper::Model::DBIC::Schema> for examples.
 
 All helper classes should be under one of the following namespaces.
 
