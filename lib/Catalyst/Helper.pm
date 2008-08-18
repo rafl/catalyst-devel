@@ -544,36 +544,41 @@ There is no fallback for this method.
 These are the methods that the Helper classes can call on the
 <$helper> object passed to them.
 
-=head2 render_file
+=head2 render_file ($file, $path, $vars)
 
-Render and create a file from a template in DATA using 
-Template Toolkit.
+Render and create a file from a template in DATA using Template
+Toolkit. $file is the relevent chunk of the __DATA__ section, $path is
+the path to the file and $vars is the hashref as expected by
+L<Template Toolkit|Template>.
 
-=head2 get_file
+=head2 get_file ($class, $file)
 
 Fetch file contents from the DATA section. This is used internally by
-L</render_file>.
+L</render_file>.  $class is the name of the class to get the DATA
+section from.  __PACKAGE__ or ( caller(0) )[0] might be sensible
+values for this.
 
 =head2 mk_app
 
 Create the main application skeleton. This is called by L<catalyst.pl>.
 
-=head2 mk_component
+=head2 mk_component ($app)
 
 This method is called by L<create.pl> to make new components
 for your application.
 
-=head3 mk_dir
+=head3 mk_dir ($path)
 
 Surprisingly, this function makes a directory.
 
-=head2 mk_file
+=head2 mk_file ($file, $content)
 
 Writes content to a file. Called by L</render_file>.
 
-=head2 next_test
+=head2 next_test ($test_name)
 
 Calculates the name of the next numbered test file and returns it.
+Don't give the number or the .t suffix for the test name.
 
 =head1 NOTE
 
