@@ -1099,6 +1099,7 @@ vendor package or by running one of -
   perl -MCPAN -e 'install Catalyst::Devel'
   perl -MCPANPLUS -e 'install Catalyst::Devel'
 END
+}
 
 my $force = 0;
 my $mech  = 0;
