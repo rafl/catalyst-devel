@@ -619,7 +619,7 @@ use Catalyst::Runtime '5.70';
 #         -Debug: activates the debug mode for very useful log messages
 #   ConfigLoader: will load the configuration from a Config::General file in the
 #                 application's home directory
-# Static::Simple: will serve static files from the application's root 
+# Static::Simple: will serve static files from the application's root
 #                 directory
 
 use parent qw/Catalyst/;
@@ -628,7 +628,7 @@ use Catalyst qw/-Debug
                 Static::Simple/;
 our $VERSION = '0.01';
 
-# Configure the application. 
+# Configure the application.
 #
 # Note that settings in [% appprefix %].conf (or other external
 # configuration file that you set up manually) take precedence
@@ -711,14 +711,13 @@ sub default :Path {
     my ( $self, $c ) = @_;
     $c->response->body( 'Page not found' );
     $c->response->status(404);
-    
 }
 
 =head2 end
 
 Attempt to render a view, if needed.
 
-=cut 
+=cut
 
 sub end : ActionClass('RenderView') {}
 
@@ -846,7 +845,7 @@ use [% name %];
 
 my $help = 0;
 my ( $listen, $nproc, $pidfile, $manager, $detach, $keep_stderr );
- 
+
 GetOptions(
     'help|?'      => \$help,
     'listen|l=s'  => \$listen,
@@ -859,10 +858,10 @@ GetOptions(
 
 pod2usage(1) if $help;
 
-[% name %]->run( 
-    $listen, 
+[% name %]->run(
+    $listen,
     {   nproc   => $nproc,
-        pidfile => $pidfile, 
+        pidfile => $pidfile,
         manager => $manager,
         detach  => $detach,
 	keep_stderr => $keep_stderr,
@@ -878,7 +877,7 @@ pod2usage(1) if $help;
 =head1 SYNOPSIS
 
 [% appprefix %]_fastcgi.pl [options]
- 
+
  Options:
    -? -help      display this help and exits
    -l -listen    Socket path to listen on
@@ -914,11 +913,11 @@ it under the same terms as Perl itself.
 __server__
 [% startperl %]
 
-BEGIN { 
+BEGIN {
     $ENV{CATALYST_ENGINE} ||= 'HTTP';
     $ENV{CATALYST_SCRIPT_GEN} = [% scriptgen %];
     require Catalyst::Engine::HTTP;
-}  
+}
 
 use strict;
 use warnings;
@@ -1187,7 +1186,7 @@ Catalyst [% long_type %].
 =cut
 
 
-=head2 index 
+=head2 index
 
 =cut
 
