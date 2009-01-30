@@ -634,7 +634,7 @@ our $VERSION = '0.01';
 # configuration file that you set up manually) take precedence
 # over this when using ConfigLoader. Thus configuration
 # details given here can function as a default configuration,
-# with a external configuration file acting as an override for
+# with an external configuration file acting as an override for
 # local deployment.
 
 __PACKAGE__->config( name => '[% name %]' );
