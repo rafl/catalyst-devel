@@ -1,9 +1,10 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.09    2009-02-04 23:57
         - Add Sebastian's PROJECT FOUNDER note to Devel.pm as requested
         - Fix warning when devel is not installed.
         
-1.08    2008-07-13 18:000
+1.08    2008-07-13 18:00
         - Revert to use Catalyst qw/@plugins/
         - Require Config::General instead of YAML
 
