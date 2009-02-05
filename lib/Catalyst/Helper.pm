@@ -1086,7 +1086,7 @@ use strict;
 use warnings;
 use Getopt::Long;
 use Pod::Usage;
-eval "use Catalyst::Devel;";
+eval "use Catalyst::Helper;";
 
 if ($@) {
   die <<END;

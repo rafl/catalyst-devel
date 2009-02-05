@@ -12,12 +12,12 @@ Catalyst::Devel - Catalyst Development Tools
 
 =head1 DESCRIPTION
 
-The C<Catalyst::Devel> package includes a variety of modules useful for the
-development of Catalyst applications, but not required to run them. This
-is intended to make it easier to deploy Catalyst apps. The runtime parts of
-Catalyst are now known as C<Catalyst::Runtime>. 
+The C<Catalyst-Devel> distribution includes a variety of modules useful
+for the development of Catalyst applications, but not required to run
+them. This is intended to make it easier to deploy Catalyst apps. The
+runtime parts of Catalyst are now known as C<Catalyst::Runtime>. 
 
-C<Catalyst::Devel> includes the L<Catalyst::Helper> system, which
+C<Catalyst-Devel> includes the L<Catalyst::Helper> system, which
 autogenerates scripts and tests; L<Module::Install::Catalyst>, a
 L<Module::Install> extension for Catalyst; and requirements for a
 variety of development-related modules. The documentation remains with
