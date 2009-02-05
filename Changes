@@ -1,5 +1,12 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.10    2009-02-05 15:04
+        - fix a bug in created helper scripts that prevened them working (rjbs)
+
+1.09    2009-02-04 23:57
+        - Add Sebastian's PROJECT FOUNDER note to Devel.pm as requested
+        - Fix warning when devel is not installed.
+
 1.09    2009-02-04 23:57
         - Add Sebastian's PROJECT FOUNDER note to Devel.pm as requested
         - Fix warning when devel is not installed.
