@@ -937,6 +937,7 @@ my $restart_delay     = 1;
 my $restart_regex     = '(?:/|^)(?!\.#).+(?:\.yml$|\.yaml$|\.conf|\.pm)$';
 my $restart_directory = undef;
 my $follow_symlinks   = 0;
+my $background        = 0;
 
 my @argv = @ARGV;
 
@@ -952,6 +953,7 @@ GetOptions(
     'restartregex|rr=s'   => \$restart_regex,
     'restartdirectory=s@' => \$restart_directory,
     'followsymlinks'      => \$follow_symlinks,
+    'background'          => \$background,
 );
 
 pod2usage(1) if $help;
@@ -976,6 +978,7 @@ require [% name %];
     restart_regex     => qr/$restart_regex/,
     restart_directory => $restart_directory,
     follow_symlinks   => $follow_symlinks,
+    background        => $background,
 } );
 
 1;
@@ -1007,6 +1010,7 @@ require [% name %];
                       (defaults to '[SCRIPT_DIR]/..')
    -follow_symlinks   follow symlinks in search directories
                       (defaults to false. this is a no-op on Win32)
+   -background        run the process in the background
  See also:
    perldoc Catalyst::Manual
    perldoc Catalyst::Manual::Intro
