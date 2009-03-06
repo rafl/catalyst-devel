@@ -596,7 +596,7 @@ Catalyst Contributors, see Catalyst.pm
 
 =head1 LICENSE
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =begin pod_to_ignore
@@ -665,7 +665,7 @@ L<[% rootname %]>, L<Catalyst>
 
 =head1 LICENSE
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
@@ -727,7 +727,7 @@ sub end : ActionClass('RenderView') {}
 
 =head1 LICENSE
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
@@ -826,7 +826,7 @@ Catalyst Contributors, see Catalyst.pm
 =head1 COPYRIGHT
 
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
@@ -906,7 +906,7 @@ Catalyst Contributors, see Catalyst.pm
 
 =head1 COPYRIGHT
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
@@ -1025,7 +1025,7 @@ Catalyst Contributors, see Catalyst.pm
 
 =head1 COPYRIGHT
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
@@ -1079,7 +1079,7 @@ Catalyst Contributors, see Catalyst.pm
 
 =head1 COPYRIGHT
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
@@ -1166,7 +1166,7 @@ Catalyst Contributors, see Catalyst.pm
 
 =head1 COPYRIGHT
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
@@ -1207,7 +1207,7 @@ sub index :Path :Args(0) {
 
 =head1 LICENSE
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
