@@ -91,6 +91,7 @@ sub mk_app {
         $self->_mk_server;
         $self->_mk_test;
         $self->_mk_create;
+        $self->_mk_information;
     }
     return $self->{dir};
 }
@@ -256,6 +257,11 @@ sub render_file {
       || Catalyst::Exception->throw(
         message => qq/Couldn't process "$file", / . $t->error() );
     $self->mk_file( $path, $output );
+}
+
+sub _mk_information {
+    my $self = shift;
+    print qq/Change to application directory and Run "perl Makefile.PL" to make sure your install is complete\n/;
 }
 
 sub _mk_dirs {
