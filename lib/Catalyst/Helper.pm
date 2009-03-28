@@ -516,6 +516,34 @@ All helper classes should be under one of the following namespaces.
     Catalyst::Helper::View::
     Catalyst::Helper::Controller::
 
+=head2 COMMON HELPERS 
+
+=over
+
+=item *
+
+L<Catalyst::Helper::Model::DBIC::Schema> - DBIx::Class models
+
+=item *
+
+L<Catalyst::Helper::View::TT> - Template Toolkit view
+
+=item *
+
+L<Catalyst::Helper::Model::LDAP>
+
+=item *
+
+L<Catalyst::Helper::Model::Adaptor> - wrap any class into a Catalyst model
+
+=back
+
+=head3 NOTE
+
+The helpers will read author name from /etc/passwd by default. + To override, please export the AUTHOR variable. 
+
+=head1 METHODS
+
 =head2 mk_compclass
 
 This method in your Helper module is called with C<$helper>
@@ -547,7 +575,7 @@ arguments the user typed.
 
 There is no fallback for this method.
 
-=head1 METHODS
+=head1 INTERNAL METHODS
 
 These are the methods that the Helper classes can call on the
 <$helper> object passed to them.
