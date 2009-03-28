@@ -945,7 +945,7 @@ my @argv = @ARGV;
 
 GetOptions(
     'debug|d'             => \$debug,
-    'fork'                => \$fork,
+    'fork|f'              => \$fork,
     'help|?'              => \$help,
     'host=s'              => \$host,
     'port=s'              => \$port,
