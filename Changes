@@ -1,5 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Change generated scripts to use /usr/bin/env perl if /usr/bin/env
+          exists, otherwise fall back to the current perl binary. (t0m)
+
 1.10    2009-02-05 15:04
         - fix a bug in created helper scripts that prevened them working (rjbs)
 
