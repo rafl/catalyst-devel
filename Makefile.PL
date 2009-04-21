@@ -43,8 +43,8 @@ if (!$ENV{CATALYST_DEVEL_NO_510_CHECK}) {
 #                                                                       #
 #  * http://rt.perl.org/rt3/Public/Bug/Display.html?id=49472            #
 #                                                                       #
-# It is highly recommended that you patch your perl, or use a different #
-# version for Catalyst development.                                     #
+# It is highly recommended that you use a different version of perl or  #
+# compile a patched version for Catalyst development.                   #
 #                                                                       #
 # To skip this check, set the CATALYST_DEVEL_NO_510_CHECK environment   #
 # variable.                                                             #
