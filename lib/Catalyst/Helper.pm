@@ -969,6 +969,7 @@ my $host              = undef;
 my $port              = $ENV{[% appenv %]_PORT} || $ENV{CATALYST_PORT} || 3000;
 my $keepalive         = 0;
 my $restart           = $ENV{[% appenv %]_RELOAD} || $ENV{CATALYST_RELOAD} || 0;
+my $background        = 0;
 
 my $check_interval;
 my $file_regex;
@@ -989,6 +990,7 @@ GetOptions(
     'restartregex|rr=s'   => \$file_regex,
     'restartdirectory=s@' => \$watch_directory,
     'followsymlinks'      => \$follow_symlinks,
+    'background'          => \$background,
 );
 
 pod2usage(1) if $help;
@@ -1009,9 +1011,10 @@ my $runner = sub {
     [% name %]->run(
         $port, $host,
         {
-            argv      => \@argv,
-            'fork'    => $fork,
-            keepalive => $keepalive,
+            argv       => \@argv,
+            'fork'     => $fork,
+            keepalive  => $keepalive,
+            background => $background,
         }
     );
 };
