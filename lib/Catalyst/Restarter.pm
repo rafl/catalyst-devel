@@ -64,6 +64,7 @@ sub _restart_on_changes {
         my @files = $watcher->find_changed_files
             or next;
 
+        print STDERR "\n";
         print STDERR "Saw changes to the following files:\n";
         print STDERR " - $_->{file} ($_->{status})\n" for @files;
         print STDERR "\n";
