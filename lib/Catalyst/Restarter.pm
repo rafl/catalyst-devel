@@ -91,3 +91,55 @@ sub DEMOLISH {
 __PACKAGE__->meta->make_immutable;
 
 1;
+
+__END__
+
+=head1 NAME
+
+Catalyst::Restarter - Uses Catalyst::Watcher to check for changed files and restart the server
+
+=head1 SYNOPSIS
+
+    my $watcher = Catalyst::Watcher->new(
+        directory => '/path/to/MyApp',
+        regex     => '\.yml$|\.yaml$|\.conf|\.pm$',
+        interval  => 3,
+    );
+
+    while (1) {
+        my @changed_files = $watcher->watch();
+    }
+
+=head1 DESCRIPTION
+
+This class monitors a directory of files for changes made to any file
+matching a regular expression. It correctly handles new files added to the
+application as well as files that are deleted.
+
+=head1 METHODS
+
+=head2 new ( directory => $path [, regex => $regex, delay => $delay ] )
+
+Creates a new Watcher object.
+
+=head2 find_changed_files
+
+Returns a list of files that have been added, deleted, or changed
+since the last time watch was called. Each element returned is a hash
+reference with two keys. The C<file> key contains the filename, and
+the C<status> key contains one of "modified", "added", or "deleted".
+
+=head1 SEE ALSO
+
+L<Catalyst>, L<Catalyst::Restarter>, <File::Modified>
+
+=head1 AUTHORS
+
+Catalyst Contributors, see Catalyst.pm
+
+=head1 COPYRIGHT
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
