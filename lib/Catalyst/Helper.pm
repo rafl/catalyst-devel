@@ -1022,6 +1022,9 @@ my $runner = sub {
 if ( $restart ) {
     require Catalyst::Restarter;
 
+    die "Cannot run in the background and also watch for changed files.\n"
+        if $background;
+
     my %args;
     $args{watch_directory} = $watch_directory
         if defined $watch_directory;
