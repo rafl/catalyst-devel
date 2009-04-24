@@ -156,12 +156,12 @@ Catalyst::Watcher - Watch for changed application files
 
 =head1 SYNOPSIS
 
-    my $watcher = Catalyst::Engine::HTTP::Restarter::Watcher->new(
+    my $watcher = Catalyst::Watcher->new(
         directory => '/path/to/MyApp',
         regex     => '\.yml$|\.yaml$|\.conf|\.pm$',
-        delay     => 1,
+        interval  => 3,
     );
-    
+
     while (1) {
         my @changed_files = $watcher->watch();
     }
@@ -169,7 +169,7 @@ Catalyst::Watcher - Watch for changed application files
 =head1 DESCRIPTION
 
 This class monitors a directory of files for changes made to any file
-matching a regular expression.  It correctly handles new files added to the
+matching a regular expression. It correctly handles new files added to the
 application as well as files that are deleted.
 
 =head1 METHODS
@@ -178,37 +178,24 @@ application as well as files that are deleted.
 
 Creates a new Watcher object.
 
-=head2 watch
+=head2 find_changed_files
 
-Returns a list of files that have been added, deleted, or changed since the
-last time watch was called.
-
-=head2 DETECT_PACKAGE_COMPILATION
-
-Returns true if L<B::Hooks::OP::Check::StashChange> is installed and
-can be used to detect when files are compiled. This is used internally
-to make the L<Moose> metaclass of any class being reloaded immutable.
-
-If L<B::Hooks::OP::Check::StashChange> is not installed, then the
-restarter makes all application components immutable. This covers the
-simple case, but is less useful if you're using Moose in components
-outside Catalyst's namespaces, but inside your application directory.
+Returns a list of files that have been added, deleted, or changed
+since the last time watch was called. Each element returned is a hash
+reference with two keys. The C<file> key contains the filename, and
+the C<status> key contains one of "modified", "added", or "deleted".
 
 =head1 SEE ALSO
 
-L<Catalyst>, L<Catalyst::Engine::HTTP::Restarter>, L<File::Modified>
+L<Catalyst>, L<Catalyst::Restarter>, <File::Modified>
 
 =head1 AUTHORS
 
 Catalyst Contributors, see Catalyst.pm
 
-=head1 THANKS
-
-Many parts are ripped out of C<HTTP::Server::Simple> by Jesse Vincent.
-
 =head1 COPYRIGHT
 
-This program is free software, you can redistribute it and/or modify it under
-the same terms as Perl itself.
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
