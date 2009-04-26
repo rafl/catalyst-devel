@@ -1,5 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.12    2009-04-26 15:42
+        - Remove the deprecated BindLex from the _create.pl help message (rafl)
+
 1.11    2009-04-22 19:02
         - Add check for "Unknown error" bug (caelum)
         - Change generated scripts to use /usr/bin/env perl if /usr/bin/env
