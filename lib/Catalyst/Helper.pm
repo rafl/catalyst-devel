@@ -1173,7 +1173,6 @@ pod2usage(1) unless $helper->mk_component( '[% name %]', @ARGV );
 
  Examples:
    [% appprefix %]_create.pl controller My::Controller
-   [% appprefix %]_create.pl controller My::Controller BindLex
    [% appprefix %]_create.pl -mechanize controller My::Controller
    [% appprefix %]_create.pl view My::View
    [% appprefix %]_create.pl view MyView TT
