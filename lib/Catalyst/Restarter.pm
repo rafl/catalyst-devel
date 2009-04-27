@@ -70,10 +70,7 @@ sub _restart_on_changes {
         print STDERR "\n";
         print STDERR "Attempting to restart the server\n\n";
 
-        if ( $self->_child ) {
-            kill 2, $self->_child
-                or die "Cannot send INT to child (" . $self->_child . "): $!";
-        }
+        $self->_kill_child;
 
         $self->_fork_and_start;
 
@@ -81,12 +78,26 @@ sub _restart_on_changes {
     }
 }
 
+sub _kill_child {
+    my $self = shift;
+
+    return unless $self->_child;
+
+    return unless kill 0, $self->_child;
+
+    local $SIG{CHLD} = 'IGNORE';
+    unless ( kill 'INT', $self->_child ) {
+        # The kill 0 thing does not work on Windows, but the restarter
+        # seems to work fine on Windows with this hack.
+        return if $^O eq 'MSWin32';
+        die "Cannot send INT signal to ", $self->_child, ": $!";
+    }
+}
+
 sub DEMOLISH {
     my $self = shift;
 
-    if ( $self->_child ) {
-        kill 2, $self->_child;
-    }
+    $self->_kill_child;
 }
 
 __PACKAGE__->meta->make_immutable;
