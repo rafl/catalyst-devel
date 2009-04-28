@@ -1003,6 +1003,10 @@ if ( $debug ) {
 # need to be reloaded for each restart.
 require Catalyst;
 
+# If this isn't done, then the Catalyst::Devel tests for the restarter
+# fail.
+$| = 1 if $ENV{HARNESS_ACTIVE};
+
 my $runner = sub {
     # This is require instead of use so that the above environment
     # variables can be set at runtime.
