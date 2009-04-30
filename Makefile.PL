@@ -57,6 +57,27 @@ EOE
     }
 }
 
+# kill warning from older versions of Class::C3
+if ($] >= 5.009_005 && can_use('Class::C3') && !can_use('Class::C3', 0.20)) {
+    requires 'Class::C3' => '0.20';
+}
+
 auto_install;
 
 WriteAll;
+
+if ($Module::Install::AUTHOR) {
+    Meta->{values}{resources} = [
+        [ 'MailingList' => 'http://lists.scsys.co.uk/cgi-bin/mailman/listinfo/catalyst' ],
+        [ 'IRC'         => 'irc://irc.perl.org/#catalyst' ],
+        [ 'license',    => 'http://dev.perl.org/licenses/' ],
+        [ 'homepage',   => 'http://dev.catalyst.perl.org/'],
+        [ 'repository', => 'http://dev.catalyst.perl.org/repos/Catalyst/Catalyst-Devel/' ],
+    ];
+
+    Meta->{values}{requires} = [ grep {
+        $_->[0] ne 'Class::C3'
+    } @{ Meta->{values}{requires} } ];
+
+    Meta->write;
+}
