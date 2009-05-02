@@ -3,8 +3,6 @@ package Catalyst::Restarter;
 use Moose;
 
 use Catalyst::Watcher;
-use File::Spec;
-use FindBin;
 use namespace::clean -except => 'meta';
 
 has restart_sub => (
@@ -31,7 +29,7 @@ sub BUILD {
 
     # We could make this lazily, but this lets us check that we
     # received valid arguments for the watcher up front.
-    $self->_watcher( Catalyst::Watcher->new( %{$p} ) );
+    $self->_watcher( Catalyst::Watcher->instantiate_subclass( %{$p} ) );
 }
 
 sub run_and_watch {
@@ -58,24 +56,24 @@ sub _fork_and_start {
 sub _restart_on_changes {
     my $self = shift;
 
-    my $watcher = $self->_watcher;
+    $self->_watcher->watch($self);
+}
 
-    while (1) {
-        my @files = $watcher->find_changed_files
-            or next;
+sub handle_changes {
+    my $self  = shift;
+    my @files = @_;
 
-        print STDERR "\n";
-        print STDERR "Saw changes to the following files:\n";
-        print STDERR " - $_->{file} ($_->{status})\n" for @files;
-        print STDERR "\n";
-        print STDERR "Attempting to restart the server\n\n";
+    print STDERR "\n";
+    print STDERR "Saw changes to the following files:\n";
+    print STDERR " - $_->{file} ($_->{status})\n" for @files;
+    print STDERR "\n";
+    print STDERR "Attempting to restart the server\n\n";
 
-        $self->_kill_child;
+    $self->_kill_child;
 
-        $self->_fork_and_start;
+    $self->_fork_and_start;
 
-        return unless $self->_child;
-    }
+    $self->_restart_on_changes;
 }
 
 sub _kill_child {

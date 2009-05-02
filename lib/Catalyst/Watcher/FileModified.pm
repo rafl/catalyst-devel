@@ -1,7 +1,6 @@
-package Catalyst::Watcher;
+package Catalyst::Watcher::FileModified;
 
 use Moose;
-use Moose::Util::TypeConstraints;
 
 use File::Find;
 use File::Modified;
@@ -9,43 +8,12 @@ use File::Spec;
 use Time::HiRes qw/sleep/;
 use namespace::clean -except => 'meta';
 
+extends 'Catalyst::Watcher';
+
 has interval => (
     is      => 'ro',
     isa     => 'Int',
     default => 1,
-);
-
-has regex => (
-    is      => 'ro',
-    isa     => 'RegexpRef',
-    default => sub { qr/(?:\/|^)(?!\.\#).+(?:\.yml$|\.yaml$|\.conf|\.pm)$/ },
-);
-
-my $dir = subtype
-       as 'Str'
-    => where { -d $_ }
-    => message { "$_ is not a valid directory" };
-
-my $array_of_dirs = subtype
-       as 'ArrayRef[Str]',
-    => where { map { -d } @{$_} }
-    => message { "@{$_} is not a list of valid directories" };
-
-coerce $array_of_dirs
-    => from $dir
-    => via { [ $_ ] };
-
-has directory => (
-    is      => 'ro',
-    isa     => $array_of_dirs,
-    default => sub { [ File::Spec->rel2abs( File::Spec->catdir( $FindBin::Bin, '..' ) ) ] },
-    coerce  => 1,
-);
-
-has follow_symlinks => (
-    is      => 'ro',
-    isa     => 'Bool',
-    default => 0,
 );
 
 has _watched_files => (
@@ -59,7 +27,9 @@ has _modified => (
     is         => 'rw',
     isa        => 'File::Modified',
     lazy_build => 1,
+    clearer    => '_clear_modified',
 );
+
 
 sub _build__watched_files {
     my $self = shift;
@@ -70,11 +40,11 @@ sub _build__watched_files {
     finddepth(
         {
             wanted => sub {
-                my $file = File::Spec->rel2abs($File::Find::name);
-                return unless $file =~ /$regex/;
-                return unless -f $file;
+                my $path = File::Spec->rel2abs($File::Find::name);
+                return unless $path =~ /$regex/;
+                return unless -f $path;
 
-                $list{$file} = 1;
+                $list{$path} = 1;
 
                 # also watch the directory for changes
                 my $cur_dir = File::Spec->rel2abs($File::Find::dir);
@@ -84,7 +54,7 @@ sub _build__watched_files {
             follow_fast => $self->follow_symlinks ? 1 : 0,
             no_chdir    => 1
         },
-        @{ $self->directory }
+        @{ $self->directories }
     );
 
     return \%list;
@@ -99,49 +69,65 @@ sub _build__modified {
     );
 }
 
-sub find_changed_files {
+sub watch {
+    my $self      = shift;
+    my $restarter = shift;
+
+    while (1) {
+        sleep $self->interval if $self->interval > 0;
+
+        my @changes = $self->_changed_files;
+
+        next unless @changes;
+
+        $restarter->handle_changes(@changes);
+
+        last;
+    }
+}
+
+sub _changed_files {
     my $self = shift;
 
     my @changes;
-    my @changed_files;
 
-    sleep $self->interval if $self->interval > 0;
+    eval {
+        @changes = map { { file => $_, status => 'modified' } }
+            grep { -f $_ } $self->_modified->changed;
+    };
 
-    eval { @changes = $self->_modified->changed };
     if ($@) {
         # File::Modified will die if a file is deleted.
-        my ($deleted_file) = $@ =~ /stat '(.+)'/;
-        push @changed_files,
-            {
-            file => $deleted_file || 'unknown file',
-            status => 'deleted',
-            };
-    }
+        die unless $@ =~ /stat '(.+)'/;
 
-    if (@changes) {
+        push @changes, {
+            file   => $1 || 'unknown file',
+            status => 'deleted',
+        };
+
+        $self->_clear_watched_files;
+        $self->_clear_modified;
+    }
+    else {
         $self->_modified->update;
 
-        @changed_files = map { { file => $_, status => 'modified' } }
-            grep { -f $_ } @changes;
+        my $old_watch = $self->_watched_files;
 
-        # We also need to check to see if a new directory was created
-        unless (@changed_files) {
-            my $old_watch = $self->_watched_files;
+        $self->_clear_watched_files;
 
-            $self->_clear_watched_files;
+        my $new_watch = $self->_watched_files;
 
-            my $new_watch = $self->_watched_files;
+        my @new_files = grep { !defined $old_watch->{$_} }
+            grep {-f}
+            keys %{$new_watch};
 
-            @changed_files
-                = map { { file => $_, status => 'added' } }
-                grep { !defined $old_watch->{$_} }
-                keys %{$new_watch};
-
-            return unless @changed_files;
+        if (@new_files) {
+            $self->_clear_modified;
+            push @changes, map { { file => $_, status => 'added' } } @new_files;
         }
     }
 
-    return @changed_files;
+    return @changes;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -152,18 +138,18 @@ __END__
 
 =head1 NAME
 
-Catalyst::Watcher - Watch for changed application files
+Catalyst::Watcher::FileModified - Watch for changed application files using File::Modified
 
 =head1 SYNOPSIS
 
-    my $watcher = Catalyst::Watcher->new(
-        directory => '/path/to/MyApp',
-        regex     => '\.yml$|\.yaml$|\.conf|\.pm$',
-        interval  => 3,
+    my $watcher = Catalyst::Watcher::FileModified->new(
+        directories => '/path/to/MyApp',
+        regex       => '\.yml$|\.yaml$|\.conf|\.pm$',
     );
 
     while (1) {
         my @changed_files = $watcher->watch();
+        ...
     }
 
 =head1 DESCRIPTION
@@ -187,7 +173,8 @@ the C<status> key contains one of "modified", "added", or "deleted".
 
 =head1 SEE ALSO
 
-L<Catalyst>, L<Catalyst::Restarter>, <File::Modified>
+L<Catalyst>, L<Catalyst::Watcher>, L<Catalyst::Restarter>,
+<File::Modified>
 
 =head1 AUTHORS
 

@@ -1030,11 +1030,13 @@ if ( $restart ) {
         if $background;
 
     my %args;
-    $args{watch_directory} = $watch_directory
+    $args{follow_symlinks} = 1
+        if $follow_symlinks;
+    $args{directories} = $watch_directory
         if defined $watch_directory;
-    $args{check_interval} = $check_interval
+    $args{interval} = $check_interval
         if defined $check_interval;
-    $args{file_regex} = qr/$file_regex/
+    $args{regex} = qr/$file_regex/
         if defined $file_regex;
 
     my $restarter = Catalyst::Restarter->new(
@@ -1069,6 +1071,7 @@ else {
    -r -restart        restart when files get modified
                       (defaults to false)
    -rd -restartdelay  delay between file checks
+                      (ignored if you have Linux::Inotify2 installed)
    -rr -restartregex  regex match files that trigger
                       a restart when modified
                       (defaults to '\.yml$|\.yaml$|\.conf|\.pm$')
