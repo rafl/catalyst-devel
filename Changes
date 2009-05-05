@@ -1,5 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - kill C3 warning on 5.10, add resources to META.yml (caelum)
+
 1.12    2009-04-26 15:42
         - Remove the deprecated BindLex from the _create.pl help message (rafl)
 
