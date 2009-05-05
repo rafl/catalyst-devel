@@ -48,6 +48,7 @@ sub instantiate_subclass {
         return Catalyst::Watcher::Inotify->new(@_);
     }
     else {
+        die $@ if $@ && $@ !~ /Can't locate/;
         require Catalyst::Watcher::FileModified;
         return Catalyst::Watcher::FileModified->new(@_);
     }
