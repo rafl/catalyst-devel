@@ -56,7 +56,7 @@ sub _wait_for_events {
 
         my @interesting;
         for my $event (@events) {
-            if ( ( $event->IN_CREATE && $event->IN_ISDIR ) ) {
+            if ( $event->IN_CREATE && $event->IN_ISDIR ) {
                 $self->_add_directory( $event->fullname );
                 push @interesting, $event;
             }
