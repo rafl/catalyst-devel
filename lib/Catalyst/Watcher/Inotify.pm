@@ -60,11 +60,8 @@ sub _wait_for_events {
                 $self->_add_directory( $event->fullname );
                 push @interesting, $event;
             }
-            elsif ( $event->IN_DELETE_SELF ) {
-                $event->w->cancel;
-                push @interesting, $event;
-            }
-            elsif ( $event->fullname =~ /$regex/ ) {
+            elsif ( $event->IN_DELETE_SELF
+                    || $event->fullname =~ /$regex/ ) {
                 push @interesting, $event;
             }
         }
