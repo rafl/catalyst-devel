@@ -2,15 +2,18 @@ package Catalyst::Watcher::Inotify;
 
 use Moose;
 
+use File::Find;
 use Linux::Inotify2;
 use namespace::clean -except => 'meta';
 
 extends 'Catalyst::Watcher';
 
 has _inotify => (
-    is         => 'rw',
-    isa        => 'Linux::Inotify2',
-    lazy_build => 1,
+    is       => 'rw',
+    isa      => 'Linux::Inotify2',
+    default  => sub { Linux::Inotify2->new },
+    init_arg => undef,
+
 );
 
 has _mask => (
@@ -18,6 +21,17 @@ has _mask => (
     isa        => 'Int',
     lazy_build => 1,
 );
+
+sub BUILD {
+    my $self = shift;
+
+    # If this is done via a lazy_build then the call to
+    # ->_add_directory ends up causing endless recursion when it calls
+    # ->_inotify itself.
+    $self->_add_directory($_) for @{ $self->directories };
+
+    return $self;
+}
 
 sub watch {
     my $self      = shift;
@@ -33,6 +47,8 @@ sub watch {
 sub _wait_for_events {
     my $self = shift;
 
+    my $regex = $self->regex;
+
     while (1) {
         # This is a blocking read, so it will not return until
         # something happens. The restarter will end up calling ->watch
@@ -40,32 +56,22 @@ sub _wait_for_events {
         my @events = $self->_inotify->read;
 
         my @interesting;
-        for my $event ( grep { $_->mask | IN_ISDIR } @events ) {
-            if ( $event->mask | IM_CREATE ) {
+        for my $event (@events) {
+            if ( ( $event->IN_CREATE && $event->IN_ISDIR ) ) {
                 $self->_add_directory( $event->fullname );
                 push @interesting, $event;
             }
-            elsif ( $event->mask | IM_DELETE_SELF ) {
+            elsif ( $event->IN_DELETE_SELF ) {
                 $event->w->cancel;
                 push @interesting, $event;
             }
-            elsif ( $event->name =~ /$regex/ ) {
+            elsif ( $event->fullname =~ /$regex/ ) {
                 push @interesting, $event;
             }
         }
 
         return @interesting if @interesting;
     }
-}
-
-sub _build__inotify {
-    my $self = shift;
-
-    my $inotify = Linux::Inotify2->new();
-
-    $self->_add_directory($_) for @{ $self->directories };
-
-    return $inotify;
 }
 
 sub _build__mask {
@@ -92,7 +98,7 @@ sub _add_directory {
             follow_fast => $self->follow_symlinks ? 1 : 0,
             no_chdir    => 1
         },
-        $dir;
+        $dir
     );
 }
 
@@ -100,14 +106,14 @@ sub _event_to_change {
     my $self  = shift;
     my $event = shift;
 
-    my %change = { file => $event->fullname };
-    if ( $event->mask() | IN_CREATE || $event->mask() ) {
+    my %change = ( file => $event->fullname );
+    if ( $event->IN_CREATE ) {
         $change{status} = 'added';
     }
-    elsif ( $event->mask() | IN_MODIFY ) {
+    elsif ( $event->IN_MODIFY ) {
         $change{status} = 'modified';
     }
-    elsif ( $event->mask() | IN_DELETE || $event->mask() ) {
+    elsif ( $event->IN_DELETE ) {
         $change{status} = 'deleted';
     }
     else {
