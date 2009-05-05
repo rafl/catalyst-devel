@@ -11,7 +11,7 @@ use namespace::clean -except => 'meta';
 has regex => (
     is      => 'ro',
     isa     => 'RegexpRef',
-    default => sub { qr/(?:\/|^)(?!\.\#).+(?:\.yml$|\.yaml$|\.conf|\.pm)$/ },
+    default => sub { qr/(?:\/|^)(?!\.\#).+(?:\.yml|\.yaml|\.conf|\.pm)$/ },
 );
 
 my $dir = subtype
