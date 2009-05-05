@@ -13,7 +13,6 @@ has _inotify => (
     isa      => 'Linux::Inotify2',
     default  => sub { Linux::Inotify2->new },
     init_arg => undef,
-
 );
 
 has _mask => (
