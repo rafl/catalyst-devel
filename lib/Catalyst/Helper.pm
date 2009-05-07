@@ -1034,9 +1034,9 @@ if ( $restart ) {
         if $follow_symlinks;
     $args{directories} = $watch_directory
         if defined $watch_directory;
-    $args{interval} = $check_interval
+    $args{sleep_interval} = $check_interval
         if defined $check_interval;
-    $args{regex} = qr/$file_regex/
+    $args{filter} = qr/$file_regex/
         if defined $file_regex;
 
     my $restarter = Catalyst::Restarter->new(

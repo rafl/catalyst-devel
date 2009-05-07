@@ -2,7 +2,7 @@ package Catalyst::Restarter;
 
 use Moose;
 
-use Catalyst::Watcher;
+use File::ChangeNotify;
 use namespace::clean -except => 'meta';
 
 has restart_sub => (
@@ -13,7 +13,7 @@ has restart_sub => (
 
 has _watcher => (
     is  => 'rw',
-    isa => 'Catalyst::Watcher',
+    isa => 'File::ChangeNotify::Watcher',
 );
 
 has _child => (
@@ -27,9 +27,11 @@ sub BUILD {
 
     delete $p->{restart_sub};
 
+    $p->{filter} ||= qr/(?:\/|^)(?!\.\#).+(?:\.yml$|\.yaml$|\.conf|\.pm)$/;
+
     # We could make this lazily, but this lets us check that we
     # received valid arguments for the watcher up front.
-    $self->_watcher( Catalyst::Watcher->instantiate_subclass( %{$p} ) );
+    $self->_watcher( File::ChangeNotify->instantiate_watcher( %{$p} ) );
 }
 
 sub run_and_watch {
@@ -56,16 +58,24 @@ sub _fork_and_start {
 sub _restart_on_changes {
     my $self = shift;
 
-    $self->_watcher->watch($self);
+    my @events = $self->_watcher->wait_for_events();
+    $self->_handle_events(@events);
 }
 
-sub handle_changes {
-    my $self  = shift;
-    my @files = @_;
+sub _handle_events {
+    my $self   = shift;
+    my @events = @_;
 
     print STDERR "\n";
     print STDERR "Saw changes to the following files:\n";
-    print STDERR " - $_->{file} ($_->{status})\n" for @files;
+
+    for my $event (@events) {
+        my $path = $event->path();
+        my $type = $event->type();
+
+        print STDERR " - $path ($type)\n";
+    }
+
     print STDERR "\n";
     print STDERR "Attempting to restart the server\n\n";
 
