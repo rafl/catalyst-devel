@@ -1,4 +1,4 @@
-use inc::Module::Install 0.64;
+use inc::Module::Install 0.87;
 
 name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
