@@ -974,6 +974,7 @@ my $restart_regex     = '(?:/|^)(?!\.#).+(?:\.yml$|\.yaml$|\.conf|\.pm)$';
 my $restart_directory = undef;
 my $follow_symlinks   = 0;
 my $background        = 0;
+my $pidfile           = undef;
 
 my @argv = @ARGV;
 
@@ -990,6 +991,7 @@ GetOptions(
     'restartdirectory=s@' => \$restart_directory,
     'followsymlinks'      => \$follow_symlinks,
     'background'          => \$background,
+    'pidfile|p=s'         => \$pidfile,
 );
 
 pod2usage(1) if $help;
@@ -1015,6 +1017,7 @@ require [% name %];
     restart_directory => $restart_directory,
     follow_symlinks   => $follow_symlinks,
     background        => $background,
+    pidfile           => $pidfile,
 } );
 
 1;
