@@ -1044,7 +1044,7 @@ if ( $restart ) {
 
     my $restarter = Catalyst::Restarter->new(
         %args,
-        restart_sub => $runner,
+        start_sub => $runner,
     );
 
     $restarter->run_and_watch;

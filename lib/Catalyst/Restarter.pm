@@ -5,7 +5,7 @@ use Moose;
 use File::ChangeNotify;
 use namespace::clean -except => 'meta';
 
-has restart_sub => (
+has start_sub => (
     is       => 'ro',
     isa      => 'CodeRef',
     required => 1,
@@ -25,7 +25,7 @@ sub BUILD {
     my $self = shift;
     my $p    = shift;
 
-    delete $p->{restart_sub};
+    delete $p->{start_sub};
 
     $p->{filter} ||= qr/(?:\/|^)(?!\.\#).+(?:\.yml$|\.yaml$|\.conf|\.pm)$/;
 
@@ -51,7 +51,7 @@ sub _fork_and_start {
         $self->_child($pid);
     }
     else {
-        $self->restart_sub->();
+        $self->start_sub->();
     }
 }
 
@@ -116,42 +116,42 @@ __END__
 
 =head1 NAME
 
-Catalyst::Restarter - Uses Catalyst::Watcher to check for changed files and restart the server
+Catalyst::Restarter - Uses File::ChangeNotify to check for changed files and restart the server
 
 =head1 SYNOPSIS
 
-    my $watcher = Catalyst::Watcher->new(
-        directory => '/path/to/MyApp',
-        regex     => '\.yml$|\.yaml$|\.conf|\.pm$',
-        interval  => 3,
+    my $restarter = Catalyst::Restarter->new(
+        directories => '/path/to/MyApp',
+        regex       => '\.yml$|\.yaml$|\.conf|\.pm$',
+        start_sub => sub { ... }
     );
 
-    while (1) {
-        my @changed_files = $watcher->watch();
-    }
+    $restarter->run_and_watch;
 
 =head1 DESCRIPTION
 
-This class monitors a directory of files for changes made to any file
-matching a regular expression. It correctly handles new files added to the
-application as well as files that are deleted.
+This class uses L<File::ChangeNotify> to watch one or more directories
+of files and restart the Catalyst server when any of those files
+changes.
 
 =head1 METHODS
 
-=head2 new ( directory => $path [, regex => $regex, delay => $delay ] )
+=head2 new ( start_sub => sub { ... }, ... )
 
-Creates a new Watcher object.
+This method creates a new restarter object.
 
-=head2 find_changed_files
+The "start_sub" argument is required. This is a subroutine reference
+that can be used to start the Catalyst server.
 
-Returns a list of files that have been added, deleted, or changed
-since the last time watch was called. Each element returned is a hash
-reference with two keys. The C<file> key contains the filename, and
-the C<status> key contains one of "modified", "added", or "deleted".
+=head2 run_and_watch
+
+This method forks, starts the server in a child process, and then
+watched for changed files in the parent. When files change, it kills
+the child, forks again, and starts a new server.
 
 =head1 SEE ALSO
 
-L<Catalyst>, L<Catalyst::Restarter>, <File::Modified>
+L<Catalyst>, <File::ChangeNotify>
 
 =head1 AUTHORS
 
