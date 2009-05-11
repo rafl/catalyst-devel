@@ -1,7 +1,11 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.13    2009-05-11 02:50
         - add [-pidfile|-p] option for myapp_server.pl (caelum)
-        - kill C3 warning on 5.10, add resources to META.yml (caelum)
+        - Bump dependency on Config::General (caelum)
+        - On perls with c3 method dispatch, make sure Class::C3 is recent
+          enough to not produce warnings if it is already installed (caelum)
+        - add resources to META.yml (caelum)
 
 1.12    2009-04-26 15:42
         - Remove the deprecated BindLex from the _create.pl help message (rafl)
