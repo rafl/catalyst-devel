@@ -8,7 +8,7 @@ requires 'Catalyst::Action::RenderView' => '0.04';
 requires 'Catalyst::Plugin::Static::Simple' => '0.16';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Class::Accessor::Fast';
-requires 'Config::General'; # as of 1.07, we use .conf and not .yaml
+requires 'Config::General' => '2.42'; # as of 1.07, we use .conf and not .yaml
 requires 'File::ChangeNotify';
 requires 'File::Copy::Recursive';
 requires 'Module::Install' => '0.64';

@@ -970,6 +970,7 @@ my $port              = $ENV{[% appenv %]_PORT} || $ENV{CATALYST_PORT} || 3000;
 my $keepalive         = 0;
 my $restart           = $ENV{[% appenv %]_RELOAD} || $ENV{CATALYST_RELOAD} || 0;
 my $background        = 0;
+my $pidfile           = undef;
 
 my $check_interval;
 my $file_regex;
@@ -991,6 +992,7 @@ GetOptions(
     'restartdirectory=s@' => \$watch_directory,
     'followsymlinks'      => \$follow_symlinks,
     'background'          => \$background,
+    'pidfile|p=s'         => \$pidfile,
 );
 
 pod2usage(1) if $help;
@@ -1019,6 +1021,7 @@ my $runner = sub {
             'fork'     => $fork,
             keepalive  => $keepalive,
             background => $background,
+            pidfile    => $pidfile,
         }
     );
 };
