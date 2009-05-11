@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.14_01   2009-05-11 03:45
         - This release moves the restarter functionality into a new
           module Catalyst::Restarter, that is not a Catalyst Engine
           subclass.
