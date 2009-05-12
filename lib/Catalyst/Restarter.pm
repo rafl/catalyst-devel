@@ -2,7 +2,9 @@ package Catalyst::Restarter;
 
 use Moose;
 
+use Cwd qw( abs_path );
 use File::ChangeNotify;
+use FindBin;
 use namespace::clean -except => 'meta';
 
 has start_sub => (
@@ -28,6 +30,7 @@ sub BUILD {
     delete $p->{start_sub};
 
     $p->{filter} ||= qr/(?:\/|^)(?!\.\#).+(?:\.yml$|\.yaml$|\.conf|\.pm)$/;
+    $p->{directories} ||= abs_path( File::Spec->catdir( $FindBin::Bin, '..' ) );
 
     # We could make this lazily, but this lets us check that we
     # received valid arguments for the watcher up front.
