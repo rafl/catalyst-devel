@@ -9,7 +9,7 @@ requires 'Catalyst::Plugin::Static::Simple' => '0.16';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Class::Accessor::Fast';
 requires 'Config::General' => '2.42'; # as of 1.07, we use .conf and not .yaml
-requires 'File::ChangeNotify' => '0.02';
+requires 'File::ChangeNotify' => '0.03';
 requires 'File::Copy::Recursive';
 requires 'Module::Install' => '0.64';
 requires 'parent'; # as of 1.04
