@@ -1,5 +1,9 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Remove -p option for pid file, and restore it to the port number,
+          as it should be -port|-p (t0m)
+        - Document -pidfile in myapp_server.pl POD (t0m)
+
 1.13    2009-05-11 02:50
         - add [-pidfile|-p] option for myapp_server.pl (caelum)
         - Bump dependency on Config::General (caelum)

@@ -991,7 +991,7 @@ GetOptions(
     'restartdirectory=s@' => \$restart_directory,
     'followsymlinks'      => \$follow_symlinks,
     'background'          => \$background,
-    'pidfile|p=s'         => \$pidfile,
+    'pidfile=s'           => \$pidfile,
 );
 
 pod2usage(1) if $help;
@@ -1050,6 +1050,8 @@ require [% name %];
    -follow_symlinks   follow symlinks in search directories
                       (defaults to false. this is a no-op on Win32)
    -background        run the process in the background
+   -pidfile           specify filename for pid file
+
  See also:
    perldoc Catalyst::Manual
    perldoc Catalyst::Manual::Intro
