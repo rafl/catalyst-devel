@@ -3,7 +3,7 @@ package Catalyst::Devel;
 use strict;
 use warnings;
 
-our $VERSION             = '1.15';
+our $VERSION             = '1.16';
 our $CATALYST_SCRIPT_GEN = 37;
 
 $VERSION = eval $VERSION;

@@ -3,7 +3,7 @@ use inc::Module::Install 0.87;
 name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
 
-requires 'Catalyst'    => '5.7000';
+requires 'Catalyst'    => '5.8000';
 requires 'Catalyst::Action::RenderView' => '0.04';
 requires 'Catalyst::Plugin::Static::Simple' => '0.16';
 requires 'Catalyst::Plugin::ConfigLoader';
