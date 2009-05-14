@@ -9,7 +9,9 @@ This file documents the revision history for Perl extension Catalyst-Devel.
         - Document -pidfile in myapp_server.pl POD (t0m)
 
 1.14_02 2009-05-11 04:29
-        - Small changes to work with File::ChangeNotify 0.03.
+        - Small changes to work with File::ChangeNotify 0.03.  (Dave
+          Rolsky)
+
 
 1.14_01 2009-05-11 03:45
         - This release moves the restarter functionality into a new
@@ -31,6 +33,7 @@ This file documents the revision history for Perl extension Catalyst-Devel.
           changed files. As of this writing, it currently ships with a
           file watcher that uses inotify on Linux systems, and a
           default fallback class that does everything in pure Perl.
+          (Dave Rolsky)
 
 1.13    2009-05-11 02:50
         - add [-pidfile|-p] option for myapp_server.pl (caelum)
