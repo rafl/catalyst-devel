@@ -900,7 +900,7 @@ pod2usage(1) if $help;
         pidfile => $pidfile,
         manager => $manager,
         detach  => $detach,
-	keep_stderr => $keep_stderr,
+        keep_stderr => $keep_stderr,
     }
 );
 
