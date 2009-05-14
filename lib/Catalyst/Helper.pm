@@ -58,8 +58,8 @@ sub mk_app {
     $self->{script          } = File::Spec->catdir( $self->{dir}, 'script' );
     $self->{appprefix       } = Catalyst::Utils::appprefix($name);
     $self->{appenv          } = Catalyst::Utils::class2env($name);
-    $self->{startperl       } = -r '/usr/bin/env' 
-                                ? '#!/usr/bin/env perl' 
+    $self->{startperl       } = -r '/usr/bin/env'
+                                ? '#!/usr/bin/env perl'
                                 : "#!$Config{perlpath} -w";
     $self->{scriptgen       } = $Catalyst::Devel::CATALYST_SCRIPT_GEN || 4;
     $self->{catalyst_version} = $Catalyst::VERSION;
@@ -516,7 +516,7 @@ All helper classes should be under one of the following namespaces.
     Catalyst::Helper::View::
     Catalyst::Helper::Controller::
 
-=head2 COMMON HELPERS 
+=head2 COMMON HELPERS
 
 =over
 
@@ -540,7 +540,7 @@ L<Catalyst::Helper::Model::Adaptor> - wrap any class into a Catalyst model
 
 =head3 NOTE
 
-The helpers will read author name from /etc/passwd by default. + To override, please export the AUTHOR variable. 
+The helpers will read author name from /etc/passwd by default. + To override, please export the AUTHOR variable.
 
 =head1 METHODS
 
@@ -771,7 +771,7 @@ it under the same terms as Perl itself.
 1;
 __makefile__
 # IMPORTANT: if you delete this file your app will not work as
-# expected.  you have been warned
+# expected.  You have been warned.
 use inc::Module::Install;
 
 name '[% dir %]';
