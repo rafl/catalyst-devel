@@ -48,7 +48,7 @@ sub mk_app {
     # Needs to be here for PAR
     require Catalyst;
 
-    if ( $name =~ /[^\w\:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
+    if ( $name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
         warn "Error: Invalid application name.\n";
         return 0;
     }
