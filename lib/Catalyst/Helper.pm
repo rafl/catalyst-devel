@@ -1031,10 +1031,12 @@ my $runner = sub {
 };
 
 if ( $restart ) {
-    require Catalyst::Restarter;
-
     die "Cannot run in the background and also watch for changed files.\n"
         if $background;
+
+    require Catalyst::Restarter;
+
+    my $subclass = Catalyst::Restarter->pick_subclass;
 
     my %args;
     $args{follow_symlinks} = 1
@@ -1046,7 +1048,7 @@ if ( $restart ) {
     $args{filter} = qr/$file_regex/
         if defined $file_regex;
 
-    my $restarter = Catalyst::Restarter->new(
+    my $restarter = $subclass->new(
         %args,
         start_sub => $runner,
     );

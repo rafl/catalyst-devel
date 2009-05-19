@@ -23,6 +23,25 @@ has _child => (
     isa => 'Int',
 );
 
+sub pick_subclass {
+    my $class = shift;
+
+    my $subclass;
+    $subclass =
+        defined $ENV{CATALYST_RESTARTER}
+            ? $ENV{CATALYST_RESTARTER}
+            :  $^O eq 'MSWin32'
+            ? 'Win32'
+            : 'Forking';
+
+    $subclass = 'Catalyst::Restarter::' . $subclass;
+
+    eval "use $subclass";
+    die $@ if $@;
+
+    return $subclass;
+}
+
 sub BUILD {
     my $self = shift;
     my $p    = shift;
@@ -45,17 +64,6 @@ sub run_and_watch {
     return unless $self->_child;
 
     $self->_restart_on_changes;
-}
-
-sub _fork_and_start {
-    my $self = shift;
-
-    if ( my $pid = fork ) {
-        $self->_child($pid);
-    }
-    else {
-        $self->start_sub->();
-    }
 }
 
 sub _restart_on_changes {
@@ -87,22 +95,6 @@ sub _handle_events {
     $self->_fork_and_start;
 
     $self->_restart_on_changes;
-}
-
-sub _kill_child {
-    my $self = shift;
-
-    return unless $self->_child;
-
-    return unless kill 0, $self->_child;
-
-    local $SIG{CHLD} = 'IGNORE';
-    unless ( kill 'INT', $self->_child ) {
-        # The kill 0 thing does not work on Windows, but the restarter
-        # seems to work fine on Windows with this hack.
-        return if $^O eq 'MSWin32';
-        die "Cannot send INT signal to ", $self->_child, ": $!";
-    }
 }
 
 sub DEMOLISH {
