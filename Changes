@@ -1,5 +1,11 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.17
+        - Fixed the restarter to actually work on Win32. The fix means
+          that the restarter is as slow as ever on Win32, but it
+          works. Thanks to Rodrigo for the bug report and suggestion
+          on how to fix it. (Dave Rolsky)
+
 1.16    2009-05-13 20:43
         - Catalyst prereq changed to 5.80. Thanks, kold! (jhannah)
 
