@@ -6,8 +6,6 @@ This file documents the revision history for Perl extension Catalyst-Devel.
           that the restarter is as slow as ever on Win32, but it
           works. Thanks to Rodrigo for the bug report and suggestion
           on how to fix it. (Dave Rolsky)
-        - Actually fix -p option for port number, as I failed to do it
-          right last time as I'm an idiot (t0m)
 
 1.15    2009-05-13 20:02
         - Remove -p option for pid file, and restore it to the port number,

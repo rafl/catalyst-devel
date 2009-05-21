@@ -898,12 +898,6 @@ GetOptions(
 
 pod2usage(1) if $help;
 
-# as the IIS doesn't like output to STDERR keep it at STDOUT, otherwise the
-# server will return "Connection Interrupted"
-if ( $^O eq 'MSWin32' && exists($ENV{APP_POOL_ID}) ) {
-    $keep_stderr = 1;
-}
-
 [% name %]->run(
     $listen,
     {   nproc   => $nproc,
@@ -994,7 +988,7 @@ GetOptions(
     'fork|f'              => \$fork,
     'help|?'              => \$help,
     'host=s'              => \$host,
-    'port|p=s'            => \$port,
+    'port=s'              => \$port,
     'keepalive|k'         => \$keepalive,
     'restart|r'           => \$restart,
     'restartdelay|rd=s'   => \$check_interval,
