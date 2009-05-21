@@ -988,7 +988,7 @@ GetOptions(
     'fork|f'              => \$fork,
     'help|?'              => \$help,
     'host=s'              => \$host,
-    'port=s'              => \$port,
+    'port|p=s'            => \$port,
     'keepalive|k'         => \$keepalive,
     'restart|r'           => \$restart,
     'restartdelay|rd=s'   => \$check_interval,
