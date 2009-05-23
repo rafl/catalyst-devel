@@ -115,7 +115,9 @@ Catalyst::Restarter - Uses File::ChangeNotify to check for changed files and res
 
 =head1 SYNOPSIS
 
-    my $restarter = Catalyst::Restarter->new(
+    my $class = Catalyst::Restarter->pick_subclass;
+
+    my $restarter = $class->new(
         directories => '/path/to/MyApp',
         regex       => '\.yml$|\.yaml$|\.conf|\.pm$',
         start_sub => sub { ... }
@@ -125,15 +127,24 @@ Catalyst::Restarter - Uses File::ChangeNotify to check for changed files and res
 
 =head1 DESCRIPTION
 
+This is the base class for all restarters, and it also provide
+functionality for picking an appropriate restarter subclass for a
+given platform.
+
 This class uses L<File::ChangeNotify> to watch one or more directories
 of files and restart the Catalyst server when any of those files
 changes.
 
 =head1 METHODS
 
+=head2 pick_subclass
+
+Returns the name of an appropriate subclass for the given platform.
+
 =head2 new ( start_sub => sub { ... }, ... )
 
-This method creates a new restarter object.
+This method creates a new restarter object, but should be called on a
+subclass, not this class.
 
 The "start_sub" argument is required. This is a subroutine reference
 that can be used to start the Catalyst server.

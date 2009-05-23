@@ -11,16 +11,6 @@ has _child => (
 );
 
 
-sub run_and_watch {
-    my $self = shift;
-
-    $self->_fork_and_start;
-
-    return unless $self->_child;
-
-    $self->_restart_on_changes;
-}
-
 sub _fork_and_start {
     my $self = shift;
 
@@ -42,3 +32,32 @@ sub _kill_child {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+Catalyst::Restarter::Win32 - Uses Proc::Background to manage process restarts
+
+=head1 DESCRIPTION
+
+This class uses L<Proc::Background>, which in turn uses
+L<Win32::Process>. The new process is run using the same command-line
+as the original script, but without any restart-based options.
+
+This is a big hack, but using forks just does not work on Windows.
+
+=head1 SEE ALSO
+
+L<Catalyst::Restarter>, L<Catalyst>, <File::ChangeNotify>
+
+=head1 AUTHORS
+
+Catalyst Contributors, see Catalyst.pm
+
+=head1 COPYRIGHT
+
+This program is free software, you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut
