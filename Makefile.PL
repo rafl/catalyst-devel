@@ -72,6 +72,8 @@ if ($] >= 5.009_005 && can_use('Class::C3') && !can_use('Class::C3', 0.20)) {
 
 auto_install;
 
+resources repository => 'http://dev.catalyst.perl.org/repos/Catalyst/Catalyst-Devel/1.00/trunk/';
+
 WriteAll;
 
 if ($Module::Install::AUTHOR) {
