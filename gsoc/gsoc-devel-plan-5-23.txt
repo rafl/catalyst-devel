@@ -1,0 +1,99 @@
+15:36 <t0m> right. so the first thing to do is probably write a test to check 
+            generating an application doesn't change.
+15:37 <dhoss> per app?
+15:38 <t0m> no, I mean whilst you're ripping ::Helper apart.
+15:38 <dhoss> OH
+15:38 <dhoss> gotcha 
+15:38 <t0m> if you install your branch.. Then catalyst.pl t/TestAppForComparison
+15:39 <dhoss> so we have the same results now as before, yes?
+15:39 <t0m> then you write a test which says catalyst.pl /tmp/TempTestApp; my 
+            $diff = `diff -urN t/TestAppForComparison /tmp/TempTestApp`; ok 
+            !length($diff) or warn $diff;
+15:40 <t0m> exactly. and that'll test you rip all of the files out of Helper.pm 
+            correctly..
+15:40 <dhoss> okay, TestAppForComparison created. i'll commit that initial 
+              version
+15:40 <t0m> you'll probably want to nuke it after that, as testing the 
+            generated strings of an entire app dir is gonna be a PITA
+15:41 <t0m> to maintain
+15:41 <dhoss> i could see that
+15:41 <t0m> But it's totally the right solution whilst you're trying to rip 
+            stuff out without changing it
+15:41 <dhoss> temp testing :-D
+15:44 <t0m> I've got some ideas on doing better testing that the TestApp we 
+            generate is good.
+15:44 <t0m> but they're a bit more involved, and not needed for this at all ;)
+15:45 <dhoss> this being this refactor, or this bit of the refactor?
+15:45 <t0m> the latter.
+15:45 <dhoss> okay - got it
+15:46 <t0m> and once this is done - you can branch again to work on the code, 
+            and again to work on the generated app templates (as we'll want to 
+            moosify those, so your app is moosetastic by default
+15:46 <t0m> and as it's all in different files - you can do both in parallel as 
+            you feel like and safely merge back
+15:47 <t0m> did you get to grips with MX::GetOpt and do you have a plan for 
+            that yet?
+15:48 <dhoss> so one branch for helper_refactor, one for code (which code?), 
+              and one for app templates
+15:48 <t0m> As I guess catalyst.pl should be taught to use it, and so should 
+            the generated scripts :)
+15:48 <dhoss> i've been playing with MX::GetOpt, i need a few more details on 
+              what exactly needs to be beat up
+15:48 <t0m> yy, but you branch from completed helper_refactor :)
+15:49 <t0m> and 'code' is the actual refactor / api changes for helpers
+15:49 <t0m> bletch
+15:50 <dhoss> okay, so the 'code' branch will be simply the C::H code branched 
+              from helper_refactor
+15:50 <t0m> get_file has to keep working as everything using ::Helper needs it
+15:50 <t0m> yes, exactly.
+15:51 <t0m> so you need to make a get_file_from_sharedir function or something
+15:51 <dhoss> okay, making sense now :-)
+15:51 <t0m> and change things over to use that.
+15:51 <t0m> that's fine though - means you can extract 1 file at a time
+15:52 <dhoss> which would be better, no? better atomicity and for testing
+15:52 <t0m> yy
+15:52 <t0m> bletch was at the fact that 'get_file' is a good method name, and 
+            it's now deprecated
+15:53 <dhoss> is that in C::H?
+15:53 <t0m> yy
+15:53  * dhoss is a little behind in my api knowledge
+15:53 <dhoss> off the top of my head at least
+15:53 <t0m> it's the 'get me a file out the <DATA> section' method
+15:53 <dhoss> aha right
+15:54 <t0m> which you're replacing in favour of 'get me a file out of the share 
+            dir'
+15:54 <t0m> and 'copy file out of sharedir' methods.
+15:54 <t0m> The former for templates
+15:54 <t0m> the latter for binaries, which gets rid of the hateful decoding and 
+            writing out business
+15:54 <dhoss> get -> we're going to interpolate shit, copy -> we're giong to 
+              use directly?
+15:55 <t0m> just so
+15:55 <t0m> eliminating the 'please turn this giant hex string back into 
+            binary' thing
+15:55 <dhoss> definitely :-P
+16:00 <t0m> sub _mk_favicon {
+16:00 <t0m>     my ( $self ) = @_;
+16:00 <t0m>     $self->copy_share_file(
+16:00 <t0m>         File::Spec->catfile( ( caller(0) )[0], 'favicon.ico' ),
+16:00 <t0m>         File::Spec->catfile( $self->{root}, "favicon.ico" )
+16:00 <t0m>     );
+16:00 <t0m> }
+16:00 <t0m> sumfin like dat
+16:01 <dhoss> easy enough
+16:01 <t0m> the actually, all the caller crap dies too
+16:02 <dhoss> hrm, i suppose we have to keep the atrocious 
+              Class::Accessor::Fast method name artifacts?
+16:02 <t0m> that's to clue get_file what file to borg crap out off
+16:03 <t0m> I vote that most of them can burn, as we'll be working out what 
+            shit to copy a lot more dynamically
+16:03 <t0m> and the ones which can't get deprecated, but preserved.
+16:04 <dhoss> so that's just for the current get_file, right? 
+16:04 <t0m> yy
+16:04 <t0m>     $self->copy_share_file(
+16:04 <t0m>         'favicon.ico',
+16:04 <t0m>         File::Spec->catfile( $self->{root}, "favicon.ico" )
+16:04 <t0m>     );
+16:05 <t0m> more like it
+16:05 <t0m> so we have sub mk_foo { shift->generate_foo(@_); }
+
