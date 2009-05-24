@@ -1,11 +1,12 @@
+#!/usr/bin/env perl
 # IMPORTANT: if you delete this file your app will not work as
-# expected.  you have been warned
+# expected.  You have been warned.
 use inc::Module::Install;
 
 name 'TestAppForComparison';
 all_from 'lib/TestAppForComparison.pm';
 
-requires 'Catalyst::Runtime' => '5.80002';
+requires 'Catalyst::Runtime' => '5.80004';
 requires 'Catalyst::Plugin::ConfigLoader';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'Catalyst::Action::RenderView';

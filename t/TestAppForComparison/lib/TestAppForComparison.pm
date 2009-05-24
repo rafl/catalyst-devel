@@ -3,7 +3,7 @@ package TestAppForComparison;
 use strict;
 use warnings;
 
-use Catalyst::Runtime '5.70';
+use Catalyst::Runtime 5.80;
 
 # Set flags and add plugins for the application
 #
@@ -52,11 +52,11 @@ L<TestAppForComparison::Controller::Root>, L<Catalyst>
 
 =head1 AUTHOR
 
-Devin Austin,,,
+Tomas Doran,,,
 
 =head1 LICENSE
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut

@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 
 use strict;
 use warnings;
@@ -51,7 +51,6 @@ testappforcomparison_create.pl [options] model|view|controller name [helper] [op
 
  Examples:
    testappforcomparison_create.pl controller My::Controller
-   testappforcomparison_create.pl controller My::Controller BindLex
    testappforcomparison_create.pl -mechanize controller My::Controller
    testappforcomparison_create.pl view My::View
    testappforcomparison_create.pl view MyView TT
@@ -80,7 +79,7 @@ Catalyst Contributors, see Catalyst.pm
 
 =head1 COPYRIGHT
 
-This library is free software, you can redistribute it and/or modify
+This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
