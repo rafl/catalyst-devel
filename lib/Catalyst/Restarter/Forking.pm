@@ -2,9 +2,6 @@ package Catalyst::Restarter::Forking;
 
 use Moose;
 
-use threads;
-use Thread::Cancel;
-
 extends 'Catalyst::Restarter';
 
 has _child => (
