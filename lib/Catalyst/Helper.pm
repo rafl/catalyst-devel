@@ -648,8 +648,6 @@ package [% name %];
 use strict;
 use warnings;
 
-#FOO MAKE SURE THIS BREAKS
-
 use Catalyst::Runtime 5.80;
 
 # Set flags and add plugins for the application
