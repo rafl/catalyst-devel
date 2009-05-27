@@ -500,12 +500,12 @@ sub get_template_files {
 
 }
 
-=head2 get_images
+=head2 get_fielss
 
-get all of our image files
+get all of our files, so get_file doesn't break
 
 =cut
-sub get_images {
+sub get_files {
     my ( $self, $version, $name ) = shift;
     my $dir = $self->get_version_dir($version);
     return file($dir, $name);
