@@ -491,9 +491,9 @@ sub get_template_files {
     while (my $file = $dh->read) {
         $file = $dir->file($file);  # Turn into Path::Class::File object
         
-        if ( $file =~ /+\.(tt|tt2)/ ) {
-            push @files, $file;
-        }
+        #if ( $file =~ /\.(tt|tt2)$/ ) {
+        #    push @files, $file;
+        #}
     }
     
     return @files;
