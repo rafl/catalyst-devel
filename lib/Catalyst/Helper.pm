@@ -2,7 +2,6 @@ package Catalyst::Helper;
 
 use strict;
 use warnings;
-use base 'Class::Accessor::Fast';
 use Config;
 use File::Spec;
 use File::Path;
@@ -13,6 +12,12 @@ use Template;
 use Catalyst::Devel;
 use Catalyst::Utils;
 use Catalyst::Exception;
+use Moose;
+use File::ShareDir qw/dist_dir/;
+use Path::Class qw/file dir/;
+#use Method::Signatures::Simple;
+#use namespace::autoclean;
+
 
 my %cache;
 
@@ -33,7 +38,7 @@ sub get_file {
         $cache{$class} = eval "package $class; <DATA>";
     }
     my $data = $cache{$class};
-    my @files = split /^__(.+)__\r?\n/m, $data;
+    my @files = $self->get_files;
     shift @files;
     while (@files) {
         my ( $name, $content ) = splice @files, 0, 2;
@@ -455,6 +460,55 @@ sub _deprecate_file {
         Catalyst::Exception->throw(
             message => qq/Couldn't create "$file", "$!"/ );
     }
+}
+
+
+=head2 get_version_dir
+get the version of the dist specified and return a Path::Class::Dir object
+=cut
+
+sub get_version_dir {
+    my ( $self, $version ) = @_;
+    
+    return dir( dist_dir('Catalyst-Devel'), $version );
+    
+}
+
+=head2 get_files
+
+open up our File::ShareDir directory, loop through, and get our template files
+
+=cut
+
+sub get_template_files {
+    my ($self, $version) = @_;
+    
+    my $dir = $self->get_version_dir($version);
+    
+    my $dh = $dir->open or die "Can't open: $!";
+    my @files = ();
+    # get everything with a .tt/.tt2 extension
+    while (my $file = $dh->read) {
+        $file = $dir->file($file);  # Turn into Path::Class::File object
+        
+        if ( $file =~ /+\.(tt|tt2)/ ) {
+            push @files, $file;
+        }
+    }
+    
+    return @files;
+
+}
+
+=head2 get_images
+
+get all of our image files
+
+=cut
+sub get_images {
+    my ( $self, $version, $name ) = shift;
+    my $dir = $self->get_version_dir($version);
+    return file($dir, $name);
 }
 
 =head1 DESCRIPTION
