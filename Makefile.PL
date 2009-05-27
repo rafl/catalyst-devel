@@ -17,6 +17,8 @@ requires 'parent'; # as of 1.04
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
 
+install_share 'share';
+
 if ( $^O eq 'MSWin32' ) {
     # Proc::Background needs this on Win32 but doesn't actually
     # require it, if it's missing it just dies in the Makefile.PL.

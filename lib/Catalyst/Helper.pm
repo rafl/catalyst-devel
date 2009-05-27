@@ -13,6 +13,8 @@ use Template;
 use Catalyst::Devel;
 use Catalyst::Utils;
 use Catalyst::Exception;
+use Path::Class qw/dir file/;
+use File::ShareDir qw/dist_dir/;
 
 my %cache;
 
@@ -25,6 +27,14 @@ Catalyst::Helper - Bootstrap a Catalyst application
   catalyst.pl <myappname>
 
 =cut
+
+sub get_sharedir_file {
+    my ($self, @filename) = @_;
+    my $file = file( dist_dir('Catalyst-Devel'), @filename);
+    warn $file;
+    my $contents = $file->slurp;
+    return $contents;
+}
 
 sub get_file {
     my ( $self, $class, $file ) = @_;
@@ -430,9 +440,9 @@ sub _mk_images {
 sub _mk_favicon {
     my $self    = shift;
     my $root    = $self->{root};
-    my $hex     = $self->get_file( ( caller(0) )[0], 'favicon' );
-    my $favicon = pack "H*", $hex;
-    $self->mk_file( File::Spec->catfile( $root, "favicon.ico" ), $favicon );
+    my $favicon = $self->get_sharedir_file( 'root', 'favicon.ico' );
+    my $dest = File::Spec->catfile( $root, "favicon.ico" );
+    $self->mk_file( $dest, $favicon );
 
 }
 
