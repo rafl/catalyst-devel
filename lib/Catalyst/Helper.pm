@@ -37,10 +37,21 @@ sub get_sharedir_file {
 }
 
 sub get_file {
-    my ( $self, $file ) = @_;
-   
-    return $self->get_sharedir_file($file);
+    my ( $self, $class, $file ) = @_;
+    unless ( $cache{$class} ) {
+        local $/;
+        $cache{$class} = eval "package $class; <DATA>";
+    }
+    my $data = $cache{$class};
+    my @files = split /^__(.+)__\r?\n/m, $data;
+    shift @files;
+    while (@files) {
+        my ( $name, $content ) = splice @files, 0, 2;
+        return $content if $name eq $file;
+    }
+    return 0;
 }
+
 
 sub mk_app {
     my ( $self, $name ) = @_;
