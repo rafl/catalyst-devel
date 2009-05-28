@@ -1,4 +1,4 @@
-use inc::Module::Install 0.87;
+use inc::Module::Install 0.91;
 
 name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
@@ -11,7 +11,7 @@ requires 'Class::Accessor::Fast';
 requires 'Config::General' => '2.42'; # as of 1.07, we use .conf and not .yaml
 requires 'File::ChangeNotify' => '0.03';
 requires 'File::Copy::Recursive';
-requires 'Module::Install' => '0.64';
+requires 'Module::Install' => '0.91';
 requires 'parent'; # as of 1.04
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
