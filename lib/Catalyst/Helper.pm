@@ -437,7 +437,7 @@ sub _mk_images {
       btn_120x50_powered btn_120x50_powered_shadow btn_88x31_built
       btn_88x31_built_shadow btn_88x31_powered btn_88x31_powered_shadow/;
     for my $name (@images) {
-        my $image = $self->get_file("$name.png");
+        my $image = $self->get_sharedir_file("root", "$name.png");
         $self->mk_file( File::Spec->catfile( $images, "$name.png" ), $image );
     }
 }
