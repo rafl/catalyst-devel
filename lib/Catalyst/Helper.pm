@@ -28,6 +28,8 @@ Catalyst::Helper - Bootstrap a Catalyst application
 
 =cut
 
+
+
 sub get_sharedir_file {
     my ($self, @filename) = @_;
     my $file = file( dist_dir('Catalyst-Devel'), @filename);
@@ -36,6 +38,7 @@ sub get_sharedir_file {
     return $contents;
 }
 
+# Do not touch this method, *EVER*, it is needed for back compat.
 sub get_file {
     my ( $self, $class, $file ) = @_;
     unless ( $cache{$class} ) {
@@ -256,6 +259,8 @@ sub next_test {
     $self->mk_dir($dir);
     return File::Spec->catfile( $dir, "$type\_$tname" );
 }
+
+# Do not touch this method, *EVER*, it is needed for back compat.
 
 sub render_file {
     my ( $self, $file, $path, $vars ) = @_;
