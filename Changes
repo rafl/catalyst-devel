@@ -5,7 +5,6 @@ This file documents the revision history for Perl extension Catalyst-Devel.
           ignoring all command-line options except those related to
           the restarter itself.
 
-
 1.17    2009-05-24 18:18:17
         - Catalyst::Restarter::Forking loaded the threads and
           Thread::Cancel modules, even though it doesn't need them.
