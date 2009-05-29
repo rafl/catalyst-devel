@@ -1051,6 +1051,7 @@ if ( $restart ) {
     my $restarter = $subclass->new(
         %args,
         start_sub => $runner,
+        argv      => \@argv,
     );
 
     $restarter->run_and_watch;

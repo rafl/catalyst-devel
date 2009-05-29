@@ -13,6 +13,12 @@ has start_sub => (
     required => 1,
 );
 
+has argv =>  (
+    is       => 'ro',
+    isa      => 'ArrayRef',
+    required => 1,
+);
+
 has _watcher => (
     is  => 'rw',
     isa => 'File::ChangeNotify::Watcher',
