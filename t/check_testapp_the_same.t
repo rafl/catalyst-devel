@@ -19,7 +19,7 @@ SKIP: {
  
     my $diff;
     eval {
-        $diff = `diff -urN -x .svn -x Changes $Bin/TestAppForComparison $Bin/../TestAppForComparison`;
+        $diff = `diff -urNB -x .svn -x Changes $Bin/TestAppForComparison $Bin/../TestAppForComparison`;
     };
     
     skip "no diff program installed, skipping", 1 if $@;
