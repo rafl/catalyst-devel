@@ -90,16 +90,19 @@
 16:03 <t0m> and the ones which can't get deprecated, but preserved.
 16:04 <dhoss> so that's just for the current get_file, right? 
 16:04 <t0m> yy
-16:04 <t0m>     $self->copy_share_file(
+########################################################################
+## done
+16:04 <t0m>     $self->copy_share_file(                                 
 16:04 <t0m>         'favicon.ico',
 16:04 <t0m>         File::Spec->catfile( $self->{root}, "favicon.ico" )
 16:04 <t0m>     );
+#########################################################################
 16:05 <t0m> more like it
 16:05 <t0m> so we have sub mk_foo { shift->generate_foo(@_); }
 
 ====
 5-28
-03:04 < dhoss> SO. official next step: 1) trim crap out 2) write test for how 
+03:04 < dhoss> SO. official next step: 1) #done trim crap out 2) write test for how 
                helpers are invoking Catalyst::Helper 3)??? 4) profit!
 03:05 < t0m> 3) Re arrange files in sharedir so we can make the comversion guts 
              totally generic
