@@ -102,7 +102,7 @@
 
 ====
 5-28
-03:04 < dhoss> SO. official next step: 1) #done trim crap out 2) write test for how 
+03:04 < dhoss> SO. official next step: 1) #done trim crap out 2) #done write test for how 
                helpers are invoking Catalyst::Helper 3)??? 4) profit!
 03:05 < t0m> 3) Re arrange files in sharedir so we can make the comversion guts 
              totally generic
