@@ -2,11 +2,17 @@ use strict;
 use warnings;
 
 use FindBin qw/$Bin/;
-use Test::More test => 1;
+use Test::More tests => 1;
 
 use lib "$Bin/../lib";
 
 use Catalyst::Helper;
+
+my $force    = 0;
+my $help     = 0;
+my $makefile = 0;
+my $scripts  = 0;
+my $short    = 0;
 
 my $helper = Catalyst::Helper->new(
     {
