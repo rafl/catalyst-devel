@@ -1,6 +1,10 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
 1.18
+        - The forking restarter was not waiting for the child to exit,
+          which could lead to a race condition. If the old child did
+          not exit before the new child tried to bind to its socket,
+          it would find the old child blocking the port it wanted.
         - More fixes for the Win32 restarter. It was effectively
           ignoring all command-line options except those related to
           the restarter itself.
