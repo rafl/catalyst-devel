@@ -137,6 +137,12 @@
              get_file) still works. Rename share/ bits
 04:31 < t0m> marcus: Indeed :)
 04:31 < t0m> ^^ those two, then first merge.
+23:36 <@kd> dhoss: just found a bug in ::Devel ...
+23:36 <@kd> we're using #!/usr/bin/env perl now
+23:36 <@kd> that means we have to add the use warnings; pragma beneath it
+23:37 <@kd> that doesn't appear to be happeining in the scripts
+23:37 <@kd> please fix
+23:38 <@kd> dhoss: i.e. http://gist.github.com/122081
 
 
 
