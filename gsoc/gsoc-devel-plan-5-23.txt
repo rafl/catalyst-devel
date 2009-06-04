@@ -143,6 +143,30 @@
 23:37 <@kd> that doesn't appear to be happeining in the scripts
 23:37 <@kd> please fix
 23:38 <@kd> dhoss: i.e. http://gist.github.com/122081
+==============================================================================
+1. Rename everything into final layout:
+  . tt files all named .tt
+  . none tt files all named .bin
+  . directory structure as generated, e.g. share/lib/MyApp.pm.tt, share/root/favicon.ico.bin
+
+2. get new layout working
+
+3. get tests for back compat - i.e. the methods no longer used in Helper.pm like 'get_file'
+  . copy Catalyst::Helper::View::TT into t/lib/TestBackCompat.pm
+  . write test t/deprecated_methods_backcompat.t which says:
+     use FindBin qw/$Bin/;
+     use lib "$Bin/lib";
+     use Test::More tests => 1;
+
+     my $helper = TestBackCompat->new( %maybe_some_params_here );
+     my $a_section = $helper->get_file('FileName');
+     is $a_section, 'FILECONTENTSFROM__DATA__';
+
+3. RFC
+
+Looking ahead
+
+MooseX::Getopt
 
 
 
