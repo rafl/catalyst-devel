@@ -271,17 +271,30 @@ sub next_test {
 }
 
 # Do not touch this method, *EVER*, it is needed for back compat.
+## addendum: we had to split this method so we could have backwards
+## compatability.  otherwise, we'd have no way to pass stuff from __DATA__ 
 
 sub render_file {
     my ( $self, $file, $path, $vars ) = @_;
+    my $template = $self->get_file( ( caller(0) )[0], $file );
+    $self->render_file_contents($self, $template, $path, $vars);
+}
+
+sub render_sharedir_file {
+    my ( $self, $file, $path, $vars ) = @_;
+    my $template = $self->get_sharedir_file( $file );
+    $self->render_file_contents($self, $template, $path, $vars);
+}
+
+sub render_file_contents {
+    my ( $self, $template, $path, $vars ) = @_;
     $vars ||= {};
     my $t = Template->new;
-    my $template = $self->get_sharedir_file( 'root', $file );
     return 0 unless $template;
     my $output;
     $t->process( \$template, { %{$self}, %$vars }, \$output )
       || Catalyst::Exception->throw(
-        message => qq/Couldn't process "$file", / . $t->error() );
+        message => qq/Couldn't process "$template", / . $t->error() );
     $self->mk_file( $path, $output );
 }
 
