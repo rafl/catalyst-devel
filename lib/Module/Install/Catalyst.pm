@@ -20,8 +20,8 @@ our @CLASSES   = ();
 our $ENGINE    = 'CGI';
 our $CORE      = 0;
 our $MULTIARCH = 0;
-our $SCRIPT;
-our $USAGE;
+our $SCRIPT    = '';
+our $USAGE     = '';
 
 =head1 NAME
 
@@ -104,6 +104,7 @@ sub catalyst_ignore {
 # Workaround for a namespace conflict
 sub catalyst_par {
     my ( $self, $par ) = @_;
+    $par ||= '';
     return if $SAFETY;
     $SAFETY++;
     my $name  = $self->name;
