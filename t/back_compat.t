@@ -21,13 +21,20 @@ chomp $example2;
 is $example1, 'foobar[% test_var %]';
 is $example2, 'bazquux';
 
+package MyTestHelper;
+
+use Test::More;
+use File::Temp qw/tempfile/;
+
 my ($fh, $fn) = tempfile;
-$helper->render_file($fn,  { test_var => 'test_val' });
-seek $fh, 0, 0; # Rewind
+close $fh;
+$helper->render_file('example1',  $fn, { test_var => 'test_val' });
+open $fh, $fn or die $@;
+#seek $fh, 0, 0; # Rewind
 my $contents;
 {
     local $/; 
     $contents = <$fh>;
 }
 warn $contents;
-is $contents, 'foobartest_val';
+is $contents, "foobartest_val\n";

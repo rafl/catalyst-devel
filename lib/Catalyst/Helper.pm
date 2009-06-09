@@ -226,7 +226,7 @@ sub mk_dir {
 
 sub mk_file {
     my ( $self, $file, $content ) = @_;
-    if ( -e $file ) {
+    if ( -e $file && -s _ ) {
         print qq/ exists "$file"\n/;
         return 0
           unless ( $self->{'.newfiles'}
@@ -277,7 +277,7 @@ sub next_test {
 sub render_file {
     my ( $self, $file, $path, $vars ) = @_;
     my $template = $self->get_file( ( caller(0) )[0], $file );
-    $self->render_file_contents($self, $template, $path, $vars);
+    $self->render_file_contents($template, $path, $vars);
 }
 
 sub render_sharedir_file {
