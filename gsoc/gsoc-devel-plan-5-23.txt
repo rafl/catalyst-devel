@@ -144,6 +144,8 @@
 23:37 <@kd> please fix
 23:38 <@kd> dhoss: i.e. http://gist.github.com/122081
 ==============================================================================
+
+# DONE
 1. Rename everything into final layout:
   . tt files all named .tt
   . none tt files all named .bin
@@ -151,6 +153,8 @@
 
 2. get new layout working
 
+
+# DONE
 3. get tests for back compat - i.e. the methods no longer used in Helper.pm like 'get_file'
   . copy Catalyst::Helper::View::TT into t/lib/TestBackCompat.pm
   . write test t/deprecated_methods_backcompat.t which says:
@@ -162,7 +166,7 @@
      my $a_section = $helper->get_file('FileName');
      is $a_section, 'FILECONTENTSFROM__DATA__';
 
-3. RFC
+3. RFC - DONE
 
 Looking ahead
 
