@@ -283,7 +283,7 @@ sub render_file {
 sub render_sharedir_file {
     my ( $self, $file, $path, $vars ) = @_;
     my $template = $self->get_sharedir_file( $file );
-    $self->render_file_contents($self, $template, $path, $vars);
+    $self->render_file_contents($template, $path, $vars);
 }
 
 sub render_file_contents {
