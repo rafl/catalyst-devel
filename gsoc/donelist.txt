@@ -13,3 +13,5 @@ File::ShareDir data out of our share/ directory, and another for backwards compa
 pulling data out of the __DATA__ section.
 6. Drafted an RFC for more comments on progression of C::H API
 7. Also using added Path::Class for file reading
+as of 6-9-09
+1. backwards compatibility tests pass
