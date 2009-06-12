@@ -363,7 +363,7 @@ sub _mk_makefile {
     $self->{path} = File::Spec->catfile( 'lib', split( '::', $self->{name} ) );
     $self->{path} .= '.pm';
     my $dir = $self->{dir};
-    $self->render_sharedir_file( 'makefile.tt', "$dir\/Makefile.PL" );
+    $self->render_sharedir_file( 'Makefile.PL.tt', "$dir\/Makefile.PL" );
 
     if ( $self->{makefile} ) {
 
@@ -377,21 +377,21 @@ sub _mk_config {
     my $self      = shift;
     my $dir       = $self->{dir};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( 'config.tt',
+    $self->render_sharedir_file( 'myapp.conf.tt',
         File::Spec->catfile( $dir, "$appprefix.conf" ) );
 }
 
 sub _mk_readme {
     my $self = shift;
     my $dir  = $self->{dir};
-    $self->render_sharedir_file( 'readme.tt', "$dir\/README" );
+    $self->render_sharedir_file( 'README.tt', "$dir\/README" );
 }
 
 sub _mk_changes {
     my $self = shift;
     my $dir  = $self->{dir};
     my $time = strftime('%Y-%m-%d %H:%M:%S', localtime time);
-    $self->render_sharedir_file( 'changes.tt', "$dir\/Changes", { time => $time } );
+    $self->render_sharedir_file( 'Changes.tt', "$dir\/Changes", { time => $time } );
 }
 
 sub _mk_apptest {
