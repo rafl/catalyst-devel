@@ -470,7 +470,7 @@ sub _mk_images {
 sub _mk_favicon {
     my $self    = shift;
     my $root    = $self->{root};
-    my $favicon = $self->get_sharedir_file( 'root', 'favicon.ico' );
+    my $favicon = $self->get_sharedir_file( 'root', 'favicon.ico.bin' );
     my $dest = File::Spec->catfile( $root, "favicon.ico" );
     $self->mk_file( $dest, $favicon );
 
