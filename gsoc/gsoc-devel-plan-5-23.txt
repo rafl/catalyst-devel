@@ -172,5 +172,32 @@ Looking ahead
 
 MooseX::Getopt
 
+################################################################################
+17:46 < t0m> dhoss: erm, oh, so the _other_ thing I didn't think of
+17:46 < t0m> Is Cat works on windows
+17:46 < t0m> I have stuffed loads of "t/foo.t"
+17:46 < t0m> into strings.
+17:46 < t0m> which will break win
+17:47 < t0m> so, all those places where I just "string/append/a/file.name"
+17:47 < t0m> you need to use Path::Class qw/file/; file(qw/ string append a 
+             file.name /);
+17:47 < t0m> like ^^^
+17:48 < t0m> then it will still work on win32
+17:48 < dhoss> noted
+17:48 < t0m> There is already File::Spec->catfile
+17:48 < t0m> which does the same thing
+17:48 < t0m> but more ugly
+17:48 < t0m> either/or
+17:48 < purl> either/or is "public load_first_existing_class" or "load_class 
+              passes multiple args to load_first_existing_class"
+17:48 < t0m> don't care...
+17:49 < t0m> Just "file/name" is BAD
+17:49 < t0m> and will hate windows users
+
+Summary:
+17:43 < dhoss> 1. fix pod coverage, 2. remove TestAppForInvocation 3. ???
+17:43 < t0m> 3. merge
+
+
 
 
