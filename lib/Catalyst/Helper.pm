@@ -56,6 +56,8 @@ sub get_file {
         $cache{$class} = eval "package $class; <DATA>";
     }
     my $data = $cache{$class};
+    Carp::confess("Could not get data from __DATA__ segment for $class")
+        unless $data;
     my @files = split /^__(.+)__\r?\n/m, $data;
     shift @files;
     while (@files) {
@@ -347,12 +349,12 @@ sub _mk_dirs {
 sub _mk_appclass {
     my $self = shift;
     my $mod  = $self->{mod};
-    $self->render_file( 'appclass.tt', "$mod.pm" );
+    $self->render_sharedir_file( 'lib/appclass.tt', "$mod.pm" );
 }
 
 sub _mk_rootclass {
     my $self = shift;
-    $self->render_file( 'rootclass.tt',
+    $self->render_sharedir_file( 'lib/MyApp/Controller/rootclass.tt',
         File::Spec->catfile( $self->{c}, "Root.pm" ) );
 }
 
@@ -361,7 +363,7 @@ sub _mk_makefile {
     $self->{path} = File::Spec->catfile( 'lib', split( '::', $self->{name} ) );
     $self->{path} .= '.pm';
     my $dir = $self->{dir};
-    $self->render_file( 'makefile.tt', "$dir\/Makefile.PL" );
+    $self->render_sharedir_file( 'makefile.tt', "$dir\/Makefile.PL" );
 
     if ( $self->{makefile} ) {
 
@@ -375,36 +377,36 @@ sub _mk_config {
     my $self      = shift;
     my $dir       = $self->{dir};
     my $appprefix = $self->{appprefix};
-    $self->render_file( 'config.tt',
+    $self->render_sharedir_file( 'config.tt',
         File::Spec->catfile( $dir, "$appprefix.conf" ) );
 }
 
 sub _mk_readme {
     my $self = shift;
     my $dir  = $self->{dir};
-    $self->render_file( 'readme.tt', "$dir\/README" );
+    $self->render_sharedir_file( 'readme.tt', "$dir\/README" );
 }
 
 sub _mk_changes {
     my $self = shift;
     my $dir  = $self->{dir};
     my $time = strftime('%Y-%m-%d %H:%M:%S', localtime time);
-    $self->render_file( 'changes.tt', "$dir\/Changes", { time => $time } );
+    $self->render_sharedir_file( 'changes.tt', "$dir\/Changes", { time => $time } );
 }
 
 sub _mk_apptest {
     my $self = shift;
     my $t    = $self->{t};
-    $self->render_file( 'apptest.tt',         "$t\/01app.t" );
-    $self->render_file( 'podtest.tt',         "$t\/02pod.t" );
-    $self->render_file( 'podcoveragetest.tt', "$t\/03podcoverage.t" );
+    $self->render_sharedir_file( 't/apptest.tt',         "$t\/01app.t" );
+    $self->render_sharedir_file( 't/podtest.tt',         "$t\/02pod.t" );
+    $self->render_sharedir_file( 't/podcoveragetest.tt', "$t\/03podcoverage.t" );
 }
 
 sub _mk_cgi {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_file( 'cgi.tt', "$script\/$appprefix\_cgi.pl" );
+    $self->render_sharedir_file( 'script/cgi.tt', "$script\/$appprefix\_cgi.pl" );
     chmod 0700, "$script/$appprefix\_cgi.pl";
 }
 
@@ -412,7 +414,7 @@ sub _mk_fastcgi {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_file( 'fastcgi.tt', "$script\/$appprefix\_fastcgi.pl" );
+    $self->render_sharedir_file( 'script/fastcgi.tt', "$script\/$appprefix\_fastcgi.pl" );
     chmod 0700, "$script/$appprefix\_fastcgi.pl";
 }
 
@@ -420,7 +422,7 @@ sub _mk_server {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_file( 'server.tt', "$script\/$appprefix\_server.pl" );
+    $self->render_sharedir_file( 'script/server.tt', "$script\/$appprefix\_server.pl" );
     chmod 0700, "$script/$appprefix\_server.pl";
 }
 
@@ -428,7 +430,7 @@ sub _mk_test {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_file( 'test.tt', "$script/$appprefix\_test.pl" );
+    $self->render_sharedir_file( 'script/test.tt', "$script/$appprefix\_test.pl" );
     chmod 0700, "$script/$appprefix\_test.pl";
 }
 
@@ -436,20 +438,20 @@ sub _mk_create {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_file( 'create.tt', "$script\/$appprefix\_create.pl" );
+    $self->render_sharedir_file( 'script/create.tt', "$script\/$appprefix\_create.pl" );
     chmod 0700, "$script/$appprefix\_create.pl";
 }
 
 sub _mk_compclass {
     my $self = shift;
     my $file = $self->{file};
-    return $self->render_file( 'compclass.tt', "$file" );
+    return $self->render_sharedir_file( 'compclass.tt', "$file" );
 }
 
 sub _mk_comptest {
     my $self = shift;
     my $test = $self->{test};
-    $self->render_file( 'comptest.tt', "$test" );
+    $self->render_sharedir_file( 'comptest.tt', "$test" );
 }
 
 sub _mk_images {
