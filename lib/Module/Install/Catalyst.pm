@@ -10,7 +10,7 @@ use File::Find;
 use FindBin;
 use File::Copy::Recursive 'rcopy';
 use File::Spec ();
-use Getopt::Long;
+use Getopt::Long qw(GetOptionsFromString :config no_ignore_case);
 use Data::Dumper;
 
 my $SAFETY = 0;
@@ -194,19 +194,21 @@ Example:
 
     # part of your Makefile.PL
     
-    catalyst_par_options("-v -f Bleach -z 9");
+    catalyst_par_options("--verbose=2 -f Bleach -z 9");
     # verbose mode; use filter 'Bleach'; zip with compression level 9
     catalyst;
 
 Note1: There is no reason to use catalyst_par_options() command multiple times
 as you can spacify in "$optstring" as many options as you want. Still, it
-is supported to call catalyst_par_options(...) more than once - in that case the
-specified options are merged (however it does merge arrays with values specified
-by parameters -a -A -X -f -F -I -l -M).
+is supported to call catalyst_par_options() more than once. In that case the
+specified options are merged (collisions are handled on principle "later wins"). 
+BEWARE: you are discouraged from using parameters -a -A -X -f -F -I -l -M in
+multiple catalyst_par_options() as they are not merged but replaced as you would 
+expected.
 
-Note2: By default the options "-x=1 -p=1 -n=0 -o=<appname>.par" are set. You can
-override them by catalyst_par_options(); however B<don't change them> unless you 
-exactly know what you are doing.
+Note2: By default the options "-x -p -o=<appname>.par" are set and option "-n" 
+is unset. This default always overrides whatever you specify by
+catalyst_par_options().
 
 =cut
 
@@ -218,8 +220,7 @@ sub catalyst_par_options {
         warn "WARNING: catalyst_par_options ignored - you need PAR::Packer\n"
     }
     else {
-        Getopt::Long::Configure ("no_ignore_case");
-        Getopt::Long::GetOptionsFromString($optstring, \%o, PAR::Packer->options);
+        GetOptionsFromString($optstring, \%o, PAR::Packer->options);
         %PAROPTS = ( %PAROPTS, %o);
     }	 
 }
@@ -362,12 +363,12 @@ EOF
     open my $olderr, '>&STDERR';
     open STDERR, '>', File::Spec->devnull;
     my %opt = (
+        %{$PAROPTS},
+        # take user defined options first and override them with harcoded defaults
         'x' => 1,
         'n' => 0,
         'o' => $par,
         'p' => 1,
-        %{$PAROPTS},
-        # user defined options override the harcoded defaults
     );
     # do not replace the whole $opt{'a'} array; just push required default value
     push @{$opt{'a'}}, grep( !/par.pl/, glob '.' );  
