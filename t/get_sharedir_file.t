@@ -15,6 +15,6 @@ throws_ok {
 } qr/No such/, 'Exception for file not found from ->get_sharedir_file';
 
 lives_ok {
-    ok($i->get_sharedir_file('makefile.tt'), 'has contents');
+    ok($i->get_sharedir_file('Makefile.PL.tt'), 'has contents');
 } 'Can get_sharedir_file';
 
