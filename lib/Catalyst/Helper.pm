@@ -692,6 +692,31 @@ Writes content to a file. Called by L</render_file>.
 Calculates the name of the next numbered test file and returns it.
 Don't give the number or the .t suffix for the test name.
 
+=head2 Dir
+
+Alias for L<Path::Class::Dir>
+
+=cut
+
+=head2 get_sharedir_file
+
+Method for getting a file out of share/
+
+=cut
+
+=head2 render_file_contents
+
+Process a L<Template::Toolkit> template.
+
+=cut
+
+=head2 render_sharedir_file
+
+Render a template/image file from our share directory
+
+=cut
+
+
 =head1 NOTE
 
 The helpers will read author name from /etc/passwd by default.
