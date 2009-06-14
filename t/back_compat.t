@@ -36,5 +36,5 @@ my $contents;
     local $/; 
     $contents = <$fh>;
 }
-warn $contents;
 is $contents, "foobartest_val\n";
+
