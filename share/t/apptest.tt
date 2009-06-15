@@ -4,5 +4,5 @@ use warnings;
 use Test::More tests => 2;
 
 BEGIN { use_ok 'Catalyst::Test', '[% name %]' }
-
-ok( request('/')->is_success, 'Request should succeed' );
+my $req = request('/');
+ok( $req->is_success, "Request succeeds");
