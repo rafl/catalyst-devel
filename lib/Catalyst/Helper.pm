@@ -531,7 +531,7 @@ sub _find_share_dir {
   $self->share_dir($base);
 };
 
-
+1;
 
 =head1 DESCRIPTION
 
