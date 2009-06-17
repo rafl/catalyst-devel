@@ -399,7 +399,7 @@ sub _mk_apptest {
     my $t    = $self->{t};
     $self->render_sharedir_file( 't/01app.t.tt',         "$t\/01app.t" );
     $self->render_sharedir_file( 't/02pod.t.tt',         "$t\/02pod.t" );
-    $self->render_sharedir_file( 't/03podcoverage.tt', "$t\/03podcoverage.t" );
+    $self->render_sharedir_file( 't/03podcoverage.t.tt', "$t\/03podcoverage.t" );
 }
 
 sub _mk_cgi {
