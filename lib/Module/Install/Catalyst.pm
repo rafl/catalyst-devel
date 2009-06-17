@@ -10,6 +10,8 @@ use File::Find;
 use FindBin;
 use File::Copy::Recursive 'rcopy';
 use File::Spec ();
+use Getopt::Long qw(GetOptionsFromString :config no_ignore_case);
+use Data::Dumper;
 
 my $SAFETY = 0;
 
@@ -18,10 +20,9 @@ our @IGNORE =
   _build blib lib script t inc \.svn \.git _darcs \.bzr \.hg/;
 our @CLASSES   = ();
 our $ENGINE    = 'CGI';
-our $CORE      = 0;
-our $MULTIARCH = 0;
 our $SCRIPT    = '';
 our $USAGE     = '';
+our %PAROPTS   = ();
 
 =head1 NAME
 
@@ -112,9 +113,13 @@ sub catalyst_par {
     $usage =~ s/"/\\"/g;
     my $class_string = join "', '", @CLASSES;
     $class_string = "'$class_string'" if $class_string;
+    local $Data::Dumper::Indent = 0;
+    local $Data::Dumper::Terse = 1;
+    local $Data::Dumper::Pad = ' ';
+    my $paropts_string = Dumper(\%PAROPTS) || "{ }";
     $self->postamble(<<EOF);
 catalyst_par :: all
-\t\$(NOECHO) \$(PERL) -Ilib -Minc::Module::Install -MModule::Install::Catalyst -e"Catalyst::Module::Install::_catalyst_par( '$par', '$name', { CLASSES => [$class_string], CORE => $CORE, ENGINE => '$ENGINE', MULTIARCH => $MULTIARCH, SCRIPT => '$SCRIPT', USAGE => q#$usage# } )"
+\t\$(NOECHO) \$(PERL) -Ilib -Minc::Module::Install -MModule::Install::Catalyst -e"Catalyst::Module::Install::_catalyst_par( '$par', '$name', { CLASSES => [$class_string], PAROPTS => $paropts_string, ENGINE => '$ENGINE', SCRIPT => '$SCRIPT', USAGE => q#$usage# } )"
 EOF
     print <<EOF;
 Please run "make catalyst_par" to create the PAR package!
@@ -127,7 +132,7 @@ EOF
 
 sub catalyst_par_core {
     my ( $self, $core ) = @_;
-    $core ? ( $CORE = $core ) : $CORE++;
+    $core ? ( $PAROPTS{'B'} = $core ) : $PAROPTS{'B'}++;
 }
 
 =head2 catalyst_par_classes(@clases)
@@ -154,7 +159,47 @@ sub catalyst_par_engine {
 
 sub catalyst_par_multiarch {
     my ( $self, $multiarch ) = @_;
-    $multiarch ? ( $MULTIARCH = $multiarch ) : $MULTIARCH++;
+    $multiarch ? ( $PAROPTS{'m'} = $multiarch ) : $PAROPTS{'m'}++;
+}
+
+=head2 catalyst_par_options($optstring)
+
+This command can be used in Makefile.PL to customise the PAR creation process.
+The parameter "$optstring" contains a string with arguments in identical syntax
+as arguments of B<pp> command from L<PAR::Packer> package.
+
+Example:
+
+    # part of your Makefile.PL
+    
+    catalyst_par_options("--verbose=2 -f Bleach -z 9");
+    # verbose mode; use filter 'Bleach'; zip with compression level 9
+    catalyst;
+
+Note1: There is no reason to use catalyst_par_options() command multiple times
+as you can spacify in "$optstring" as many options as you want. Still, it
+is supported to call catalyst_par_options() more than once. In that case the
+specified options are merged (collisions are handled on principle "later wins"). 
+BEWARE: you are discouraged from using parameters -a -A -X -f -F -I -l -M in
+multiple catalyst_par_options() as they are not merged as you would expected.
+
+Note2: By default the options "-x -p -o=<appname>.par" are set and option "-n" 
+is unset. This default always overrides whatever you specify by
+catalyst_par_options().
+
+=cut
+
+sub catalyst_par_options {
+    my ( $self, $optstring ) = @_;
+    my %o = ();
+    eval "use PAR::Packer ()";
+    if ($@) {
+        warn "WARNING: catalyst_par_options ignored - you need PAR::Packer\n"
+    }
+    else {
+        GetOptionsFromString($optstring, \%o, PAR::Packer->options);
+        %PAROPTS = ( %PAROPTS, %o);
+    }	 
 }
 
 =head2 catalyst_par_script($script)
@@ -189,8 +234,7 @@ sub _catalyst_par {
     my $CLASSES   = $opts->{CLASSES} || [];
     my $USAGE     = $opts->{USAGE};
     my $SCRIPT    = $opts->{SCRIPT};
-    my $MULTIARCH = $opts->{MULTIARCH};
-    my $CORE      = $opts->{CORE};
+    my $PAROPTS   = $opts->{PAROPTS};
 
     my $name = $class_name;
     $name =~ s/::/_/g;
@@ -296,14 +340,16 @@ EOF
     open my $olderr, '>&STDERR';
     open STDERR, '>', File::Spec->devnull;
     my %opt = (
+        %{$PAROPTS},
+        # take user defined options first and override them with harcoded defaults
         'x' => 1,
         'n' => 0,
         'o' => $par,
-        'a' => [ grep( !/par.pl/, glob '.' ) ],
         'p' => 1,
-        'B' => $CORE,
-        'm' => $MULTIARCH
     );
+    # do not replace the whole $opt{'a'} array; just push required default value
+    push @{$opt{'a'}}, grep( !/par.pl/, glob '.' );  
+
     App::Packer::PAR->new(
         frontend  => 'Module::ScanDeps',
         backend   => 'PAR::Packer',
