@@ -14,4 +14,32 @@ pulling data out of the __DATA__ section.
 6. Drafted an RFC for more comments on progression of C::H API
 7. Also using added Path::Class for file reading
 as of 6-9-09
+################################################################################
 1. backwards compatibility tests pass
+################################################################################
+2009-06-17
+         - added File::ShareDir capabilities
+         - added Path::Class::Dir and Path::Class:File for ease of F::ShareDir
+           file manip
+         - modified the following methods:
+         --  _mk_appclass    - sends the new filename to be rendered
+         --  _mk_rootclass   - ''
+         --  _mk_makefile    - ''
+         --  _mk_config      - ''
+         --  _mk_readme      - ''
+         --  _mk_changes     - ''
+         --  _mk_apptest     - ''
+         --  _mk_cgi         - ''
+         --  _mk_fastcgi     - ''
+         --  _mk_server      - ''
+         --  _mk_test        - ''
+         --  _mk_create      - ''
+         --  _mk_compclass   - ''
+         --  _mk_comptestsub - ''
+         --  _mk_images      - ''
+         --  _mk_images      - ''
+         --  _mk_favicon     - ''
+         --  render_file     - this now calls render_file_contents to DTRT
+         - new methods:
+         -- get_sharedir_file    - this grabs a file out of share/ dir
+         -- render_sharedir_file - this renders our sharedir file properly, using render_file_contents

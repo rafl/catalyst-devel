@@ -195,8 +195,8 @@ MooseX::Getopt
 17:49 < t0m> and will hate windows users
 
 Summary:
-17:43 < dhoss> 1. fix pod coverage, 2. remove TestAppForInvocation 3. ???
-17:43 < t0m> 3. merge
+17:43 < dhoss> 1. fix pod coverage, 2. remove TestAppForInvocation 3. ??? # DONE
+17:43 < t0m> 3. merge # DONE
 
 
 
