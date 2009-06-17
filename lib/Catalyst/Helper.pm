@@ -349,12 +349,12 @@ sub _mk_dirs {
 sub _mk_appclass {
     my $self = shift;
     my $mod  = $self->{mod};
-    $self->render_sharedir_file( 'lib/appclass.tt', "$mod.pm" );
+    $self->render_sharedir_file( 'lib/MyApp.pm.tt', "$mod.pm" );
 }
 
 sub _mk_rootclass {
     my $self = shift;
-    $self->render_sharedir_file( 'lib/MyApp/Controller/rootclass.tt',
+    $self->render_sharedir_file( 'lib/MyApp/Controller/Root.pm.tt',
         File::Spec->catfile( $self->{c}, "Root.pm" ) );
 }
 
@@ -397,16 +397,16 @@ sub _mk_changes {
 sub _mk_apptest {
     my $self = shift;
     my $t    = $self->{t};
-    $self->render_sharedir_file( 't/apptest.tt',         "$t\/01app.t" );
-    $self->render_sharedir_file( 't/podtest.tt',         "$t\/02pod.t" );
-    $self->render_sharedir_file( 't/podcoveragetest.tt', "$t\/03podcoverage.t" );
+    $self->render_sharedir_file( 't/01app.t.tt',         "$t\/01app.t" );
+    $self->render_sharedir_file( 't/02pod.t.tt',         "$t\/02pod.t" );
+    $self->render_sharedir_file( 't/03podcoverage.tt', "$t\/03podcoverage.t" );
 }
 
 sub _mk_cgi {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( 'script/cgi.tt', "$script\/$appprefix\_cgi.pl" );
+    $self->render_sharedir_file( 'script/myapp_cgi.pl.tt', "$script\/$appprefix\_cgi.pl" );
     chmod 0700, "$script/$appprefix\_cgi.pl";
 }
 
@@ -414,7 +414,7 @@ sub _mk_fastcgi {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( 'script/fastcgi.tt', "$script\/$appprefix\_fastcgi.pl" );
+    $self->render_sharedir_file( 'script/myapp_fastcgi.pl.tt', "$script\/$appprefix\_fastcgi.pl" );
     chmod 0700, "$script/$appprefix\_fastcgi.pl";
 }
 
@@ -422,7 +422,7 @@ sub _mk_server {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( 'script/server.tt', "$script\/$appprefix\_server.pl" );
+    $self->render_sharedir_file( 'script/myapp_server.pl.tt', "$script\/$appprefix\_server.pl" );
     chmod 0700, "$script/$appprefix\_server.pl";
 }
 
@@ -430,7 +430,7 @@ sub _mk_test {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( 'script/test.tt', "$script/$appprefix\_test.pl" );
+    $self->render_sharedir_file( 'script/myapp_test.pl.tt', "$script/$appprefix\_test.pl" );
     chmod 0700, "$script/$appprefix\_test.pl";
 }
 
@@ -438,20 +438,20 @@ sub _mk_create {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( 'script/create.tt', "$script\/$appprefix\_create.pl" );
+    $self->render_sharedir_file( 'script/myapp_create.pl.tt', "$script\/$appprefix\_create.pl" );
     chmod 0700, "$script/$appprefix\_create.pl";
 }
 
 sub _mk_compclass {
     my $self = shift;
     my $file = $self->{file};
-    return $self->render_sharedir_file( 'compclass.tt', "$file" );
+    return $self->render_sharedir_file( 'myapp_compclass.pl.tt', "$file" );
 }
 
 sub _mk_comptest {
     my $self = shift;
     my $test = $self->{test};
-    $self->render_sharedir_file( 'comptest.tt', "$test" );
+    $self->render_sharedir_file( 'comptest.tt', "$test" );  ## wtf do i rename this to?
 }
 
 sub _mk_images {
