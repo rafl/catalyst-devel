@@ -197,7 +197,138 @@ MooseX::Getopt
 Summary:
 17:43 < dhoss> 1. fix pod coverage, 2. remove TestAppForInvocation 3. ??? # DONE
 17:43 < t0m> 3. merge # DONE
-
+################################################################################
+--- Log opened Wed Jun 17 18:23:06 2009
+18:23 -!- Irssi: Starting query in perl with t0m
+18:23 <t0m> yo. wanna pick my brain affore I crash?
+18:23 <t0m> I wanna branch, and start hacking local::lib stuff
+18:23 <t0m> but that'll do a 4am on me again
+18:24 <dhoss> okay, yes
+18:25 <dhoss> i stopped after the last thing we talked about, the Moose-ification of Helper.pm. started that but nothing significant
+18:26 <t0m> no worries. There's at least 2 things you can work on right now obviously
+18:26 <t0m> one being that
+18:26 <t0m> one being hacking the generated
+18:26 <t0m> +code
+18:26 <t0m> one being tests for the generation stuff
+18:27 <t0m> at least 2 :)
+18:27 <dhoss> :-D
+18:27 <dhoss> lemme check hiveminder
+18:28 <t0m> but yeah, first 2 can be independent branches. +tests can just go in trunk
+18:29 <dhoss> so branch again
+18:29 <dhoss> and work on scripts
+18:29 <dhoss> which are tasks...hold on
+18:30 <t0m> and branch again for moosify helper. if you want. I mean work on what you wanna work on - I'm just saying after stage 1, there is a whole spread of stuff to do now
+18:30 <dhoss> #PYMI,#PYM9?
+18:30 <dhoss> yea, i'd love to moosify the helper
+18:30 <t0m> Also, probably not enough todos to cover it - there is removing all the hardcoded filenames...
+18:31 <t0m> so many stuff.
+18:31 <t0m> cool, do that then :)
+18:31 <t0m> then we'll actually refactor/rewrite it
+18:31 <t0m> so all those _mk_foo things go away
+18:31 <dhoss> okay, sweet, yea i forgot the about the hardcoded shits
+18:31 <dhoss> okay, so my famous list:
+18:31 <t0m> that's going to involve some fun Module::Install hacking ;)
+18:32 <dhoss> making _mk_blargh go away is?
+18:32 <t0m> just so
+18:32 <t0m> oh, sorry - yeah. _mk_favicon
+18:32 <dhoss> just so == yes? (sorry, my crosspondia lang isn't up to snuff)
+18:32 <t0m> etc etc etc
+18:33 <t0m> just so = yes = exactly like you descibed but I misread what you said.
+18:33 <dhoss> ahaha :-)
+18:33 <t0m> basically, the code has sub _mk_foo { render('lib/foo..pm.tt', 'lib/foo.pm') } (pseudocode)
+18:34 <dhoss> okay, so: 1. #PMYI 2. #PYM9 3. Moosification of halper
+18:35 <t0m> if you could do foreach my $from_fn_-_to_fn ( $self->get_list_of_things_in_sharedir ) {
+18:35 <t0m> ^^ That would suck so much less
+18:36 <dhoss> yea i've been looking at something like that
+18:38 <t0m> that's fairly easy, with the way we did the rename
+18:38 <t0m> initially, if you just found everything not /\.tt$/
+18:38 <dhoss> exactly, phrew 
+18:39 <t0m> and transplanted them
+18:39 <t0m> that would be a good start
+18:39 <t0m> in fact, you could add that
+18:39 <t0m> not take any code away
+18:39 <t0m> just copy the files twice
+18:39 <t0m> not fail tests
+18:39 <t0m> commit
+18:39 <dhoss> copy the files twice?
+18:39 <t0m> take away the _mk_favicon etc methods one by one
+18:40 <dhoss> aha, and add that loop
+18:40 <t0m> well, if you run foreach my $binfile ($self->find_all_bin_files) { $self->copybinfile_to_app($binfile) }
+18:40 <t0m> (pseudocode)
+18:41 <t0m> ^^ Adding that to the current generation process won't break anything
+18:41 <t0m> You just generate the favicon.ico (etc) twice
+18:41 <t0m> once in that loop
+18:41 <t0m> once in pre-existing $self->_mk_favicon
+18:41 <t0m> in the same place..
+18:41 <t0m> so you overwrite it the 2nd time
+18:41 <dhoss> okay, so *leave* _mk_blargh and copy it into the for loop, i get it
+18:42 <t0m> well, do the generic thing in the for loop
+18:42 <t0m> in fact - here is a smart move. You know the 'check generated files' test?
+18:42 <dhoss> yes
+18:42 <t0m> unlink each file
+18:43 <t0m> after you pass a test as it exists
+18:43 <t0m> then add an extra test doing a File::Find
+18:43 <t0m> and fail if it finds anything
+18:43 <dhoss> so check file, unlink, then another test to look for leftovers
+18:44 <t0m> exactly
+18:44 <t0m> then you add something generic to copy bin files
+18:44 <dhoss> and, forgive me, but what does that help us make sure we've done?
+18:45 <t0m> Makes sure you're not suddenly generating t/01app.t and t/01/app.t.tt # Oops, you fucked up the 'what file name do I generate test'
+18:45 <t0m> s/test'$/code'/
+18:46 <t0m> so you don't ever accidentally generate duplicate files with diff names
+18:46 <t0m> or blank files with a weird name
+18:46 <dhoss> okay, i think i understand
+18:47 <t0m> or genrally any shit you're not specificially saying 'we test it generates a file named X'
+18:47 <t0m> you test it generates X
+18:47 <t0m> you test it does not generate anything other than X
+18:47 <dhoss> right
+18:47 <dhoss> oaky
+18:47 <dhoss> that's what i figured
+18:47 <t0m> sorry => tangent :)
+18:48 <dhoss> it's okay, i'm a one track mind with this stuff :-)
+18:48 <t0m> I can't find pmyi, but pym9 cool
+18:49 <dhoss> Try rewriting script_create.pl and see how far you can get - the big issue is going to be help display
+18:49 <dhoss> that's pmyi
+18:49 <t0m> yes
+18:49 <t0m> exactly so :)
+18:49 <t0m> Oh, no, hang on
+18:49 <t0m> Rewrite script_server.pl first
+18:50 <t0m> in fact, rewrite everything that isn't _create first
+18:50 <t0m> _create is the hardest
+18:50 <t0m> and needs the most thinking
+18:50 <t0m> by a fucking long shot
+18:50 <t0m> I think _create probably involves MooseX::App::Cmd
+18:51 <dhoss> so, rewrite with Moose sex getops
+18:51 <t0m> do the simple ones
+18:51 <t0m> first
+18:51 <t0m> like myapp_server.pl
+18:51 <t0m> like you just said :)
+18:51 <t0m> which will get you up to scratch on the Moo sex
+18:51 <t0m> before you have to hack it
+18:52 <t0m> Also, we can then start the bikeshedding about the right thing to do with moving the real code back into a CPAN dist
+18:52 <t0m> rather than it being in generated scripts
+18:52 <dhoss> right, that would be awesome :-)
+18:53 <t0m> myapp_XXXXX.pl should say: use Catalyst::Script::XXXXX; Catalyst::Script::XXXXX->new_with_options->run;
+18:53 <t0m> + shebang line
+18:53 <dhoss> right, i saw that in the list
+18:53 <t0m> kk. So make the simple scripts MX::Getopt packages
+18:54 <t0m> with the ->new_with_options->run incantation at the end of the source
+18:54 <t0m> hit until myapp_server.pl works like it used to.
+18:54 <t0m> rip Catalyst::Script::DevServer out
+18:55 <t0m> job done
+18:55 <dhoss> okay. i'll give it a crash
+--- Log closed Wed Jun 17 19:00:38 2009
+--- Log opened Wed Jun 17 19:00:44 2009
+19:00 <t0m> http://scsys.co.uk:8001/29932. 
+19:00 <t0m> I guess something like that but with less syntax errors works
+19:01 <t0m> expand out till original functionality replicated :)
+19:01 <dhoss> Moose<3
+19:01 <dhoss> thanks man
+19:04 <dhoss> i'm gonna get some grub. i'll ping you if i have any questions, i appreciate the help :-)
+19:06 <t0m> no worries. I'm at 2am
+19:06 <t0m> so => bed
+19:08 <dhoss> hehe sleep up man
+--- Log closed Wed Jun 17 19:13:38 2009
 
 
 
