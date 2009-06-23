@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 use File::Temp qw/ tempdir /;
-
+use File::Spec;
 my $dir = tempdir(); # CLEANUP => 1 );
 
 use Test::More;
@@ -56,4 +56,9 @@ ok -e "Makefile", "Makefile exists";
 my $newapp_test_status = `prove -l t/`;
 ok $newapp_test_status, "Tests ran okay";
 #is $newapp_test_status, ;
+
+## Moosey server tests
+my $server_path   = File::Spec->catfile('script', 'testapp_server.pl');
+#my $server_status = `$^X $server_path`;
+#ok $server_status, "Moosey server starts ok";
 
