@@ -1,8 +1,10 @@
 use strict;
 use warnings;
 
-use File::Temp qw/ tempdir /;
+use File::Temp qw/ tempdir tmpnam /;
 use File::Spec;
+use Test::WWW::Mechanize;
+
 my $dir = tempdir(); # CLEANUP => 1 );
 
 use Test::More;
@@ -43,7 +45,7 @@ script/testapp_test.pl
 script/testapp_create.pl
 |;
 
-plan 'tests' => scalar @files + 3;
+plan 'tests' => scalar @files + 4;
 
 foreach my $fn (@files) {
     ok -r $fn, "Have $fn in generated app";
@@ -57,8 +59,23 @@ my $newapp_test_status = `prove -l t/`;
 ok $newapp_test_status, "Tests ran okay";
 #is $newapp_test_status, ;
 
-## Moosey server tests
+## Moosey server tests - kmx++
 my $server_path   = File::Spec->catfile('script', 'testapp_server.pl');
-#my $server_status = `$^X $server_path`;
-#ok $server_status, "Moosey server starts ok";
+my $childpid = fork();
+
+my $port = 3333; # or call some random generator
+
+if ($childpid == 0) {
+  my $tmpfile = tmpnam(); # do not redirect to /dev/null as it will not work on Win32
+  system("$^X $server_path -p $port > $tmpfile 2>&1");
+  unlink $tmpfile;
+  exit;
+}
+
+sleep 10; #wait for catalyst application to start
+my $mech = Test::WWW::Mechanize->new;
+$mech->get_ok( "http://localhost:" . $port );
+
+kill 'KILL', $childpid;
+
 
