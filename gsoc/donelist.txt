@@ -49,3 +49,4 @@ tests written for:
 render_file_contents
 render_sharedir_file
 checking to see if generated app's tests pass (t/generated_app.t)
+fixed paths in Helper.pm so they're windows friendly. need to do so in tests.
