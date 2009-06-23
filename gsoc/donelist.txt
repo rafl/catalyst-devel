@@ -48,3 +48,4 @@ as of 6-9-09
 tests written for:
 render_file_contents
 render_sharedir_file
+checking to see if generated app's tests pass (t/generated_app.t)
