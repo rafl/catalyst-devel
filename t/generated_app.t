@@ -64,11 +64,10 @@ my $server_path   = File::Spec->catfile('script', 'testapp_server.pl');
 my $childpid = fork();
 
 my $port = 3333; # or call some random generator
+my $tmpfile = tmpnam(); # do not redirect to /dev/null as it will not work on Win32
 
 if ($childpid == 0) {
-  my $tmpfile = tmpnam(); # do not redirect to /dev/null as it will not work on Win32
   system("$^X $server_path -p $port > $tmpfile 2>&1");
-  unlink $tmpfile;
   exit;
 }
 
@@ -77,5 +76,5 @@ my $mech = Test::WWW::Mechanize->new;
 $mech->get_ok( "http://localhost:" . $port );
 
 kill 'KILL', $childpid;
-
+unlink $tmpfile;
 
