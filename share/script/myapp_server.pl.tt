@@ -1,50 +1,31 @@
-[% startperl %]
+package [% appprefix %]::Script::Server;
 
-BEGIN {
-    $ENV{CATALYST_ENGINE} ||= 'HTTP';
-    $ENV{CATALYST_SCRIPT_GEN} = [% scriptgen %];
-    require Catalyst::Engine::HTTP;
+use Catalyst::Engine::HTTP;
+use [% appprefix %];
+use Moose;
+
+with 'MooseX::GetOpt';
+
+has argv => ( isa => 'ArrayRef', is => 'ro', required => 1 );
+has [qw/ fork background keepalive /] => ( isa => 'Bool', is => 'ro', required => 1, default => 0 );
+has pidfile => ( isa => 'Str', required => 0, is => 'ro' );
+
+sub run {
+    my $self = shift;
+    [% appprefix %]->run(
+        $port, $host,
+        {
+            argv       => $self->argv,
+            'fork'     => $self->fork,
+            keepalive  => $self->keepalive,
+            background => $self->background,
+            pidfile    => $self->pidfile,
+        }
+    );
 }
 
-use strict;
-use warnings;
-use Getopt::Long;
-use Pod::Usage;
-use FindBin;
-use lib "$FindBin::Bin/../lib";
+__PACKAGE__->new_with_options->run;
 
-my $debug             = 0;
-my $fork              = 0;
-my $help              = 0;
-my $host              = undef;
-my $port              = $ENV{[% appenv %]_PORT} || $ENV{CATALYST_PORT} || 3000;
-my $keepalive         = 0;
-my $restart           = $ENV{[% appenv %]_RELOAD} || $ENV{CATALYST_RELOAD} || 0;
-my $background        = 0;
-my $pidfile           = undef;
-
-my $check_interval;
-my $file_regex;
-my $watch_directory;
-my $follow_symlinks;
-
-my @argv = @ARGV;
-
-GetOptions(
-    'debug|d'             => \$debug,
-    'fork|f'              => \$fork,
-    'help|?'              => \$help,
-    'host=s'              => \$host,
-    'port|p=s'            => \$port,
-    'keepalive|k'         => \$keepalive,
-    'restart|r'           => \$restart,
-    'restartdelay|rd=s'   => \$check_interval,
-    'restartregex|rr=s'   => \$file_regex,
-    'restartdirectory=s@' => \$watch_directory,
-    'followsymlinks'      => \$follow_symlinks,
-    'background'          => \$background,
-    'pidfile=s'           => \$pidfile,
-);
 
 pod2usage(1) if $help;
 
