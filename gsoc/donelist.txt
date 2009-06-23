@@ -43,3 +43,8 @@ as of 6-9-09
          - new methods:
          -- get_sharedir_file    - this grabs a file out of share/ dir
          -- render_sharedir_file - this renders our sharedir file properly, using render_file_contents
+################################################################################
+2009-06-23
+tests written for:
+render_file_contents
+render_sharedir_file
