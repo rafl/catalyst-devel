@@ -43,9 +43,17 @@ script/testapp_test.pl
 script/testapp_create.pl
 |;
 
-plan 'tests' => scalar @files;
+plan 'tests' => scalar @files + 3;
 
 foreach my $fn (@files) {
     ok -r $fn, "Have $fn in generated app";
 }
+
+## Makefile stuff
+my $makefile_status = `$^X Makefile.PL`;
+ok $makefile_status, "Makefile ran okay";
+ok -e "Makefile", "Makefile exists";
+my $newapp_test_status = `prove -l t/`;
+ok $newapp_test_status, "Tests ran okay";
+#is $newapp_test_status, ;
 
