@@ -52,3 +52,4 @@ checking to see if generated app's tests pass (t/generated_app.t)
 fixed paths in Helper.pm so they're windows friendly. need to do so in tests.
 moosified server script
 added test to make sure server script works
+created branch to Moosify helper API
