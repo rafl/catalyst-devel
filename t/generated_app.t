@@ -6,11 +6,17 @@ use File::Spec;
 use Test::WWW::Mechanize;
 
 my $dir = tempdir(); # CLEANUP => 1 );
+my $devnull = File::Spec->devnull;
 
 use Test::More;
 {
     # Check exit status here
-    system("cd $dir; catalyst.pl TestApp");
+    if ($^O eq 'MSWin32') {
+      system("cd $dir & catalyst TestApp > $devnull 2>&1");
+    }
+    else {
+      system("cd $dir; catalyst.pl TestApp > $devnull 2>&1");
+    }
 }
 # Fix paths / nl work on win32
 chdir("$dir/TestApp/");
@@ -55,20 +61,20 @@ foreach my $fn (@files) {
 my $makefile_status = `$^X Makefile.PL`;
 ok $makefile_status, "Makefile ran okay";
 ok -e "Makefile", "Makefile exists";
-my $newapp_test_status = `prove -l t/`;
+my $newapp_test_status = `prove -l t/ 2> $devnull`;
 ok $newapp_test_status, "Tests ran okay";
 #is $newapp_test_status, ;
 
 ## Moosey server tests - kmx++
 my $server_path   = File::Spec->catfile('script', 'testapp_server.pl');
-my $childpid = fork();
+my $port = int(rand(10000)) + 40000; # get random port between 40000-50000
 
-my $port = 3333; # or call some random generator
-my $tmpfile = tmpnam(); # do not redirect to /dev/null as it will not work on Win32
+my $childpid = fork();
+die "fork() error, cannot continue" unless defined($childpid);
 
 if ($childpid == 0) {
-  system("$^X $server_path -p $port > $tmpfile 2>&1");
-  exit;
+  system("$^X $server_path -p $port > $devnull 2>&1");
+  exit; # just for sure; we should never got here
 }
 
 sleep 10; #wait for catalyst application to start
@@ -76,5 +82,5 @@ my $mech = Test::WWW::Mechanize->new;
 $mech->get_ok( "http://localhost:" . $port );
 
 kill 'KILL', $childpid;
-unlink $tmpfile;
+
 
