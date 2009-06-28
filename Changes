@@ -1,5 +1,11 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.19    2009-06-29 00:36:50
+        - Update Module::Install to a version that doesn't screw up
+          auto_install anymore (Closes: RT#45784).
+        - Generate Makefile.PLs with unix-paths, even on windows (Closes:
+          RT#46059).
+
 1.18    2009-06-10 17:43:12
         - The forking restarter was not waiting for the child to exit,
           which could lead to a race condition. If the old child did
