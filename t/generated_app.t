@@ -12,7 +12,6 @@ use Test::More;
 }
 # Fix paths / nl work on win32
 chdir("$dir/TestApp/");
-warn($dir);
 
 # Ok, this is lame.. Also, check +x permissions?
 my @files = qw|
