@@ -1,0 +1,4 @@
+# Skip .svn metadata to stop you getting crap in your sharedir
+# when you're using svn and in author mode
+\.svn
+
