@@ -5,6 +5,7 @@ use warnings;
 use base 'Class::Accessor::Fast';
 use Config;
 use File::Spec;
+use File::Spec::Unix;
 use File::Path;
 use FindBin;
 use IO::File;
@@ -360,7 +361,7 @@ sub _mk_rootclass {
 
 sub _mk_makefile {
     my $self = shift;
-    $self->{path} = File::Spec->catfile( 'lib', split( '::', $self->{name} ) );
+    $self->{path} = File::Spec::Unix->catfile( 'lib', split( '::', $self->{name} ) );
     $self->{path} .= '.pm';
     my $dir = $self->{dir};
     $self->render_sharedir_file( 'Makefile.PL.tt', "$dir\/Makefile.PL" );
