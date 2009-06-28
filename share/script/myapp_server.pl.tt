@@ -1,34 +1,7 @@
-package [% appprefix %]::Script::Server;
+[% startperl %]
 
-use Catalyst::Engine::HTTP;
-use [% appprefix %];
-use Moose;
-
-with 'MooseX::GetOpt';
-
-has argv => ( isa => 'ArrayRef', is => 'ro', required => 1 );
-has [qw/ fork background keepalive /] => ( isa => 'Bool', is => 'ro', required => 1, default => 0 );
-has pidfile => ( isa => 'Str', required => 0, is => 'ro' );
-
-sub run {
-    my $self = shift;
-    [% appprefix %]->run(
-        $port, $host,
-        {
-            argv       => $self->argv,
-            'fork'     => $self->fork,
-            keepalive  => $self->keepalive,
-            background => $self->background,
-            pidfile    => $self->pidfile,
-        }
-    );
-}
-
-
-
-__PACKAGE__->new_with_options->run;
-
-
+use Catalyst::ScriptRunner;
+Catalyst::ScriptRunner->run('[% name %]', 'Server');
 
 1;
 

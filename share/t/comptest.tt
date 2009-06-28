@@ -2,7 +2,7 @@ use strict;
 use warnings;
 [% IF long_type == 'Controller' %][% IF mech %]use Test::More;
 
-eval "use Test::WWW::Mechanize::Catalyst '[% app %]'";
+eval "use Test::WWW::Mechanize::Catalyst '[% name %]'";
 plan $@
     ? ( skip_all => 'Test::WWW::Mechanize::Catalyst required' )
     : ( tests => 2 );
@@ -12,7 +12,7 @@ ok( my $mech = Test::WWW::Mechanize::Catalyst->new, 'Created mech object' );
 $mech->get_ok( 'http://localhost[% uri %]' );
 [% ELSE %]use Test::More tests => 3;
 
-BEGIN { use_ok 'Catalyst::Test', '[% app %]' }
+BEGIN { use_ok 'Catalyst::Test', '[% name %]' }
 BEGIN { use_ok '[% class %]' }
 
 ok( request('[% uri %]')->is_success, 'Request should succeed' );
