@@ -3,7 +3,6 @@ use inc::Module::Install 0.91;
 name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
 
-requires 'File::ShareDir';
 requires 'Catalyst'    => '5.8000';
 requires 'Catalyst::Action::RenderView' => '0.04';
 requires 'Catalyst::Plugin::Static::Simple' => '0.16';
@@ -16,8 +15,6 @@ requires 'Module::Install' => '0.91';
 requires 'parent'; # as of 1.04
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
-
-install_share 'share';
 
 if ( $^O eq 'MSWin32' ) {
     # Proc::Background needs this on Win32 but doesn't actually
