@@ -36,8 +36,9 @@ Catalyst::Helper - Bootstrap a Catalyst application
 sub get_sharedir_file {
     my ($self, @filename) = @_;
     my $dist_dir;
-    if (-d "inc/.author") { # Can't use sharedir if we're in a checkout
-                            # this feels horrible, better ideas?
+    if (-d "inc/.author" && -f "lib/Catalyst/Helper.pm"
+            ) { # Can't use sharedir if we're in a checkout
+                # this feels horrible, better ideas?
         $dist_dir = 'share';
     }
     else {
