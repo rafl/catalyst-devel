@@ -1,5 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Bump required File::ChangeNotify version.
+
 1.19    2009-06-29 00:36:50
         - Update Module::Install to a version that doesn't screw up
           auto_install anymore (Closes: RT#45784).
