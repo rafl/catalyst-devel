@@ -446,7 +446,7 @@ sub _mk_create {
 sub _mk_compclass {
     my $self = shift;
     my $file = $self->{file};
-    return $self->render_sharedir_file( 'myapp_compclass.pl.tt', "$file" );
+    return $self->render_sharedir_file( 'lib', 'Helper', 'compclass.pl.tt', "$file" );
 }
 
 sub _mk_comptest {
