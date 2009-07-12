@@ -275,7 +275,7 @@ sub next_test {
 
 # Do not touch this method, *EVER*, it is needed for back compat.
 ## addendum: we had to split this method so we could have backwards
-## compatability.  otherwise, we'd have no way to pass stuff from __DATA__ 
+## compatability.  otherwise, we'd have no way to pass stuff from __DATA__
 
 sub render_file {
     my ( $self, $file, $path, $vars ) = @_;
@@ -523,7 +523,7 @@ sub _find_share_dir {
         }
         confess "could not find sharebase by recursion. ended up at $dir, from $file"
           unless $share_base;
-        $args->{share_base_dir} = $share_base; 
+        $args->{share_base_dir} = $share_base;
     }
   }
   my $base = $args->{share_base_dir}->subdir($share_name);
