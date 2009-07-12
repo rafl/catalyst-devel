@@ -3,6 +3,9 @@ use inc::Module::Install 0.87;
 name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
 
+requires 'Moose';
+requires 'namespace::autoclean';
+requires 'MooseX::Types';
 requires 'File::ShareDir';
 requires 'Catalyst'    => '5.8000';
 requires 'Catalyst::Action::RenderView' => '0.04';
@@ -33,7 +36,7 @@ if (!$ENV{CATALYST_DEVEL_NO_510_CHECK}) {
     open NULL, '>', File::Spec->devnull;
     my $err = gensym;
     my $pid = open3(gensym, '&>NULL', $err, "$^X -It/lib -MUnknownError -e 1");
-    
+
     my $unknown_error = 0;
 
     while (<$err>) {
@@ -47,7 +50,7 @@ if (!$ENV{CATALYST_DEVEL_NO_510_CHECK}) {
 ############################### WARNING #################################
 #                                                                       #
 # You are using perl 5.10.0 with the "Unknown error" bug. This can make #
-# developing Catalyst applications much more painful, as it will come   # 
+# developing Catalyst applications much more painful, as it will come   #
 # up with no details every time you have a syntax error in a Controller.#
 #                                                                       #
 # For more information see:                                             #
