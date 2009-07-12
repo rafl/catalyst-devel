@@ -452,7 +452,7 @@ sub _mk_compclass {
 sub _mk_comptest {
     my $self = shift;
     my $test = $self->{test};
-    $self->render_sharedir_file( 'comptest.tt', "$test" );  ## wtf do i rename this to?
+    $self->render_sharedir_file( 't', 'comptest.tt', "$test" );  ## wtf do i rename this to?
 }
 
 sub _mk_images {
