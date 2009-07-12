@@ -12,7 +12,6 @@ use Catalyst::Utils;
 use Catalyst::Exception;
 use Path::Class qw/dir file/;
 use File::ShareDir qw/dist_dir/;
-use aliased 'Path::Class::Dir';
 use namespace::autoclean;
 
 my %cache;
@@ -27,8 +26,6 @@ Catalyst::Helper - Bootstrap a Catalyst application
 
 =cut
 
-
-
 sub get_sharedir_file {
     my ($self, @filename) = @_;
     my $dist_dir;
@@ -41,6 +38,7 @@ sub get_sharedir_file {
         $dist_dir = dist_dir('Catalyst-Devel');
     }
     my $file = file( $dist_dir, @filename);
+    Carp::confess("Cannot find $file") unless -r $file;
     my $contents = $file->slurp;
     return $contents;
 }
@@ -283,6 +281,7 @@ sub render_file {
 sub render_sharedir_file {
     my ( $self, $file, $path, $vars ) = @_;
     my $template = $self->get_sharedir_file( $file );
+    die("Cannot get template from $file for $self\n") unless $template;
     $self->render_file_contents($template, $path, $vars);
 }
 
@@ -443,13 +442,13 @@ sub _mk_create {
 sub _mk_compclass {
     my $self = shift;
     my $file = $self->{file};
-    return $self->render_sharedir_file( 'lib', 'Helper', 'compclass.tt', "$file" );
+    return $self->render_sharedir_file( File::Spec->catfile('lib', 'Helper', 'compclass.pm.tt'), $file );
 }
 
 sub _mk_comptest {
     my $self = shift;
     my $test = $self->{test};
-    $self->render_sharedir_file( 't', 'comptest.tt', "$test" );  ## wtf do i rename this to?
+    $self->render_sharedir_file( File::Spec->catfile('t', 'comptest.tt'), $test );  ## wtf do i rename this to?
 }
 
 sub _mk_images {
@@ -494,7 +493,6 @@ sub _deprecate_file {
             message => qq/Couldn't create "$file", "$!"/ );
     }
 }
-
 
 =head1 DESCRIPTION
 
@@ -654,10 +652,6 @@ Writes content to a file. Called by L</render_file>.
 
 Calculates the name of the next numbered test file and returns it.
 Don't give the number or the .t suffix for the test name.
-
-=head2 Dir
-
-Alias for L<Path::Class::Dir>
 
 =cut
 
