@@ -1,0 +1,6 @@
+[% startperl %]
+
+use Catalyst::ScriptRunner;
+Catalyst::ScriptRunner->run('[% name %]', 'Deploy');
+
+1;
