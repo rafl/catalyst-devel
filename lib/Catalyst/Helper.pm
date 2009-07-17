@@ -110,6 +110,7 @@ sub mk_app {
         $self->_mk_cgi;
         $self->_mk_fastcgi;
         $self->_mk_server;
+        $self->_mk_dbic_deploy;
         $self->_mk_test;
         $self->_mk_create;
         $self->_mk_information;
@@ -473,6 +474,14 @@ sub _mk_favicon {
 
 }
 
+sub _mk_dbic_deploy {
+    my $self      = shift;
+    my $script    = $self->{script};
+    my $appprefix = $self->{appprefix};
+    $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_deploy_schema.pl.tt'), "$script\/$appprefix\_deploy_schema.pl" );
+    chmod 0700, "$script/$appprefix\_deploy_schema.pl";
+}
+
 sub _deprecate_file {
     my ( $self, $file ) = @_;
     if ( -e $file ) {
@@ -515,6 +524,10 @@ development stage.
 
 The catalyst test server, starts an HTTPD which outputs debugging to
 the terminal.
+
+=head2 _deploy_dbic.pl
+
+Deploy a L<DBIx::Class> schema to the database of your choice. 
 
 =head2 _test.pl
 
