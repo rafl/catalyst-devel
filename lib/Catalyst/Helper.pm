@@ -154,7 +154,7 @@ sub mk_component {
         $type              = 'C' if $type =~ /controller/i;
         my $appdir = File::Spec->catdir( split /\:\:/, $app );
         my $test_path =
-          File::Spec->catdir( $FindBin::Bin, '..', 'lib', $appdir, 'C' );
+          File::Spec->catdir( $self->{base}, 'lib', $appdir, 'C' );
         $type = $self->{long_type} unless -d $test_path;
         $self->{type}  = $type;
         $self->{name}  = $name;
@@ -162,7 +162,7 @@ sub mk_component {
 
         # Class
         my $path =
-          File::Spec->catdir( $FindBin::Bin, '..', 'lib', $appdir, $type );
+          File::Spec->catdir( $self->{base}, 'lib', $appdir, $type );
         my $file = $name;
         if ( $name =~ /\:/ ) {
             my @path = split /\:\:/, $name;
@@ -174,7 +174,7 @@ sub mk_component {
         $self->{file} = $file;
 
         # Test
-        $self->{test_dir} = File::Spec->catdir( $FindBin::Bin, '..', 't' );
+        $self->{test_dir} = File::Spec->catdir( $self->{base}, 't' );
         $self->{test}     = $self->next_test;
 
         # Helper
