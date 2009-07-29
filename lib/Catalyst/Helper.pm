@@ -604,7 +604,7 @@ Create the main application skeleton. This is called by L<catalyst.pl>.
 This method is called by L<create.pl> to make new components
 for your application.
 
-=head3 mk_dir ($path)
+=head2 mk_dir ($path)
 
 Surprisingly, this function makes a directory.
 
