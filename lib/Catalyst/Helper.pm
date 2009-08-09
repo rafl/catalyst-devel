@@ -354,42 +354,6 @@ sub _deprecate_file {
     }
 }
 
-
-## this is so you don't have to do make install after every change to test
-sub _find_share_dir {
-  my ($self, $args) = @_;
-  my $share_name = $self->name;
-  if ($share_name =~ s!^/(.*?)/!!) {
-    my $dist = $1;
-    $args->{share_base_dir} = eval {
-        Dir->new(File::ShareDir::dist_dir($dist))
-           ->subdir('share');
-    };
-    if ($@) {
-        # not installed
-        my $file = __FILE__;
-        my $dir = Dir->new(dirname($file));
-        my $share_base;
-        while ($dir->parent) {
-            if (-d $dir->subdir('share') && -d $dir->subdir('share')->subdir('root')) {
-                $share_base = $dir->subdir('share')->subdir('root');
-                last;
-            }
-            $dir = $dir->parent;
-        }
-        confess "could not find sharebase by recursion. ended up at $dir, from $file"
-          unless $share_base;
-        $args->{share_base_dir} = $share_base; 
-    }
-  }
-  my $base = $args->{share_base_dir}->subdir($share_name);
-  confess "No such share base directory ${base}"
-    unless -d $base;
-  $self->share_dir($base);
-};
-
-
-
 =head1 DESCRIPTION
 
 This module is used by B<catalyst.pl> to create a set of scripts for a
