@@ -3,6 +3,10 @@ This file documents the revision history for Perl extension Catalyst-Devel.
 Moar new stuff - 2009-08-08
          - Began Moosification
          - split into app and component classes
+         - added new Moose types for:
+           - app names
+           - app components
+           - app directory
 
 NOO-STUFFS 2009-06-17
          - added File::ShareDir capabilities
