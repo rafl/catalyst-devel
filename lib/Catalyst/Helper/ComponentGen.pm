@@ -1,7 +1,32 @@
 package Catalyst::Helper::ComponentGen;
+
 use Moose;
+use Moose::Util::TypeConstraints;
+use MooseX::Types -declare [qw/ TestDir LongComponentType ValidComponentName /];
 use namespace::autoclean;
+
 extends { 'Catalyst::Helper' };
+
+# subtypes and coercions
+# validate test dir, component name
+# make the check in $self->{test_dir} be less fucking stupid
+
+has 'test_dir' => (
+    is => 'ro',
+    isa => TestDir,
+);
+
+has 'long_comp_type' => (
+    is => 'ro',
+    isa => LongComponentType,
+    initializer => 'long_type',
+);
+
+has 'component_name' => (
+    is => 'ro',
+    isa => ValidComponentName,
+    initializer => 'comp_name',
+);
 
 # Test
 $self->{test_dir} = File::Spec->catdir( $FindBin::Bin, '..', 't' );
@@ -18,7 +43,7 @@ if ($helper) {
             message => qq/Couldn't load helper "$class", "$@"/ );
     }
 
-    ## NO TOUCHY
+    ## NO TOUCHY ###############################################################
     if ( $class->can('mk_compclass') ) {
         return 1 unless $class->mk_compclass( $self, @args );
     }
@@ -28,6 +53,7 @@ if ($helper) {
         $class->mk_comptest( $self, @args );
     }
     else { $self->_mk_comptest }
+    ## END NO TOUCHY ###########################################################
 }
 
 sub mk_component {

@@ -129,15 +129,15 @@ sub next_test {
     return File::Spec->catfile( $dir, "$type\_$tname" );
 }
 
-# Do not touch this method, *EVER*, it is needed for back compat.
+# Do not touch this method, *EVER*, it is needed for back compat. ##############
 ## addendum: we had to split this method so we could have backwards
 ## compatability.  otherwise, we'd have no way to pass stuff from __DATA__ 
-
 sub render_file {
     my ( $self, $file, $path, $vars ) = @_;
     my $template = $self->get_file( ( caller(0) )[0], $file );
     $self->render_file_contents($template, $path, $vars);
 }
+################################################################################
 
 sub render_sharedir_file {
     my ( $self, $file, $path, $vars ) = @_;
@@ -157,6 +157,7 @@ sub render_file_contents {
     $self->mk_file( $path, $output );
 }
 
+# DIE DIE DIE
 sub _mk_information {
     my $self = shift;
     print qq/Change to application directory and Run "perl Makefile.PL" to make sure your install is complete\n/;
@@ -203,18 +204,21 @@ sub _mk_dirs {
     $self->{base} = File::Spec->rel2abs( $self->{dir} );
 }
 
+# DIE DIE DIE
 sub _mk_appclass {
     my $self = shift;
     my $mod  = $self->{mod};
     $self->render_sharedir_file( File::Spec->catfile('lib', 'MyApp.pm.tt'), "$mod.pm" );
 }
 
+# DIE DIE DIE
 sub _mk_rootclass {
     my $self = shift;
     $self->render_sharedir_file( File::Spec->catfile('lib', 'MyApp', 'Controller', 'Root.pm.tt'),
         File::Spec->catfile( $self->{c}, "Root.pm" ) );
 }
 
+# DIE DIE DIE
 sub _mk_makefile {
     my $self = shift;
     $self->{path} = File::Spec->catfile( 'lib', split( '::', $self->{name} ) );
@@ -230,6 +234,7 @@ sub _mk_makefile {
     }
 }
 
+# DIE DIE DIE
 sub _mk_config {
     my $self      = shift;
     my $dir       = $self->{dir};
@@ -238,12 +243,14 @@ sub _mk_config {
         File::Spec->catfile( $dir, "$appprefix.conf" ) );
 }
 
+# DIE DIE DIE
 sub _mk_readme {
     my $self = shift;
     my $dir  = $self->{dir};
     $self->render_sharedir_file( 'README.tt', "$dir\/README" );
 }
 
+# DIE DIE DIE
 sub _mk_changes {
     my $self = shift;
     my $dir  = $self->{dir};
@@ -299,12 +306,14 @@ sub _mk_create {
     chmod 0700, "$script/$appprefix\_create.pl";
 }
 
+# DIE DIE DIE
 sub _mk_compclass {
     my $self = shift;
     my $file = $self->{file};
     return $self->render_sharedir_file( 'myapp_compclass.pl.tt', "$file" );
 }
 
+# DIE DIE DIE
 sub _mk_comptest {
     my $self = shift;
     my $test = $self->{test};
@@ -324,6 +333,7 @@ sub _mk_images {
     }
 }
 
+# DIE DIE DIE
 sub _mk_favicon {
     my $self    = shift;
     my $root    = $self->{root};
