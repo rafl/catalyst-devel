@@ -99,6 +99,7 @@ sub mk_app {
     my $gen_makefile = ( $self->{scripts} )  ? 0 : 1;
     my $gen_app = ( $self->{scripts} || $self->{makefile} ) ? 0 : 1;
 
+    # these die, horribly, today.
     if ($gen_app) {
         $self->_mk_dirs;
         $self->_mk_config;
@@ -110,9 +111,13 @@ sub mk_app {
         $self->_mk_images;
         $self->_mk_favicon;
     }
+    
+    # and this
     if ($gen_makefile) {
         $self->_mk_makefile;
     }
+    
+    # and this
     if ($gen_scripts) {
         $self->_mk_cgi;
         $self->_mk_fastcgi;
