@@ -266,12 +266,13 @@ sub _mk_apptest {
     $self->render_sharedir_file( File::Spec->catfile('t', '03podcoverage.t.tt'), "$t\/03podcoverage.t" );
 }
 
+# these can certainly be globbed into one method
 sub _mk_cgi {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_cgi.pl.tt'), "$script\/$appprefix\_cgi.pl" );
-    chmod 0700, "$script/$appprefix\_cgi.pl";
+    chmod 0700, "$script/$appprefix\_cgi.pl"; # FIXME
 }
 
 sub _mk_fastcgi {
@@ -279,7 +280,7 @@ sub _mk_fastcgi {
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_fastcgi.pl.tt'), "$script\/$appprefix\_fastcgi.pl" );
-    chmod 0700, "$script/$appprefix\_fastcgi.pl";
+    chmod 0700, "$script/$appprefix\_fastcgi.pl"; # FIXME
 }
 
 sub _mk_server {
@@ -287,7 +288,7 @@ sub _mk_server {
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_server.pl.tt'), "$script\/$appprefix\_server.pl" );
-    chmod 0700, "$script/$appprefix\_server.pl";
+    chmod 0700, "$script/$appprefix\_server.pl"; # FIXME
 }
 
 sub _mk_test {
@@ -295,7 +296,7 @@ sub _mk_test {
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_test.pl.tt'), "$script/$appprefix\_test.pl" );
-    chmod 0700, "$script/$appprefix\_test.pl";
+    chmod 0700, "$script/$appprefix\_test.pl"; # FIXME
 }
 
 sub _mk_create {
@@ -303,7 +304,7 @@ sub _mk_create {
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_create.pl.tt'), "$script\/$appprefix\_create.pl" );
-    chmod 0700, "$script/$appprefix\_create.pl";
+    chmod 0700, "$script/$appprefix\_create.pl"; # FIXME
 }
 
 # DIE DIE DIE
