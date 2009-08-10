@@ -3,7 +3,7 @@ package Catalyst::Helper::AppGen;
 use Moose;
 use namespace::autoclean;
 use Moose::Util::TypeConstraints;
-use MooseX::Types -declare [qw/ ValidAppName ValidAppComponent /];
+use MooseX::Types -declare [qw/ ValidAppName ValidAppComponent Dir AppEnv/];
 use namespace::autoclean;
 
 extends { 'Catalyst::Helper' };
@@ -37,14 +37,14 @@ coerce AppEnv,
 
 has name => ( 
     is => 'ro', 
-    isa => 'ValidAppName',
+    isa => ValidAppName,
     traits => [qw(Getopt)],
     cmd_aliases => 'n',
 );
 
 has dir  => ( 
     is => 'ro', 
-    isa => 'Dir',
+    isa => Dir,
     traits => [qw(Getopt)],
     cmd_aliases => 'dir', 
 
@@ -64,7 +64,7 @@ has app_prefix => (
 
 has app_env => (
     is => 'ro',
-    isa => 'ValidAppEnv',
+    isa => ValidAppEnv,
     traits => [qw(NoGetopt)],
 );
 
