@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.20    2009-08-11 23:30:30
         - Bump required File::ChangeNotify version to 0.07. Closes RT#48610.
 
 1.19    2009-06-29 00:36:50
