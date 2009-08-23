@@ -112,7 +112,9 @@ sub mk_app {
         $self->_mk_cgi;
         $self->_mk_fastcgi;
         $self->_mk_server;
-        $self->_mk_dbic_deploy;
+      #  probably want to only do this if a DBIC schema is specified, or move it
+      #  to C::H::Model::DBIC::Schema
+      #  $self->_mk_dbic_deploy; 
         $self->_mk_test;
         $self->_mk_create;
         $self->_mk_information;
@@ -120,6 +122,9 @@ sub mk_app {
     return $self->{dir};
 }
 
+
+## not much of this can really be changed, mk_compclass must be left for 
+## backcompat
 sub mk_component {
     my $self = shift;
     my $app  = shift;
@@ -190,6 +195,7 @@ sub mk_component {
                     message => qq/Couldn't load helper "$class", "$@"/ );
             }
 
+            ## must be left for back compat! ###################################
             if ( $class->can('mk_compclass') ) {
                 return 1 unless $class->mk_compclass( $self, @args );
             }
@@ -199,6 +205,7 @@ sub mk_component {
                 $class->mk_comptest( $self, @args );
             }
             else { $self->_mk_comptest }
+            ####################################################################
         }
 
         # Fallback
