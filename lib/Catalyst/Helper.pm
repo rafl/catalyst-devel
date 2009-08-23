@@ -94,30 +94,24 @@ sub mk_app {
 
     if ($gen_app) {
     
-        
-        $self->_mk_dirs;
-        $self->_mk_config;
-        $self->_mk_appclass;
-        $self->_mk_rootclass;
-        $self->_mk_readme;
-        $self->_mk_changes;
-        $self->_mk_apptest;
-        $self->_mk_images;
-        $self->_mk_favicon;
+        for ( qw/ _mk_dirs _mk_config _mk_appclass _mk_rootclass _mk_readme
+              _mk_changes _mk_apptest _mk_images _mk_favicon/ ) {
+            
+            $self->$_;
+       
+        }
     }
     if ($gen_makefile) {
         $self->_mk_makefile;
     }
     if ($gen_scripts) {
-        $self->_mk_cgi;
-        $self->_mk_fastcgi;
-        $self->_mk_server;
+        for ( qw/ _mk_cgi _mk_fastcgi _mk_server 
+                  _mk_test _mk_create _mk_information / ) {
+        $self->$_;
       #  probably want to only do this if a DBIC schema is specified, or move it
       #  to C::H::Model::DBIC::Schema
       #  $self->_mk_dbic_deploy; 
-        $self->_mk_test;
-        $self->_mk_create;
-        $self->_mk_information;
+        
     }
     return $self->{dir};
 }
