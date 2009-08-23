@@ -1,5 +1,5 @@
 package Catalyst::Helper;
-use Moose;
+#use Moose;
 use Config;
 use File::Spec;
 use File::Path;
@@ -12,7 +12,7 @@ use Catalyst::Utils;
 use Catalyst::Exception;
 use Path::Class qw/dir file/;
 use File::ShareDir qw/dist_dir/;
-use namespace::autoclean;
+#use namespace::autoclean;
 
 my %cache;
 
@@ -76,7 +76,7 @@ sub mk_app {
     $self->{name            } = $name;
     $self->{dir             } = $name;
     $self->{dir             } =~ s/\:\:/-/g;
-    $self->{script          } = File::Spec->catdir( $self->{dir}, 'script' );
+    $self->{script          } = dir( $self->{dir}, 'script' );
     $self->{appprefix       } = Catalyst::Utils::appprefix($name);
     $self->{appenv          } = Catalyst::Utils::class2env($name);
     $self->{startperl       } = -r '/usr/bin/env'
@@ -93,6 +93,8 @@ sub mk_app {
     my $gen_app = ( $self->{scripts} || $self->{makefile} ) ? 0 : 1;
 
     if ($gen_app) {
+    
+        
         $self->_mk_dirs;
         $self->_mk_config;
         $self->_mk_appclass;
@@ -125,7 +127,7 @@ sub mk_component {
     $self->{author} = $self->{author} = $ENV{'AUTHOR'}
       || eval { @{ [ getpwuid($<) ] }[6] }
       || 'A clever guy';
-    $self->{base} ||= File::Spec->catdir( $FindBin::Bin, '..' );
+    $self->{base} ||= dir( $FindBin::Bin, '..' );
     unless ( $_[0] =~ /^(?:model|view|controller)$/i ) {
         my $helper = shift;
         my @args   = @_;
@@ -152,9 +154,9 @@ sub mk_component {
         $type              = 'M' if $type =~ /model/i;
         $type              = 'V' if $type =~ /view/i;
         $type              = 'C' if $type =~ /controller/i;
-        my $appdir = File::Spec->catdir( split /\:\:/, $app );
+        my $appdir = dir( split /\:\:/, $app );
         my $test_path =
-          File::Spec->catdir( $self->{base}, 'lib', $appdir, 'C' );
+          dir( $self->{base}, 'lib', $appdir, 'C' );
         $type = $self->{long_type} unless -d $test_path;
         $self->{type}  = $type;
         $self->{name}  = $name;
@@ -162,19 +164,19 @@ sub mk_component {
 
         # Class
         my $path =
-          File::Spec->catdir( $self->{base}, 'lib', $appdir, $type );
+          dir( $self->{base}, 'lib', $appdir, $type );
         my $file = $name;
         if ( $name =~ /\:/ ) {
             my @path = split /\:\:/, $name;
             $file = pop @path;
-            $path = File::Spec->catdir( $path, @path );
+            $path = dir( $path, @path );
         }
         $self->mk_dir($path);
-        $file = File::Spec->catfile( $path, "$file.pm" );
+        $file = file( $path, "$file.pm" );
         $self->{file} = $file;
 
         # Test
-        $self->{test_dir} = File::Spec->catdir( $self->{base}, 't' );
+        $self->{test_dir} = dir( $self->{base}, 't' );
         $self->{test}     = $self->next_test;
 
         # Helper
@@ -266,7 +268,7 @@ sub next_test {
     my $dir  = $self->{test_dir};
     my $type = lc $self->{type};
     $self->mk_dir($dir);
-    return File::Spec->catfile( $dir, "$type\_$tname" );
+    return file( $dir, "$type\_$tname" );
 }
 
 # Do not touch this method, *EVER*, it is needed for back compat.
@@ -307,67 +309,67 @@ sub _mk_dirs {
     my $self = shift;
     $self->mk_dir( $self->{dir} );
     $self->mk_dir( $self->{script} );
-    $self->{lib} = File::Spec->catdir( $self->{dir}, 'lib' );
+    $self->{lib} = dir( $self->{dir}, 'lib' );
     $self->mk_dir( $self->{lib} );
-    $self->{root} = File::Spec->catdir( $self->{dir}, 'root' );
+    $self->{root} = dir( $self->{dir}, 'root' );
     $self->mk_dir( $self->{root} );
-    $self->{static} = File::Spec->catdir( $self->{root}, 'static' );
+    $self->{static} = dir( $self->{root}, 'static' );
     $self->mk_dir( $self->{static} );
-    $self->{images} = File::Spec->catdir( $self->{static}, 'images' );
+    $self->{images} = dir( $self->{static}, 'images' );
     $self->mk_dir( $self->{images} );
-    $self->{t} = File::Spec->catdir( $self->{dir}, 't' );
+    $self->{t} = dir( $self->{dir}, 't' );
     $self->mk_dir( $self->{t} );
 
-    $self->{class} = File::Spec->catdir( split( /\:\:/, $self->{name} ) );
-    $self->{mod} = File::Spec->catdir( $self->{lib}, $self->{class} );
+    $self->{class} = dir( split( /\:\:/, $self->{name} ) );
+    $self->{mod} = dir( $self->{lib}, $self->{class} );
     $self->mk_dir( $self->{mod} );
 
     if ( $self->{short} ) {
-        $self->{m} = File::Spec->catdir( $self->{mod}, 'M' );
+        $self->{m} = dir( $self->{mod}, 'M' );
         $self->mk_dir( $self->{m} );
-        $self->{v} = File::Spec->catdir( $self->{mod}, 'V' );
+        $self->{v} = dir( $self->{mod}, 'V' );
         $self->mk_dir( $self->{v} );
-        $self->{c} = File::Spec->catdir( $self->{mod}, 'C' );
+        $self->{c} = dir( $self->{mod}, 'C' );
         $self->mk_dir( $self->{c} );
     }
     else {
-        $self->{m} = File::Spec->catdir( $self->{mod}, 'Model' );
+        $self->{m} = dir( $self->{mod}, 'Model' );
         $self->mk_dir( $self->{m} );
-        $self->{v} = File::Spec->catdir( $self->{mod}, 'View' );
+        $self->{v} = dir( $self->{mod}, 'View' );
         $self->mk_dir( $self->{v} );
-        $self->{c} = File::Spec->catdir( $self->{mod}, 'Controller' );
+        $self->{c} = dir( $self->{mod}, 'Controller' );
         $self->mk_dir( $self->{c} );
     }
     my $name = $self->{name};
     $self->{rootname} =
       $self->{short} ? "$name\::C::Root" : "$name\::Controller::Root";
-    $self->{base} = File::Spec->rel2abs( $self->{dir} );
+    $self->{base} = dir( $self->{dir} )->absolute;
 }
 
 sub _mk_appclass {
     my $self = shift;
     my $mod  = $self->{mod};
-    $self->render_sharedir_file( File::Spec->catfile('lib', 'MyApp.pm.tt'), "$mod.pm" );
+    $self->render_sharedir_file( file('lib', 'MyApp.pm.tt'), "$mod.pm" );
 }
 
 sub _mk_rootclass {
     my $self = shift;
-    $self->render_sharedir_file( File::Spec->catfile('lib', 'MyApp', 'Controller', 'Root.pm.tt'),
-        File::Spec->catfile( $self->{c}, "Root.pm" ) );
+    $self->render_sharedir_file( file('lib', 'MyApp', 'Controller', 'Root.pm.tt'),
+        file( $self->{c}, "Root.pm" ) );
 }
 
 sub _mk_makefile {
     my $self = shift;
-    $self->{path} = File::Spec->catfile( 'lib', split( '::', $self->{name} ) );
+    $self->{path} = dir( 'lib', split( '::', $self->{name} ) );
     $self->{path} .= '.pm';
     my $dir = $self->{dir};
-    $self->render_sharedir_file( 'Makefile.PL.tt', "$dir\/Makefile.PL" );
+    $self->render_sharedir_file( 'Makefile.PL.tt', file($dir, "Makefile.PL") );
 
     if ( $self->{makefile} ) {
 
         # deprecate the old Build.PL file when regenerating Makefile.PL
         $self->_deprecate_file(
-            File::Spec->catdir( $self->{dir}, 'Build.PL' ) );
+            file( $self->{dir}, 'Build.PL' ) );
     }
 }
 
@@ -376,80 +378,80 @@ sub _mk_config {
     my $dir       = $self->{dir};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( 'myapp.conf.tt',
-        File::Spec->catfile( $dir, "$appprefix.conf" ) );
+        file( $dir, "$appprefix.conf" ) );
 }
 
 sub _mk_readme {
     my $self = shift;
     my $dir  = $self->{dir};
-    $self->render_sharedir_file( 'README.tt', "$dir\/README" );
+    $self->render_sharedir_file( 'README.tt', file($dir, "README") );
 }
 
 sub _mk_changes {
     my $self = shift;
     my $dir  = $self->{dir};
     my $time = strftime('%Y-%m-%d %H:%M:%S', localtime time);
-    $self->render_sharedir_file( 'Changes.tt', "$dir\/Changes", { time => $time } );
+    $self->render_sharedir_file( 'Changes.tt', file($dir, "Changes", { time => $time } );
 }
 
 sub _mk_apptest {
     my $self = shift;
     my $t    = $self->{t};
-    $self->render_sharedir_file( File::Spec->catfile('t', '01app.t.tt'),         "$t\/01app.t" );
-    $self->render_sharedir_file( File::Spec->catfile('t', '02pod.t.tt'),         "$t\/02pod.t" );
-    $self->render_sharedir_file( File::Spec->catfile('t', '03podcoverage.t.tt'), "$t\/03podcoverage.t" );
+    $self->render_sharedir_file( file('t', '01app.t.tt'),         file($t, "01app.t") );
+    $self->render_sharedir_file( file('t', '02pod.t.tt'),         file($t, "02pod.t") );
+    $self->render_sharedir_file( file('t', '03podcoverage.t.tt'), file($t, "03podcoverage.t") );
 }
 
 sub _mk_cgi {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_cgi.pl.tt'), "$script\/$appprefix\_cgi.pl" );
-    chmod 0700, "$script/$appprefix\_cgi.pl";
+    $self->render_sharedir_file( file('script', 'myapp_cgi.pl.tt'), file($script,"$appprefix\_cgi.pl") );
+    chmod 0700, file($script,"$appprefix\_cgi.pl");
 }
 
 sub _mk_fastcgi {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_fastcgi.pl.tt'), "$script\/$appprefix\_fastcgi.pl" );
-    chmod 0700, "$script/$appprefix\_fastcgi.pl";
+    $self->render_sharedir_file( file('script', 'myapp_fastcgi.pl.tt'), file($script, "$appprefix\_fastcgi.pl") );
+    chmod 0700, file($script, "$appprefix\_fastcgi.pl");
 }
 
 sub _mk_server {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_server.pl.tt'), "$script\/$appprefix\_server.pl" );
-    chmod 0700, "$script/$appprefix\_server.pl";
+    $self->render_sharedir_file( file('script', 'myapp_server.pl.tt'), file($script, "$appprefix\_server.pl") );
+    chmod 0700, file($script, "$appprefix\_server.pl");
 }
 
 sub _mk_test {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_test.pl.tt'), "$script/$appprefix\_test.pl" );
-    chmod 0700, "$script/$appprefix\_test.pl";
+    $self->render_sharedir_file( file('script', 'myapp_test.pl.tt'), file($script, "$appprefix\_test.pl") );
+    chmod 0700, file($script, "$appprefix\_test.pl");
 }
 
 sub _mk_create {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_create.pl.tt'), "$script\/$appprefix\_create.pl" );
-    chmod 0700, "$script/$appprefix\_create.pl";
+    $self->render_sharedir_file( file('script', 'myapp_create.pl.tt'), file($script, "$appprefix\_create.pl") );
+    chmod 0700, file($script, "$appprefix\_create.pl");
 }
 
 sub _mk_compclass {
     my $self = shift;
     my $file = $self->{file};
-    return $self->render_sharedir_file( File::Spec->catfile('lib', 'Helper', 'compclass.pm.tt'), $file );
+    return $self->render_sharedir_file( file('lib', 'Helper', 'compclass.pm.tt'), $file );
 }
 
 sub _mk_comptest {
     my $self = shift;
     my $test = $self->{test};
-    $self->render_sharedir_file( File::Spec->catfile('t', 'comptest.tt'), $test );  ## wtf do i rename this to?
+    $self->render_sharedir_file( file('t', 'comptest.tt'), $test );  ## wtf do i rename this to?
 }
 
 sub _mk_images {
@@ -461,7 +463,7 @@ sub _mk_images {
       btn_88x31_built_shadow btn_88x31_powered btn_88x31_powered_shadow/;
     for my $name (@images) {
         my $image = $self->get_sharedir_file("root", "static", "images", "$name.png.bin");
-        $self->mk_file( File::Spec->catfile( $images, "$name.png" ), $image );
+        $self->mk_file( file( $images, "$name.png" ), $image );
     }
 }
 
@@ -469,7 +471,7 @@ sub _mk_favicon {
     my $self    = shift;
     my $root    = $self->{root};
     my $favicon = $self->get_sharedir_file( 'root', 'favicon.ico.bin' );
-    my $dest = File::Spec->catfile( $root, "favicon.ico" );
+    my $dest = dir( $root, "favicon.ico" );
     $self->mk_file( $dest, $favicon );
 
 }
@@ -478,8 +480,8 @@ sub _mk_dbic_deploy {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( File::Spec->catfile('script', 'myapp_deploy_schema.pl.tt'), "$script\/$appprefix\_deploy_schema.pl" );
-    chmod 0700, "$script/$appprefix\_deploy_schema.pl";
+    $self->render_sharedir_file( file('script', 'myapp_deploy_schema.pl.tt'), file($script, "$appprefix\_deploy_schema.pl") );
+    chmod 0700, file($script, "$appprefix\_deploy_schema.pl");
 }
 
 sub _deprecate_file {
