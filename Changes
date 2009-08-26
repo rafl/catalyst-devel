@@ -1,5 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Fix an issue with the Restarter in Win32 where @INC didn't get
+          passed along in "fork"
+
 1.20    2009-08-11 23:30:30
         - Bump required File::ChangeNotify version to 0.07. Closes RT#48610.
 
