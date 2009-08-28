@@ -54,7 +54,7 @@ sub BUILD {
 
     delete $p->{start_sub};
 
-    $p->{filter} ||= qr/(?:\/|^)(?!\.\#).+(?:\.yml$|\.yaml$|\.conf|\.pm)$/;
+    $p->{filter} ||= qr/(?:\/|^)(?![.#_]).+(?:\.yml$|\.yaml$|\.conf|\.pm)$/;
     $p->{directories} ||= abs_path( File::Spec->catdir( $FindBin::Bin, '..' ) );
 
     # We could make this lazily, but this lets us check that we
