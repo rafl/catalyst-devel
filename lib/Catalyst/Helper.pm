@@ -104,12 +104,13 @@ sub mk_app {
     }
     if ($gen_scripts) {
         for ( qw/ _mk_cgi _mk_fastcgi _mk_server 
-                  _mk_test _mk_create _mk_information / ) {
-        $self->$_;
+                  _mk_test _mk_create _mk_information
+        / ) {
+              $self->$_;
+        }
     }
     return $self->{dir};
 }
-
 
 ## not much of this can really be changed, mk_compclass must be left for 
 ## backcompat
@@ -386,7 +387,7 @@ sub _mk_changes {
     my $self = shift;
     my $dir  = $self->{dir};
     my $time = strftime('%Y-%m-%d %H:%M:%S', localtime time);
-    $self->render_sharedir_file( 'Changes.tt', file($dir, "Changes", { time => $time } );
+    $self->render_sharedir_file( 'Changes.tt', file($dir, "Changes", { time => $time } ) );
 }
 
 sub _mk_apptest {
@@ -482,12 +483,12 @@ sub _mk_dbic_deploy {
 sub _deprecate_file {
     my ( $self, $file ) = @_;
     if ( -e $file ) {
-        my $oldcontent;
-        if ( my $f = IO::File->new("< $file") ) {
+        my ($f, $oldcontent);
+        if ( $f = IO::File->new("< $file") ) {
             $oldcontent = join( '', (<$f>) );
         }
         my $newfile = $file . '.deprecated';
-        if ( my $f = IO::File->new("> $newfile") ) {
+        if ( $f = IO::File->new("> $newfile") ) {
             binmode $f;
             print $f $oldcontent;
             print qq/created "$newfile"\n/;
