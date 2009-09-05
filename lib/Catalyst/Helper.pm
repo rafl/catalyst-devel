@@ -1,4 +1,6 @@
 package Catalyst::Helper;
+use strict;
+use warnings;
 use Config;
 use File::Spec;
 use File::Path;

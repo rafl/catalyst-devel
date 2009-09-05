@@ -1,11 +1,10 @@
 package Catalyst::Restarter;
-
 use Moose;
 
 use Cwd qw( abs_path );
 use File::ChangeNotify;
 use FindBin;
-use namespace::clean -except => 'meta';
+use namespace::autoclean;
 
 has start_sub => (
     is       => 'ro',

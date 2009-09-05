@@ -1,9 +1,9 @@
 package Catalyst::Restarter::Forking;
-
 use Moose;
 
 use threads;
 use Thread::Cancel;
+use namespace::autoclean;
 
 extends 'Catalyst::Restarter';
 

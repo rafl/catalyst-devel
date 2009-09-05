@@ -1,7 +1,7 @@
 package Catalyst::Restarter::Win32;
-
 use Moose;
 use Proc::Background;
+use namespace::autoclean;
 
 extends 'Catalyst::Restarter';
 

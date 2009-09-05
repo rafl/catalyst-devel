@@ -4,14 +4,12 @@ name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
 
 requires 'Moose';
-requires 'namespace::autoclean';
-requires 'MooseX::Types';
 requires 'File::ShareDir';
+requires 'namespace::autoclean';
 requires 'Catalyst'    => '5.8000';
 requires 'Catalyst::Action::RenderView' => '0.04';
 requires 'Catalyst::Plugin::Static::Simple' => '0.16';
 requires 'Catalyst::Plugin::ConfigLoader';
-requires 'Class::Accessor::Fast';
 requires 'Config::General' => '2.42'; # as of 1.07, we use .conf and not .yaml
 requires 'File::ChangeNotify' => '0.03';
 requires 'File::Copy::Recursive';
