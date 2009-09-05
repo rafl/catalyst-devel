@@ -472,14 +472,6 @@ sub _mk_favicon {
 
 }
 
-sub _mk_dbic_deploy {
-    my $self      = shift;
-    my $script    = $self->{script};
-    my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_deploy_schema.pl.tt'), file($script, "$appprefix\_deploy_schema.pl") );
-    chmod 0700, file($script, "$appprefix\_deploy_schema.pl");
-}
-
 sub _deprecate_file {
     my ( $self, $file ) = @_;
     if ( -e $file ) {
