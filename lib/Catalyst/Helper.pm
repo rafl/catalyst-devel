@@ -1,6 +1,5 @@
 package Catalyst::Helper;
-use strict;
-use warnings;
+use Moose;
 use Config;
 use File::Spec;
 use File::Path;
@@ -13,6 +12,7 @@ use Catalyst::Utils;
 use Catalyst::Exception;
 use Path::Class qw/dir file/;
 use File::ShareDir qw/dist_dir/;
+use namespace::autoclean;
 
 my %cache;
 
@@ -387,7 +387,7 @@ sub _mk_changes {
     my $self = shift;
     my $dir  = $self->{dir};
     my $time = strftime('%Y-%m-%d %H:%M:%S', localtime time);
-    $self->render_sharedir_file( 'Changes.tt', file($dir, "Changes", { time => $time } ) );
+    $self->render_sharedir_file( 'Changes.tt', file($dir, "Changes"), { time => $time } );
 }
 
 sub _mk_apptest {
