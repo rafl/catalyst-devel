@@ -82,7 +82,7 @@ sub mk_app {
     $self->{startperl       } = -r '/usr/bin/env'
                                 ? '#!/usr/bin/env perl'
                                 : "#!$Config{perlpath} -w";
-    $self->{scriptgen       } = $Catalyst::Devel::CATALYST_SCRIPT_GEN || 4;
+    $self->{scriptgen       } = $Catalyst::Devel::CATALYST_SCRIPT_GEN || 34;
     $self->{catalyst_version} = $Catalyst::VERSION;
     $self->{author          } = $self->{author} = $ENV{'AUTHOR'}
       || eval { @{ [ getpwuid($<) ] }[6] }
@@ -93,12 +93,10 @@ sub mk_app {
     my $gen_app = ( $self->{scripts} || $self->{makefile} ) ? 0 : 1;
 
     if ($gen_app) {
-    
         for ( qw/ _mk_dirs _mk_config _mk_appclass _mk_rootclass _mk_readme
               _mk_changes _mk_apptest _mk_images _mk_favicon/ ) {
             
             $self->$_;
-       
         }
     }
     if ($gen_makefile) {
@@ -108,10 +106,6 @@ sub mk_app {
         for ( qw/ _mk_cgi _mk_fastcgi _mk_server 
                   _mk_test _mk_create _mk_information / ) {
         $self->$_;
-      #  probably want to only do this if a DBIC schema is specified, or move it
-      #  to C::H::Model::DBIC::Schema
-      #  $self->_mk_dbic_deploy; 
-        
     }
     return $self->{dir};
 }
@@ -528,10 +522,6 @@ development stage.
 The catalyst test server, starts an HTTPD which outputs debugging to
 the terminal.
 
-=head2 _deploy_dbic.pl
-
-Deploy a L<DBIx::Class> schema to the database of your choice. 
-
 =head2 _test.pl
 
 A script for running tests from the command-line.
@@ -593,7 +583,8 @@ L<Catalyst::Helper::Model::Adaptor> - wrap any class into a Catalyst model
 
 =head3 NOTE
 
-The helpers will read author name from /etc/passwd by default. + To override, please export the AUTHOR variable.
+The helpers will read author name from /etc/passwd by default.
+To override, please export the AUTHOR variable.
 
 =head1 METHODS
 
@@ -689,7 +680,6 @@ Render a template/image file from our share directory
 
 =cut
 
-
 =head1 NOTE
 
 The helpers will read author name from /etc/passwd by default.
@@ -708,8 +698,6 @@ Catalyst Contributors, see Catalyst.pm
 
 This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
-
-=begin pod_to_ignore
 
 =cut
 
