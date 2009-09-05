@@ -1,5 +1,4 @@
 package Catalyst::Helper;
-#use Moose;
 use Config;
 use File::Spec;
 use File::Path;
@@ -12,7 +11,6 @@ use Catalyst::Utils;
 use Catalyst::Exception;
 use Path::Class qw/dir file/;
 use File::ShareDir qw/dist_dir/;
-#use namespace::autoclean;
 
 my %cache;
 
