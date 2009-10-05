@@ -20,7 +20,6 @@ use Test::More;
 }
 # Fix paths / nl work on win32
 chdir("$dir/TestApp/");
-warn($dir);
 
 # Ok, this is lame.. Also, check +x permissions?
 my @files = qw|
@@ -49,7 +48,6 @@ script/testapp_fastcgi.pl
 script/testapp_server.pl
 script/testapp_test.pl
 script/testapp_create.pl
-script/testapp_deploy_schema.pl
 |;
 
 plan 'tests' => scalar @files + 4;
