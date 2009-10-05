@@ -3,9 +3,10 @@ use warnings;
 [% IF long_type == 'Controller' %][% IF mech %]use Test::More;
 
 eval "use Test::WWW::Mechanize::Catalyst '[% name %]'";
-plan $@
-    ? ( skip_all => 'Test::WWW::Mechanize::Catalyst required' )
-    : ( tests => 2 );
+if ($@) {
+    plan skip_all => 'Test::WWW::Mechanize::Catalyst required';
+	exit 0;
+}
 
 ok( my $mech = Test::WWW::Mechanize::Catalyst->new, 'Created mech object' );
 
@@ -21,3 +22,5 @@ ok( request('[% uri %]')->is_success, 'Request should succeed' );
 
 BEGIN { use_ok '[% class %]' }
 [% END %]
+
+done_testing();
