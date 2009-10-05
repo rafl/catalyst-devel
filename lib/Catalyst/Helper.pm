@@ -62,7 +62,8 @@ sub mk_app {
     $self->{startperl       } = -r '/usr/bin/env'
                                 ? '#!/usr/bin/env perl'
                                 : "#!$Config{perlpath} -w";
-    $self->{scriptgen       } = $Catalyst::Devel::CATALYST_SCRIPT_GEN || 4;
+    $self->{scriptgen       } = $Catalyst::Devel::CATALYST_SCRIPT_GEN
+        || die("Could not find SCRIPT_GEN");
     $self->{catalyst_version} = $Catalyst::VERSION;
     $self->{author          } = $self->{author} = $ENV{'AUTHOR'}
       || eval { @{ [ getpwuid($<) ] }[6] }
