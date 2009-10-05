@@ -1,7 +1,7 @@
 package Catalyst::Restarter::Win32;
+
 use Moose;
 use Proc::Background;
-use namespace::autoclean;
 
 extends 'Catalyst::Restarter';
 
@@ -16,7 +16,7 @@ sub _fork_and_start {
 
     # This is totally hack-tastic, and is probably much slower, but it
     # does seem to work.
-    my @command = ( $^X, $0, grep { ! /^\-r/ } @ARGV );
+    my @command = ( $^X, map("-I$_", @INC), $0, grep { ! /^\-r/ } @{ $self->argv } );
 
     my $child = Proc::Background->new(@command);
 

@@ -1,9 +1,6 @@
 package Catalyst::Restarter::Forking;
-use Moose;
 
-use threads;
-use Thread::Cancel;
-use namespace::autoclean;
+use Moose;
 
 extends 'Catalyst::Restarter';
 
@@ -31,9 +28,12 @@ sub _kill_child {
 
     return unless kill 0, $self->_child;
 
-    local $SIG{CHLD} = 'IGNORE';
     die "Cannot send INT signal to ", $self->_child, ": $!"
         unless kill 'INT', $self->_child;
+    # If we don't wait for the child to exit, we could attempt to
+    # start a new server before the old one has given up the port it
+    # was listening on.
+    wait;
 }
 
 1;
