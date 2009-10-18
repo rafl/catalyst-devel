@@ -77,8 +77,8 @@ sub _restart_on_changes {
 
     # We use this loop in order to avoid having _handle_events() call back
     # into this method. We used to do that, and the end result was that stack
-    # traces become longer and longer with every restart. Using the loop, the
-    # portion of the stack trace that covers this code never changes.
+    # traces became longer and longer with every restart. Using this loop, the
+    # portion of the stack trace that covers this code does not grow.
     while (1) {
         my @events = $self->_watcher->wait_for_events();
         $self->_handle_events(@events);
