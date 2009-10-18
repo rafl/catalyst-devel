@@ -75,8 +75,14 @@ sub run_and_watch {
 sub _restart_on_changes {
     my $self = shift;
 
-    my @events = $self->_watcher->wait_for_events();
-    $self->_handle_events(@events);
+    # We use this loop in order to avoid having _handle_events() call back
+    # into this method. We used to do that, and the end result was that stack
+    # traces become longer and longer with every restart. Using the loop, the
+    # portion of the stack trace that covers this code never changes.
+    while (1) {
+        my @events = $self->_watcher->wait_for_events();
+        $self->_handle_events(@events);
+    }
 }
 
 sub _handle_events {
@@ -99,8 +105,6 @@ sub _handle_events {
     $self->_kill_child;
 
     $self->_fork_and_start;
-
-    $self->_restart_on_changes;
 }
 
 sub DEMOLISH {
