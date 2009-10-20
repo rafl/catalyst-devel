@@ -1,8 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
 1.21   2009-10-18 18:33:33
-        - The Restarter code cause stack traces for certain types of errors to
-          grow longer and longer with every restart. (Dave Rolsky)
+        - The Restarter code caused stack traces for certain types of errors
+          to grow longer and longer with every restart. (Dave Rolsky)
 
         - Fixed an issue with the Restarter in Win32 where @INC didn't get
           passed along when restarting.
