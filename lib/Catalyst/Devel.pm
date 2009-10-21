@@ -37,6 +37,12 @@ Catalyst Contributors, see Catalyst.pm
 
 sri: Sebastian Riedel <sri@cpan.org>
 
+=head1 COPYRIGHT
+
+Copyright (c) 2006 - 2009
+the Catalyst::Devel L</AUTHOR>
+as listed above.
+
 =head1 LICENSE
 
 This library is free software. You can redistribute it and/or modify
