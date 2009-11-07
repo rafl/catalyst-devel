@@ -4,6 +4,7 @@ use Moose;
 
 use Cwd qw( abs_path );
 use File::ChangeNotify;
+use File::Spec;
 use FindBin;
 use namespace::clean -except => 'meta';
 
@@ -55,7 +56,18 @@ sub BUILD {
     delete $p->{start_sub};
 
     $p->{filter} ||= qr/(?:\/|^)(?![.#_]).+(?:\.yml$|\.yaml$|\.conf|\.pm)$/;
-    $p->{directories} ||= abs_path( File::Spec->catdir( $FindBin::Bin, '..' ) );
+
+    my $app_root = abs_path( File::Spec->catdir( $FindBin::Bin, '..' ) );
+
+    # Monitor application root dir
+    $p->{directories} ||= $app_root;
+
+    # exclude t/, root/ and hidden dirs
+    $p->{exclude} ||= [
+        File::Spec->catdir($app_root, 't'),
+        File::Spec->catdir($app_root, 'root'),
+        qr(/\.[^/]*/?$),    # match hidden dirs
+    ];
 
     # We could make this lazily, but this lets us check that we
     # received valid arguments for the watcher up front.
