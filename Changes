@@ -2,6 +2,8 @@ This file documents the revision history for Perl extension Catalyst-Devel.
 
         - Exclude root/, t/ and hidden dirs from file change monitoring when
           using File::ChangeNotify 0.08+. (dew)
+        - Updated POD of Module/Install/Catalyst.pm and added to the list
+          of ignored files/directories. (Karsten Heymann)
 
 1.21   2009-10-18 18:33:33
         - The Restarter code caused stack traces for certain types of errors
