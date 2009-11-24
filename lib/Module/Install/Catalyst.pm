@@ -15,7 +15,8 @@ my $SAFETY = 0;
 
 our @IGNORE =
   qw/Build Build.PL Changes MANIFEST META.yml Makefile.PL Makefile README
-  _build blib lib script t inc \.svn \.git _darcs \.bzr \.hg/;
+  _build blib lib script t inc .*\.svn \.git _darcs \.bzr \.hg
+  debian build-stamp install-stamp configure-stamp/;
 our @CLASSES   = ();
 our $ENGINE    = 'CGI';
 our $CORE      = 0;
@@ -25,11 +26,21 @@ our $USAGE     = '';
 
 =head1 NAME
 
-Module::Install::Catalyst - Module::Install extension for Catalyst
-
+  Module::Install::Catalyst - Module::Install extension for Catalyst
+  
 =head1 SYNOPSIS
-
-See L<Catalyst>
+  
+  use inc::Module::Install;
+  
+  name 'MyApp';
+  all_from 'lib/MyApp.pm';
+  
+  requires 'Catalyst::Runtime' => '5.7014';
+  
+  catalyst_ignore('.*temp');
+  catalyst_ignore('.*tmp');
+  catalyst;
+  WriteAll;
 
 =head1 DESCRIPTION
 
@@ -38,6 +49,9 @@ L<Module::Install> extension for Catalyst.
 =head1 METHODS
 
 =head2 catalyst
+
+Calls L<catalyst_files> and L<catalyst_par>. Should be the last catalyst*
+command called in C<Makefile.PL>.
 
 =cut
 
@@ -54,6 +68,10 @@ EOF
 }
 
 =head2 catalyst_files
+
+Collect a list of all files a Catalyst application consists of and copy it  
+inside the blib/lib/ directory. Files and directories that match the modules 
+ignore list are excluded (see L<catalyst_ignore> and L<catalyst_ignore_all>).
 
 =cut
 
@@ -81,6 +99,8 @@ sub catalyst_files {
 
 =head2 catalyst_ignore_all(\@ignore)
 
+This function replaces the built-in default ignore list with the given list.
+
 =cut
 
 sub catalyst_ignore_all {
@@ -89,6 +109,8 @@ sub catalyst_ignore_all {
 }
 
 =head2 catalyst_ignore(\@ignore)
+
+Add a regexp to the list of ignored patterns. Can be called multiple times.
 
 =cut
 
