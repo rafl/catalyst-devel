@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 our $VERSION             = '1.16';
-our $CATALYST_SCRIPT_GEN = 38;
+our $CATALYST_SCRIPT_GEN = 40;
 
 $VERSION = eval $VERSION;
 
