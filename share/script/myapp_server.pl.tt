@@ -1,7 +1,7 @@
 [% startperl %]
 
 BEGIN {
-    $ENV{CATALYST_SCRIPT_GEN} = [% script_gen %] 
+    $ENV{CATALYST_SCRIPT_GEN} = [% scriptgen %] 
 }
 
 use Catalyst::ScriptRunner;

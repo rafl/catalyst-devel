@@ -4,8 +4,9 @@ use warnings;
 use File::Temp qw/ tempdir tmpnam /;
 use File::Spec;
 use Test::WWW::Mechanize;
+use Catalyst::Devel;
 
-my $dir = tempdir(); # CLEANUP => 1 );
+my $dir = tempdir( CLEANUP => 1 );
 my $devnull = File::Spec->devnull;
 
 use Test::More;
@@ -50,19 +51,19 @@ script/testapp_test.pl
 script/testapp_create.pl
 |;
 
-plan 'tests' => scalar @files + 4;
-
 foreach my $fn (@files) {
     ok -r $fn, "Have $fn in generated app";
+    if ($fn =~ /script/) {
+        ok -x $fn, "$fn is executable";
+    }
 }
 
 ## Makefile stuff
 my $makefile_status = `$^X Makefile.PL`;
 ok $makefile_status, "Makefile ran okay";
 ok -e "Makefile", "Makefile exists";
-my $newapp_test_status = `prove -l t/ 2> $devnull`;
-ok $newapp_test_status, "Tests ran okay";
-#is $newapp_test_status, ;
+my $newapp_test_status = system("make", "test");
+ok !$newapp_test_status, "Tests ran okay";
 
 ## Moosey server tests - kmx++
 my $server_path   = File::Spec->catfile('script', 'testapp_server.pl');
@@ -82,4 +83,15 @@ $mech->get_ok( "http://localhost:" . $port );
 
 kill 'KILL', $childpid;
 
+my $server_script = do {
+    open(my $fh, '<', 'script/testapp_server.pl') or die $!;
+    local $/;
+    <$fh>;
+};
+
+ok $server_script =~ qr/CATALYST_SCRIPT_GEN}\s+=\s+(\d+)/,
+    'SCRIPT_GEN found in generated output';
+is $1, $Catalyst::Devel::CATALYST_SCRIPT_GEN, 'Script gen correct';
+
+done_testing;
 

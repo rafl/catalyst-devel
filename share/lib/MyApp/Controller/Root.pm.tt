@@ -20,9 +20,9 @@ __PACKAGE__->config(namespace => '');
 
 =head1 METHODS
 
-=cut
-
 =head2 index
+
+The root page (/)
 
 =cut
 
@@ -32,6 +32,12 @@ sub index :Path :Args(0) {
     # Hello World
     $c->response->body( $c->welcome_message );
 }
+
+=head2 default
+
+Standard 404 error page
+
+=cut
 
 sub default :Path {
     my ( $self, $c ) = @_;
