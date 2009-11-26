@@ -1,5 +1,6 @@
 package Catalyst::Helper;
 use Moose;
+use Moose::Util::TypeConstraints;
 use Config;
 use File::Spec;
 use File::Spec::Unix;
@@ -63,23 +64,27 @@ sub get_file {
     return 0;
 }
 
+my $appname = subtype 'Str',
+    where { /[^\w:]/ or /^\d/ or /\b:\b|:{3,}/ },
+    message { "Error: Invalid application name." };
+
+has name => ( is => 'ro', isa => $appname, required => 1 );
+
+foreach my $name (qw/ dir script appprefix appenv author /) {
+    has $name => ( is => 'ro', isa => 'Str', init_arg => undef, lazy => 1, builder => "_build_$name" );
+}
+
+sub _build_dir { my $dir = shift->name; $dir =~ s/\:\:/-/g; return $dir; }
+sub _build_script { dir( shift->dir, 'script' ) }
+sub _build_appprefix { Catalyst::Utils::appprefix(shift->name) }
+sub _build_appenv { Catalyst::Utils::appenv(shift->name) }
 
 sub mk_app {
-    my ( $self, $name ) = @_;
+    my ( $self ) = @_;
 
     # Needs to be here for PAR
     require Catalyst;
 
-    if ( $name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
-        warn "Error: Invalid application name.\n";
-        return 0;
-    }
-    $self->{name            } = $name;
-    $self->{dir             } = $name;
-    $self->{dir             } =~ s/\:\:/-/g;
-    $self->{script          } = dir( $self->{dir}, 'script' );
-    $self->{appprefix       } = Catalyst::Utils::appprefix($name);
-    $self->{appenv          } = Catalyst::Utils::class2env($name);
     $self->{startperl       } = -r '/usr/bin/env'
                                 ? '#!/usr/bin/env perl'
                                 : "#!$Config{perlpath} -w";
@@ -323,25 +328,15 @@ sub _mk_dirs {
     $self->{mod} = dir( $self->{lib}, $self->{class} );
     $self->mk_dir( $self->{mod} );
 
-    if ( $self->{short} ) {
-        $self->{m} = dir( $self->{mod}, 'M' );
-        $self->mk_dir( $self->{m} );
-        $self->{v} = dir( $self->{mod}, 'V' );
-        $self->mk_dir( $self->{v} );
-        $self->{c} = dir( $self->{mod}, 'C' );
-        $self->mk_dir( $self->{c} );
-    }
-    else {
-        $self->{m} = dir( $self->{mod}, 'Model' );
-        $self->mk_dir( $self->{m} );
-        $self->{v} = dir( $self->{mod}, 'View' );
-        $self->mk_dir( $self->{v} );
-        $self->{c} = dir( $self->{mod}, 'Controller' );
-        $self->mk_dir( $self->{c} );
-    }
+    $self->{m} = dir( $self->{mod}, 'Model' );
+    $self->mk_dir( $self->{m} );
+    $self->{v} = dir( $self->{mod}, 'View' );
+    $self->mk_dir( $self->{v} );
+    $self->{c} = dir( $self->{mod}, 'Controller' );
+    $self->mk_dir( $self->{c} );
+
     my $name = $self->{name};
-    $self->{rootname} =
-      $self->{short} ? "$name\::C::Root" : "$name\::Controller::Root";
+    $self->{rootname} = "$name\::Controller::Root";
     $self->{base} = dir( $self->{dir} )->absolute;
 }
 
