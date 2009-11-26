@@ -14,7 +14,7 @@ Catalyst::ScriptRunner->run('[% name %]','Test');
 [% appprefix %]_test.pl [options] uri
 
  Options:
-   -help    display this help and exits
+   --help    display this help and exits
 
  Examples:
    [% appprefix %]_test.pl http://localhost/some_action
