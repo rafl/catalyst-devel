@@ -185,17 +185,19 @@ sub mk_component {
                     message => qq/Couldn't load helper "$class", "$@"/ );
             }
 
-            ## must be left for back compat! ###################################
             if ( $class->can('mk_compclass') ) {
                 return 1 unless $class->mk_compclass( $self, @args );
             }
-            else { return 1 unless $self->_mk_compclass }
+            else {
+                return 1 unless $self->_mk_compclass
+            }
 
             if ( $class->can('mk_comptest') ) {
                 $class->mk_comptest( $self, @args );
             }
-            else { $self->_mk_comptest }
-            ####################################################################
+            else {
+                $self->_mk_comptest
+            }
         }
 
         # Fallback
