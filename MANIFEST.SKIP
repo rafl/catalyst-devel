@@ -2,9 +2,6 @@
 # blib/, but not in a built dist (i.e. not used outside of author mode).
 ^INSTALL.SKIP
 
-# Ignore gsoc docs
-^gsoc
-
 # Avoid version control files.
 \bRCS\b
 \bCVS\b
