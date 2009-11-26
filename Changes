@@ -1,32 +1,38 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
-NOO-STUFFS 2009-06-17
-         - added File::ShareDir capabilities
-         - added Path::Class::Dir and Path::Class:File for ease of F::ShareDir
-           file manip
-         - modified the following methods:
-         --  _mk_appclass    - sends the new filename to be rendered
-         --  _mk_rootclass   - ''
-         --  _mk_makefile    - ''
-         --  _mk_config      - ''
-         --  _mk_readme      - ''
-         --  _mk_changes     - ''
-         --  _mk_apptest     - ''
-         --  _mk_cgi         - ''
-         --  _mk_fastcgi     - ''
-         --  _mk_server      - ''
-         --  _mk_test        - ''
-         --  _mk_create      - ''
-         --  _mk_compclass   - ''
-         --  _mk_comptestsub - ''
-         --  _mk_images      - ''
-         --  _mk_images      - ''
-         --  _mk_favicon     - ''
-         --  render_file     - this now calls render_file_contents to DTRT
-         - new methods:
-         -- get_sharedir_file    - this grabs a file out of share/ dir
-         -- render_sharedir_file - this renders our sharedir file properly, using render_file_contents
+        - Exclude root/, t/ and hidden dirs from file change monitoring when
+          using File::ChangeNotify 0.08+. (dew)
+        - Updated POD of Module/Install/Catalyst.pm and added to the list
+          of ignored files/directories. (Karsten Heymann)
 
+1.21   2009-10-18 18:33:33
+        - The Restarter code caused stack traces for certain types of errors
+          to grow longer and longer with every restart. (Dave Rolsky)
+
+        - Fixed an issue with the Restarter in Win32 where @INC didn't get
+          passed along when restarting.
+
+1.20    2009-08-11 23:30:30
+        - Bump required File::ChangeNotify version to 0.07. Closes RT#48610.
+
+1.19    2009-06-29 00:36:50
+        - Update Module::Install to a version that doesn't screw up
+          auto_install anymore (Closes: RT#45784).
+        - Generate Makefile.PLs with unix-paths, even on windows (Closes:
+          RT#46059).
+
+1.18    2009-06-10 17:43:12
+        - The forking restarter was not waiting for the child to exit,
+          which could lead to a race condition. If the old child did
+          not exit before the new child tried to bind to its socket,
+          it would find the old child blocking the port it wanted.
+        - More fixes for the Win32 restarter. It was effectively
+          ignoring all command-line options except those related to
+          the restarter itself.
+
+1.17    2009-05-24 18:18:17
+        - Catalyst::Restarter::Forking loaded the threads and
+          Thread::Cancel modules, even though it doesn't need them.
 
 1.16    2009-05-23 17:29:29
         - Catalyst prereq changed to 5.80. Thanks, kold! (jhannah)

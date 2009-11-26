@@ -4,6 +4,7 @@ use Moose;
 
 use Cwd qw( abs_path );
 use File::ChangeNotify;
+use File::Spec;
 use FindBin;
 use namespace::clean -except => 'meta';
 
@@ -55,7 +56,18 @@ sub BUILD {
     delete $p->{start_sub};
 
     $p->{filter} ||= qr/(?:\/|^)(?![.#_]).+(?:\.yml$|\.yaml$|\.conf|\.pm)$/;
-    $p->{directories} ||= abs_path( File::Spec->catdir( $FindBin::Bin, '..' ) );
+
+    my $app_root = abs_path( File::Spec->catdir( $FindBin::Bin, '..' ) );
+
+    # Monitor application root dir
+    $p->{directories} ||= $app_root;
+
+    # exclude t/, root/ and hidden dirs
+    $p->{exclude} ||= [
+        File::Spec->catdir($app_root, 't'),
+        File::Spec->catdir($app_root, 'root'),
+        qr(/\.[^/]*/?$),    # match hidden dirs
+    ];
 
     # We could make this lazily, but this lets us check that we
     # received valid arguments for the watcher up front.
@@ -75,8 +87,14 @@ sub run_and_watch {
 sub _restart_on_changes {
     my $self = shift;
 
-    my @events = $self->_watcher->wait_for_events();
-    $self->_handle_events(@events);
+    # We use this loop in order to avoid having _handle_events() call back
+    # into this method. We used to do that, and the end result was that stack
+    # traces became longer and longer with every restart. Using this loop, the
+    # portion of the stack trace that covers this code does not grow.
+    while (1) {
+        my @events = $self->_watcher->wait_for_events();
+        $self->_handle_events(@events);
+    }
 }
 
 sub _handle_events {
@@ -99,8 +117,6 @@ sub _handle_events {
     $self->_kill_child;
 
     $self->_fork_and_start;
-
-    $self->_restart_on_changes;
 }
 
 sub DEMOLISH {

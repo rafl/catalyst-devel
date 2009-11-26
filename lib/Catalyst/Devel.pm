@@ -3,7 +3,7 @@ package Catalyst::Devel;
 use strict;
 use warnings;
 
-our $VERSION             = '1.16';
+our $VERSION             = '1.21';
 our $CATALYST_SCRIPT_GEN = 40;
 
 $VERSION = eval $VERSION;
@@ -36,6 +36,12 @@ Catalyst Contributors, see Catalyst.pm
 =head1 PROJECT FOUNDER
 
 sri: Sebastian Riedel <sri@cpan.org>
+
+=head1 COPYRIGHT
+
+Copyright (c) 2006 - 2009
+the Catalyst::Devel L</AUTHOR>
+as listed above.
 
 =head1 LICENSE
 
