@@ -1,8 +1,8 @@
 package [% class %];
+use Moose;
+use namespace::autoclean;
 
-use strict;
-use warnings;
-use parent 'Catalyst::[% long_type %]';
+[% IF long_type == 'Controller' %]BEGIN {[% END %]extends 'Catalyst::[% long_type %]';[% IF long_type == 'Controller' %] }[% END %]
 
 =head1 NAME
 
@@ -39,4 +39,5 @@ it under the same terms as Perl itself.
 
 =cut
 
-1;
+__PACKAGE__->meta->make_immutable;
+
