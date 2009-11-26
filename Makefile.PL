@@ -5,6 +5,7 @@ all_from 'lib/Catalyst/Devel.pm';
 
 requires 'Moose';
 requires 'File::ShareDir';
+requires 'namespace::clean';
 requires 'namespace::autoclean';
 requires 'Catalyst'    => '5.8000';
 requires 'Catalyst::Action::RenderView' => '0.04';
