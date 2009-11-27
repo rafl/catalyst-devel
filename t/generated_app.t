@@ -3,6 +3,7 @@ use warnings;
 use lib ();
 use File::Temp qw/ tempdir tmpnam /;
 use File::Spec;
+use FindBin qw/$Bin/;
 use Catalyst::Devel;
 
 my $dir = tempdir(CLEANUP => 1);
@@ -54,29 +55,14 @@ my @files = qw|
     script/testapp_create.pl
 |;
 
-foreach my $fn (@files) {
-    ok -r $fn, "Have $fn in generated app";
-    if ($fn =~ /script/) {
-        ok -x $fn, "$fn is executable";
-    }
-    if ($fn =~ /\.p[ml]/) {
-        is system($^X, '-c', $fn), 0, "$fn compiles";
-    }
+foreach my $fn (map { File::Spec->catdir(@$_) } map { [ split /\// ] } @files) {
+    test_fn($fn);
 }
+create_ok($_, 'My' . $_) for qw/Model View Controller/;
 
 is system($^X, 'Makefile.PL'), 0, 'Ran Makefile.PL';
 ok -e "Makefile", "Makefile generated";
 is system("make"), 0, 'Run make';
-
-{
-    local $ENV{TEST_POD} = 1;
-    local $ENV{CATALYST_DEBUG} = 0;
-    foreach my $test (grep { m|^t/| } @files) {
-        subtest "Generated app test: $test", sub {
-            require $test;
-        }
-    }
-}
 
 my $server_script = do {
     open(my $fh, '<', File::Spec->catdir(qw/script testapp_server.pl/)) or fail $!;
@@ -91,3 +77,34 @@ is $1, $Catalyst::Devel::CATALYST_SCRIPT_GEN, 'Script gen correct';
 
 chdir('/');
 done_testing;
+
+sub runperl {
+    my $comment = pop @_;
+    is system($^X, '-I', File::Spec->catdir($Bin, '..', 'lib'), @_), 0, $comment;
+}
+
+sub test_fn {
+    local $ENV{TEST_POD} = 1;
+    local $ENV{CATALYST_DEBUG} = 0;
+    
+    my $fn = shift;
+    ok -r $fn, "Have $fn in generated app";
+    if ($fn =~ /script/) {
+        ok -x $fn, "$fn is executable";
+    }
+    if ($fn =~ /\.p[ml]$/) {
+        runperl( '-c', $fn, "$fn compiles" );
+    }
+    if ($fn =~ /\.t$/) {
+        subtest "Generated app test: $fn", sub {
+            require $fn;
+        };
+    }
+}
+
+sub create_ok {
+    my ($type, $name) = @_;
+    runperl( File::Spec->catdir('script', 'testapp_create.pl'), $type, $name,
+        "'script/testapp_create.pl $type $name' ok");
+    test_fn(File::Spec->catdir('t', sprintf("%s_%s.t", $type, $name)));
+}

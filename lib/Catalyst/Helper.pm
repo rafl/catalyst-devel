@@ -67,7 +67,7 @@ my $appname = subtype 'Str',
     where { not (/[^\w:]/ or /^\d/ or /\b:\b|:{3,}/) },
     message { "Error: Invalid application name '$_'." };
 
-has name => ( is => 'ro', isa => $appname, required => 1 );
+has name => ( is => 'ro', isa => $appname, writer => '_set_name', lazy => 1, isa => 'Str', default => sub { confess("no name") } );
 
 my @lazy_strs = qw/ dir appprefix author rootname /;
 foreach my $name (@lazy_strs) {
@@ -78,29 +78,40 @@ class_type 'Path::Class::Dir';
 my $coerced_dir = subtype 'Str', where { 1 };
 coerce $coerced_dir, from 'Path::Class::Dir', via { '' . $_ };
 
-my @lazy_dirs = qw/ lib root static images t class mod m v c base script /;
+my @lazy_dirs = qw/ class base script /;
 foreach my $name (@lazy_dirs) {
     has $name => ( is => 'ro', isa => $coerced_dir, coerce => 1, init_arg => undef, lazy => 1, builder => "_build_$name" );
 }
 
-sub BUILD {
-    my $self = shift;
-    $self->$_ for @lazy_strs, @lazy_dirs;
+foreach my $wrap (qw/mk_app/) {
+    before $wrap => sub {
+        my $self = shift;
+        $self->$_ for @lazy_strs, @lazy_dirs;
+    };
 }
 
-sub _build_lib { dir( shift->dir, 'lib' ) }
-sub _build_root { dir( shift->dir, 'root' ) }
-sub _build_static { dir( shift->root, 'static' ) }
-sub _build_images { dir( shift->static, 'images' ) }
-sub _build_t { dir( shift->dir, 't' ) }
-sub _build_class { dir( split( /\:\:/, shift->name ) ) }
-sub _build_mod { my $self = shift; dir( $self->lib, $self->class ) }
-sub _build_m { dir( shift->mod, 'Model' ) }
-sub _build_v { dir( shift->mod, 'View' ) }
-sub _build_c { dir( shift->mod, 'Controller' ) }
-sub _build_base { dir( shift->dir )->absolute }
-sub _build_script { dir( shift->dir, 'script' ) }
+sub _build_dir_locations {
+    my $self = shift;
+    my ($script, $lib, $root, $static, $mod);
+    return (
+        script => do { $script = dir( $self->dir, 'script' ) },
+        lib => do { $lib =  dir( $self->dir, 'lib' ) },
+        root => do { $root = dir( $self->dir, 'root' ) },
+        static => do {$static = dir( $root, 'static' ) },
+        images => dir( $static, 'images' ),
+        t => dir( $self->dir, 't' ),
+        mod => do { $mod = dir( $self->lib, $self->class ) },
+        m => dir( $mod, 'Model' ),
+        v => dir( $mod, 'View' ),
+        c => dir( $mod, 'Controller' ),
+    );
+}
 
+sub _build_class { dir( split( /\:\:/, shift->name ) ) }
+
+
+
+sub _build_base { dir( shift->dir )->absolute }
 sub _build_dir { my $dir = shift->name; $dir =~ s/\:\:/-/g; return $dir; }
 sub _build_appprefix { Catalyst::Utils::appprefix(shift->name) }
 sub _build_author {
@@ -109,6 +120,15 @@ sub _build_author {
   || 'Catalyst developer';
 }
 sub _build_rootname { shift->name . '::Controller::Root' }
+
+has _app_template_data => ( isa => 'HashRef', is => 'ro', lazy => 1, builder => '_build_app_template_data' );
+sub _build_app_template_data {
+    my $self = shift;
+    my %data = (
+        $self->_build_dir_locations,
+    );
+    return \%data;
+}
 
 sub mk_app {
     my ( $self ) = @_;
@@ -130,7 +150,7 @@ sub mk_app {
         for ( qw/ _mk_dirs _mk_config _mk_appclass _mk_rootclass _mk_readme
               _mk_changes _mk_apptest _mk_images _mk_favicon/ ) {
             
-            $self->$_;
+            $self->$_($self->_app_template_data);
         }
     }
     if ($gen_makefile) {
@@ -140,7 +160,7 @@ sub mk_app {
         for ( qw/ _mk_cgi _mk_fastcgi _mk_server 
                   _mk_test _mk_create _mk_information
         / ) {
-              $self->$_;
+              $self->$_($self->_app_template_data);
         }
     }
     return $self->dir;
@@ -337,14 +357,15 @@ sub _mk_information {
 
 sub _mk_dirs {
     my $self = shift;
-    foreach my $name ( qw/ dir script lib root static images t mod m v c /) {
-        $self->mk_dir( $self->$name() );
+    my @dirs = $self->_build_dir_locations;
+    while (my ($name, $location) = (shift(@dirs), shift(@dirs))) {
+        $self->mk_dir( $location );
     }
 }
 
 sub _mk_appclass {
     my $self = shift;
-    my $mod  = $self->{mod};
+    my $mod  = $self->mod;
     $self->render_sharedir_file( file('lib', 'MyApp.pm.tt'), "$mod.pm" );
 }
 
