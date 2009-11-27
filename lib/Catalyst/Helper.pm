@@ -63,25 +63,52 @@ sub get_file {
     }
     return 0;
 }
-
 my $appname = subtype 'Str',
-    where { /[^\w:]/ or /^\d/ or /\b:\b|:{3,}/ },
-    message { "Error: Invalid application name." };
+    where { not (/[^\w:]/ or /^\d/ or /\b:\b|:{3,}/) },
+    message { "Error: Invalid application name '$_'." };
 
 has name => ( is => 'ro', isa => $appname, required => 1 );
 
-foreach my $name (qw/ dir script appprefix author /) {
+my @lazy_strs = qw/ dir appprefix author rootname /;
+foreach my $name (@lazy_strs) {
     has $name => ( is => 'ro', isa => 'Str', init_arg => undef, lazy => 1, builder => "_build_$name" );
 }
 
-sub _build_dir { my $dir = shift->name; $dir =~ s/\:\:/-/g; return $dir; }
+class_type 'Path::Class::Dir';
+my $coerced_dir = subtype 'Str', where { 1 };
+coerce $coerced_dir, from 'Path::Class::Dir', via { '' . $_ };
+
+my @lazy_dirs = qw/ lib root static images t class mod m v c base script /;
+foreach my $name (@lazy_dirs) {
+    has $name => ( is => 'ro', isa => $coerced_dir, coerce => 1, init_arg => undef, lazy => 1, builder => "_build_$name" );
+}
+
+sub BUILD {
+    my $self = shift;
+    $self->$_ for @lazy_strs, @lazy_dirs;
+}
+
+sub _build_lib { dir( shift->dir, 'lib' ) }
+sub _build_root { dir( shift->dir, 'root' ) }
+sub _build_static { dir( shift->root, 'static' ) }
+sub _build_images { dir( shift->static, 'images' ) }
+sub _build_t { dir( shift->dir, 't' ) }
+sub _build_class { dir( split( /\:\:/, shift->name ) ) }
+sub _build_mod { my $self = shift; dir( $self->lib, $self->class ) }
+sub _build_m { dir( shift->mod, 'Model' ) }
+sub _build_v { dir( shift->mod, 'View' ) }
+sub _build_c { dir( shift->mod, 'Controller' ) }
+sub _build_base { dir( shift->dir )->absolute }
 sub _build_script { dir( shift->dir, 'script' ) }
+
+sub _build_dir { my $dir = shift->name; $dir =~ s/\:\:/-/g; return $dir; }
 sub _build_appprefix { Catalyst::Utils::appprefix(shift->name) }
 sub _build_author {
-    ENV{'AUTHOR'}
+    $ENV{'AUTHOR'}
   || eval { @{ [ getpwuid($<) ] }[6] }
   || 'Catalyst developer';
 }
+sub _build_rootname { shift->name . '::Controller::Root' }
 
 sub mk_app {
     my ( $self ) = @_;
@@ -228,6 +255,7 @@ sub mk_dir {
 
 sub mk_file {
     my ( $self, $file, $content ) = @_;
+    Carp::confess("No file") unless $file;
     if ( -e $file && -s _ ) {
         print qq/ exists "$file"\n/;
         return 0
@@ -307,23 +335,6 @@ sub _mk_information {
     print qq/Change to application directory and Run "perl Makefile.PL" to make sure your install is complete\n/;
 }
 
-foreach my $name (qw/ lib root static images t class mod m v c rootname base /) {
-    has $name => ( is => 'ro', isa => 'Str', init_arg => undef, lazy => 1, builder => "_build_$name" );
-}
-
-sub _build_lib { dir( shift->dir, 'lib' ) }
-sub _build_root { dir( shift->dir, 'lib' ) }
-sub _build_static { dir( shift->dir, 'lib' ) }
-sub _build_images { dir( shift->dir, 'lib' ) }
-sub _build_t { dir( shift->dir, 'lib' ) }
-sub _build_class { dir( split( /\:\:/, shift->name ) ) }
-sub _build_mod { my $self = shift; dir( $self->lib, $self->class ) }
-sub _build_m { dir( shift->mod, 'Model' ) }
-sub _build_v { dir( shift->mod, 'View' ) }
-sub _build_c { dir( shift->mod, 'Controller' ) }
-sub _build_rootname { shift->name . '::Controller::Root' }
-sub _build_base { dir( shift->dir )->absolute }
-
 sub _mk_dirs {
     my $self = shift;
     foreach my $name ( qw/ dir script lib root static images t mod m v c /) {
@@ -340,7 +351,7 @@ sub _mk_appclass {
 sub _mk_rootclass {
     my $self = shift;
     $self->render_sharedir_file( file('lib', 'MyApp', 'Controller', 'Root.pm.tt'),
-        file( $self->{c}, "Root.pm" ) );
+        file( $self->c, "Root.pm" ) );
 }
 
 sub _mk_makefile {
@@ -385,7 +396,7 @@ sub _mk_apptest {
 sub _mk_cgi {
     my $self      = shift;
     my $fn = file($self->script, $self->appprefix . "_cgi.pl");
-    $self->render_sharedir_file( file('script', 'myapp_cgi.pl.tt') );
+    $self->render_sharedir_file( file('script', 'myapp_cgi.pl.tt'), $fn );
     chmod 0700, $fn;
 }
 
