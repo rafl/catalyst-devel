@@ -70,14 +70,18 @@ my $appname = subtype 'Str',
 
 has name => ( is => 'ro', isa => $appname, required => 1 );
 
-foreach my $name (qw/ dir script appprefix appenv author /) {
+foreach my $name (qw/ dir script appprefix author /) {
     has $name => ( is => 'ro', isa => 'Str', init_arg => undef, lazy => 1, builder => "_build_$name" );
 }
 
 sub _build_dir { my $dir = shift->name; $dir =~ s/\:\:/-/g; return $dir; }
 sub _build_script { dir( shift->dir, 'script' ) }
 sub _build_appprefix { Catalyst::Utils::appprefix(shift->name) }
-sub _build_appenv { Catalyst::Utils::appenv(shift->name) }
+sub _build_author {
+    ENV{'AUTHOR'}
+  || eval { @{ [ getpwuid($<) ] }[6] }
+  || 'Catalyst developer';
+}
 
 sub mk_app {
     my ( $self ) = @_;
@@ -90,9 +94,6 @@ sub mk_app {
                                 : "#!$Config{perlpath} -w";
     $self->{scriptgen       } = $Catalyst::Devel::CATALYST_SCRIPT_GEN;
     $self->{catalyst_version} = $Catalyst::VERSION;
-    $self->{author          } = $self->{author} = $ENV{'AUTHOR'}
-      || eval { @{ [ getpwuid($<) ] }[6] }
-      || 'Catalyst developer';
 
     my $gen_scripts  = ( $self->{makefile} ) ? 0 : 1;
     my $gen_makefile = ( $self->{scripts} )  ? 0 : 1;
@@ -115,7 +116,7 @@ sub mk_app {
               $self->$_;
         }
     }
-    return $self->{dir};
+    return $self->dir;
 }
 
 ## not much of this can really be changed, mk_compclass must be left for 
@@ -124,10 +125,7 @@ sub mk_component {
     my $self = shift;
     my $app  = shift;
     $self->{app} = $app;
-    $self->{author} = $self->{author} = $ENV{'AUTHOR'}
-      || eval { @{ [ getpwuid($<) ] }[6] }
-      || 'A clever guy';
-    $self->{base} ||= dir( $FindBin::Bin, '..' );
+    $self->{base} ||= dir( $FindBin::Bin, '..' ); # FIXME!
     unless ( $_[0] =~ /^(?:model|view|controller)$/i ) {
         my $helper = shift;
         my @args   = @_;
@@ -309,35 +307,28 @@ sub _mk_information {
     print qq/Change to application directory and Run "perl Makefile.PL" to make sure your install is complete\n/;
 }
 
+foreach my $name (qw/ lib root static images t class mod m v c rootname base /) {
+    has $name => ( is => 'ro', isa => 'Str', init_arg => undef, lazy => 1, builder => "_build_$name" );
+}
+
+sub _build_lib { dir( shift->dir, 'lib' ) }
+sub _build_root { dir( shift->dir, 'lib' ) }
+sub _build_static { dir( shift->dir, 'lib' ) }
+sub _build_images { dir( shift->dir, 'lib' ) }
+sub _build_t { dir( shift->dir, 'lib' ) }
+sub _build_class { dir( split( /\:\:/, shift->name ) ) }
+sub _build_mod { my $self = shift; dir( $self->lib, $self->class ) }
+sub _build_m { dir( shift->mod, 'Model' ) }
+sub _build_v { dir( shift->mod, 'View' ) }
+sub _build_c { dir( shift->mod, 'Controller' ) }
+sub _build_rootname { shift->name . '::Controller::Root' }
+sub _build_base { dir( shift->dir )->absolute }
+
 sub _mk_dirs {
     my $self = shift;
-    $self->mk_dir( $self->{dir} );
-    $self->mk_dir( $self->{script} );
-    $self->{lib} = dir( $self->{dir}, 'lib' );
-    $self->mk_dir( $self->{lib} );
-    $self->{root} = dir( $self->{dir}, 'root' );
-    $self->mk_dir( $self->{root} );
-    $self->{static} = dir( $self->{root}, 'static' );
-    $self->mk_dir( $self->{static} );
-    $self->{images} = dir( $self->{static}, 'images' );
-    $self->mk_dir( $self->{images} );
-    $self->{t} = dir( $self->{dir}, 't' );
-    $self->mk_dir( $self->{t} );
-
-    $self->{class} = dir( split( /\:\:/, $self->{name} ) );
-    $self->{mod} = dir( $self->{lib}, $self->{class} );
-    $self->mk_dir( $self->{mod} );
-
-    $self->{m} = dir( $self->{mod}, 'Model' );
-    $self->mk_dir( $self->{m} );
-    $self->{v} = dir( $self->{mod}, 'View' );
-    $self->mk_dir( $self->{v} );
-    $self->{c} = dir( $self->{mod}, 'Controller' );
-    $self->mk_dir( $self->{c} );
-
-    my $name = $self->{name};
-    $self->{rootname} = "$name\::Controller::Root";
-    $self->{base} = dir( $self->{dir} )->absolute;
+    foreach my $name ( qw/ dir script lib root static images t mod m v c /) {
+        $self->mk_dir( $self->$name() );
+    }
 }
 
 sub _mk_appclass {
@@ -356,36 +347,31 @@ sub _mk_makefile {
     my $self = shift;
     $self->{path} = dir( 'lib', split( '::', $self->{name} ) );
     $self->{path} .= '.pm';
-    my $dir = $self->{dir};
-    $self->render_sharedir_file( 'Makefile.PL.tt', file($dir, "Makefile.PL") );
+    $self->render_sharedir_file( 'Makefile.PL.tt', file($self->dir, "Makefile.PL") );
 
     if ( $self->{makefile} ) {
 
         # deprecate the old Build.PL file when regenerating Makefile.PL
         $self->_deprecate_file(
-            file( $self->{dir}, 'Build.PL' ) );
+            file( $self->dir, 'Build.PL' ) );
     }
 }
 
 sub _mk_config {
     my $self      = shift;
-    my $dir       = $self->{dir};
-    my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( 'myapp.conf.tt',
-        file( $dir, "$appprefix.conf" ) );
+        file( $self->dir, $self->appprefix . ".conf" ) );
 }
 
 sub _mk_readme {
     my $self = shift;
-    my $dir  = $self->{dir};
-    $self->render_sharedir_file( 'README.tt', file($dir, "README") );
+    $self->render_sharedir_file( 'README.tt', file($self->dir, "README") );
 }
 
 sub _mk_changes {
     my $self = shift;
-    my $dir  = $self->{dir};
     my $time = strftime('%Y-%m-%d %H:%M:%S', localtime time);
-    $self->render_sharedir_file( 'Changes.tt', file($dir, "Changes"), { time => $time } );
+    $self->render_sharedir_file( 'Changes.tt', file($self->dir, "Changes"), { time => $time } );
 }
 
 sub _mk_apptest {
@@ -398,42 +384,37 @@ sub _mk_apptest {
 
 sub _mk_cgi {
     my $self      = shift;
-    my $script    = $self->{script};
-    my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_cgi.pl.tt'), file($script,"$appprefix\_cgi.pl") );
-    chmod 0700, file($script,"$appprefix\_cgi.pl");
+    my $fn = file($self->script, $self->appprefix . "_cgi.pl");
+    $self->render_sharedir_file( file('script', 'myapp_cgi.pl.tt') );
+    chmod 0700, $fn;
 }
 
 sub _mk_fastcgi {
     my $self      = shift;
-    my $script    = $self->{script};
-    my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_fastcgi.pl.tt'), file($script, "$appprefix\_fastcgi.pl") );
-    chmod 0700, file($script, "$appprefix\_fastcgi.pl");
+    my $fn = file($self->script, $self->appprefix . "_fastcgi.pl");
+    $self->render_sharedir_file( file('script', 'myapp_fastcgi.pl.tt'), $fn );
+    chmod 0700, $fn;
 }
 
 sub _mk_server {
     my $self      = shift;
-    my $script    = $self->{script};
-    my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_server.pl.tt'), file($script, "$appprefix\_server.pl") );
-    chmod 0700, file($script, "$appprefix\_server.pl");
+    my $fn = file($self->script, $self->appprefix . "_server.pl");
+    $self->render_sharedir_file( file('script', 'myapp_server.pl.tt'), $fn );
+    chmod 0700, $fn;
 }
 
 sub _mk_test {
     my $self      = shift;
-    my $script    = $self->{script};
-    my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_test.pl.tt'), file($script, "$appprefix\_test.pl") );
-    chmod 0700, file($script, "$appprefix\_test.pl");
+    my $fn = file($self->script, $self->appprefix . "_test.pl");
+    $self->render_sharedir_file( file('script', 'myapp_test.pl.tt'), $fn );
+    chmod 0700, $fn;
 }
 
 sub _mk_create {
     my $self      = shift;
-    my $script    = $self->{script};
-    my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_create.pl.tt'), file($script, "$appprefix\_create.pl") );
-    chmod 0700, file($script, "$appprefix\_create.pl");
+    my $fn = file($self->script, $self->appprefix . "_create.pl");
+    $self->render_sharedir_file( file('script', 'myapp_create.pl.tt'), $fn );
+    chmod 0700, $fn;
 }
 
 sub _mk_compclass {
