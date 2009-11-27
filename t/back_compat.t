@@ -3,11 +3,10 @@ use warnings;
 use FindBin qw/$Bin/;
 use File::Temp qw/tempfile/;
 use lib "$Bin/lib";
-use Data::Dumper;
 
 use MyTestHelper;
 
-use Test::More tests => 3;
+use Test::More;
 
 my $helper = bless {}, 'MyTestHelper';
 
@@ -38,3 +37,4 @@ my $contents;
 }
 is $contents, "foobartest_val\n";
 
+done_testing;

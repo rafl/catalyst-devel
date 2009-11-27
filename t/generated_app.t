@@ -1,12 +1,11 @@
 use strict;
 use warnings;
-
+use lib ();
 use File::Temp qw/ tempdir tmpnam /;
 use File::Spec;
-use Test::WWW::Mechanize;
 use Catalyst::Devel;
 
-my $dir = tempdir();
+my $dir = tempdir(CLEANUP => 1);
 my $devnull = File::Spec->devnull;
 
 use Test::More;
@@ -23,8 +22,9 @@ diag "In $dir";
     }
     is $exit, 0, 'Exit status ok';
 }
-# FIXME paths / nl work on win32
-chdir("$dir/TestApp/");
+
+chdir(File::Spec->catdir($dir, 'TestApp'));
+lib->import(File::Spec->catdir($dir, 'TestApp', 'lib'));
 
 my @files = qw|
     Makefile.PL
@@ -70,31 +70,13 @@ is system("make"), 0, 'Run make';
 
 {
     local $ENV{TEST_POD} = 1;
-
+    local $ENV{CATALYST_DEBUG} = 0;
     foreach my $test (grep { m|^t/| } @files) {
         subtest "Generated app test: $test", sub {
             require $test;
         }
     }
 }
-
-## Moosey server tests - kmx++
-my $server_path   = File::Spec->catfile('script', 'testapp_server.pl');
-my $port = int(rand(10000)) + 40000; # get random port between 40000-50000
-
-my $childpid = fork();
-die "fork() error, cannot continue" unless defined($childpid);
-
-if ($childpid == 0) {
-  system("$^X $server_path -p $port > $devnull 2>&1");
-  exit; # just for sure; we should never got here
-}
-
-sleep 10; #wait for catalyst application to start
-my $mech = Test::WWW::Mechanize->new;
-$mech->get_ok( "http://localhost:" . $port );
-
-kill 'KILL', $childpid;
 
 my $server_script = do {
     open(my $fh, '<', 'script/testapp_server.pl') or die $!;
@@ -107,6 +89,4 @@ ok $server_script =~ qr/CATALYST_SCRIPT_GEN}\s+=\s+(\d+)/,
 is $1, $Catalyst::Devel::CATALYST_SCRIPT_GEN, 'Script gen correct';
 
 chdir('/');
-
 done_testing;
-
