@@ -1,4 +1,5 @@
-. More tests
-. Test component class generation
-. Test TT helper generation
-
+. Manually test script_create and component class creation
+. Tests for component class generation in generated app
+. Manually test TT helper generation
+. More attributes in ::Helper?
+. Tests for Helper construction by other things (what does TT helper do for example)

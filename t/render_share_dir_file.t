@@ -14,6 +14,7 @@ close $fh;
 
 ok( $helper->render_sharedir_file('script/myapp_cgi.pl.tt', $fn, { appprefix  => 'fnargh' }), "sharedir file rendered" ); 
 ok -r $fn;
+ok -s $fn;
 unlink $fn;
 
 done_testing;

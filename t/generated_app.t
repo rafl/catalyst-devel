@@ -10,7 +10,7 @@ my $devnull = File::Spec->devnull;
 
 use Test::More;
 
-diag "In $dir";
+diag "Generated app is in $dir";
 
 {
     my $exit;
@@ -59,13 +59,13 @@ foreach my $fn (@files) {
     if ($fn =~ /script/) {
         ok -x $fn, "$fn is executable";
     }
+    if ($fn =~ /\.p[ml]/) {
+        is system($^X, '-c', $fn), 0, "$fn compiles";
+    }
 }
 
-## Makefile stuff
-my $makefile_status = `$^X Makefile.PL`;
-ok $makefile_status, "Makefile ran okay";
-ok -e "Makefile", "Makefile exists";
-
+is system($^X, 'Makefile.PL'), 0, 'Ran Makefile.PL';
+ok -e "Makefile", "Makefile generated";
 is system("make"), 0, 'Run make';
 
 {
@@ -79,11 +79,12 @@ is system("make"), 0, 'Run make';
 }
 
 my $server_script = do {
-    open(my $fh, '<', 'script/testapp_server.pl') or die $!;
+    open(my $fh, '<', File::Spec->catdir(qw/script testapp_server.pl/)) or fail $!;
     local $/;
     <$fh>;
 };
 
+ok $server_script;
 ok $server_script =~ qr/CATALYST_SCRIPT_GEN}\s+=\s+(\d+)/,
     'SCRIPT_GEN found in generated output';
 is $1, $Catalyst::Devel::CATALYST_SCRIPT_GEN, 'Script gen correct';
