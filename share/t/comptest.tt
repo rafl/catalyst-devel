@@ -24,3 +24,4 @@ BEGIN { use_ok '[% class %]' }
 [% END %]
 
 done_testing();
+1;
