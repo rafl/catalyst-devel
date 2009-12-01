@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.21_01  2009-12-01 03:34:23
         - Update generated scripts to use the new Catalyst::Script:: classes
           available from Catalyst 5.80014_02.
           Note: Any applications whos scripts are upgraded will need to depend
