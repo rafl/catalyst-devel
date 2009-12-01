@@ -13,7 +13,7 @@ ok( my $mech = Test::WWW::Mechanize::Catalyst->new, 'Created mech object' );
 $mech->get_ok( 'http://localhost[% uri %]' );
 [% ELSE %]use Test::More tests => 3;
 
-BEGIN { use_ok 'Catalyst::Test', '[% name %]' }
+BEGIN { use_ok 'Catalyst::Test', '[% app %]' }
 BEGIN { use_ok '[% class %]' }
 
 ok( request('[% uri %]')->is_success, 'Request should succeed' );

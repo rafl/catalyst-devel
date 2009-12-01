@@ -64,6 +64,8 @@ is system($^X, 'Makefile.PL'), 0, 'Ran Makefile.PL';
 ok -e "Makefile", "Makefile generated";
 is system("make"), 0, 'Run make';
 
+run_generated_component_tests();
+
 my $server_script = do {
     open(my $fh, '<', File::Spec->catdir(qw/script testapp_server.pl/)) or fail $!;
     local $/;
@@ -83,10 +85,12 @@ sub runperl {
     is system($^X, '-I', File::Spec->catdir($Bin, '..', 'lib'), @_), 0, $comment;
 }
 
+my @generated_component_tests;
+
 sub test_fn {
     local $ENV{TEST_POD} = 1;
     local $ENV{CATALYST_DEBUG} = 0;
-    
+
     my $fn = shift;
     ok -r $fn, "Have $fn in generated app";
     if ($fn =~ /script/) {
@@ -95,7 +99,13 @@ sub test_fn {
     if ($fn =~ /\.p[ml]$/) {
         runperl( '-c', $fn, "$fn compiles" );
     }
-    if ($fn =~ /\.t$/) {
+    # Save these till later as Catalyst::Test will only be loaded once :-/
+    push @generated_component_tests, $fn
+        if $fn =~ /\.t$/;
+}
+
+sub run_generated_component_tests {
+    foreach my $fn (@generated_component_tests) {
         subtest "Generated app test: $fn", sub {
             require $fn;
         };
