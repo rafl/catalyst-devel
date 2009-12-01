@@ -1,6 +1,5 @@
 package Catalyst::Helper;
 use Moose;
-use Moose::Util::TypeConstraints;
 use Config;
 use File::Spec;
 use File::Spec::Unix;
@@ -63,84 +62,32 @@ sub get_file {
     }
     return 0;
 }
-my $appname = subtype 'Str',
-    where { not (/[^\w:]/ or /^\d/ or /\b:\b|:{3,}/) },
-    message { "Error: Invalid application name '$_'." };
 
-has name => ( is => 'ro', isa => $appname, writer => '_set_name', lazy => 1, isa => 'Str', default => sub { confess("no name") } );
-
-my @lazy_strs = qw/ dir appprefix author rootname /;
-foreach my $name (@lazy_strs) {
-    has $name => ( is => 'ro', isa => 'Str', init_arg => undef, lazy => 1, builder => "_build_$name" );
-}
-
-class_type 'Path::Class::Dir';
-my $coerced_dir = subtype 'Str', where { 1 };
-coerce $coerced_dir, from 'Path::Class::Dir', via { '' . $_ };
-
-my @lazy_dirs = qw/ class base script /;
-foreach my $name (@lazy_dirs) {
-    has $name => ( is => 'ro', isa => $coerced_dir, coerce => 1, init_arg => undef, lazy => 1, builder => "_build_$name" );
-}
-
-foreach my $wrap (qw/mk_app/) {
-    before $wrap => sub {
-        my $self = shift;
-        $self->$_ for @lazy_strs, @lazy_dirs;
-    };
-}
-
-sub _build_dir_locations {
-    my $self = shift;
-    my ($script, $lib, $root, $static, $mod);
-    return (
-        script => do { $script = dir( $self->dir, 'script' ) },
-        lib => do { $lib =  dir( $self->dir, 'lib' ) },
-        root => do { $root = dir( $self->dir, 'root' ) },
-        static => do {$static = dir( $root, 'static' ) },
-        images => dir( $static, 'images' ),
-        t => dir( $self->dir, 't' ),
-        mod => do { $mod = dir( $self->lib, $self->class ) },
-        m => dir( $mod, 'Model' ),
-        v => dir( $mod, 'View' ),
-        c => dir( $mod, 'Controller' ),
-    );
-}
-
-sub _build_class { dir( split( /\:\:/, shift->name ) ) }
-
-
-
-sub _build_base { dir( shift->dir )->absolute }
-sub _build_dir { my $dir = shift->name; $dir =~ s/\:\:/-/g; return $dir; }
-sub _build_appprefix { Catalyst::Utils::appprefix(shift->name) }
-sub _build_author {
-    $ENV{'AUTHOR'}
-  || eval { @{ [ getpwuid($<) ] }[6] }
-  || 'Catalyst developer';
-}
-sub _build_rootname { shift->name . '::Controller::Root' }
-
-has _app_template_data => ( isa => 'HashRef', is => 'ro', lazy => 1, builder => '_build_app_template_data' );
-sub _build_app_template_data {
-    my $self = shift;
-    my %data = (
-        $self->_build_dir_locations,
-    );
-    return \%data;
-}
 
 sub mk_app {
-    my ( $self ) = @_;
+    my ( $self, $name ) = @_;
 
     # Needs to be here for PAR
     require Catalyst;
 
+    if ( $name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
+        warn "Error: Invalid application name.\n";
+        return 0;
+    }
+    $self->{name            } = $name;
+    $self->{dir             } = $name;
+    $self->{dir             } =~ s/\:\:/-/g;
+    $self->{script          } = dir( $self->{dir}, 'script' );
+    $self->{appprefix       } = Catalyst::Utils::appprefix($name);
+    $self->{appenv          } = Catalyst::Utils::class2env($name);
     $self->{startperl       } = -r '/usr/bin/env'
                                 ? '#!/usr/bin/env perl'
                                 : "#!$Config{perlpath} -w";
     $self->{scriptgen       } = $Catalyst::Devel::CATALYST_SCRIPT_GEN;
     $self->{catalyst_version} = $Catalyst::VERSION;
+    $self->{author          } = $self->{author} = $ENV{'AUTHOR'}
+      || eval { @{ [ getpwuid($<) ] }[6] }
+      || 'Catalyst developer';
 
     my $gen_scripts  = ( $self->{makefile} ) ? 0 : 1;
     my $gen_makefile = ( $self->{scripts} )  ? 0 : 1;
@@ -150,7 +97,7 @@ sub mk_app {
         for ( qw/ _mk_dirs _mk_config _mk_appclass _mk_rootclass _mk_readme
               _mk_changes _mk_apptest _mk_images _mk_favicon/ ) {
             
-            $self->$_($self->_app_template_data);
+            $self->$_;
         }
     }
     if ($gen_makefile) {
@@ -160,10 +107,10 @@ sub mk_app {
         for ( qw/ _mk_cgi _mk_fastcgi _mk_server 
                   _mk_test _mk_create _mk_information
         / ) {
-              $self->$_($self->_app_template_data);
+              $self->$_;
         }
     }
-    return $self->dir;
+    return $self->{dir};
 }
 
 ## not much of this can really be changed, mk_compclass must be left for 
@@ -172,7 +119,10 @@ sub mk_component {
     my $self = shift;
     my $app  = shift;
     $self->{app} = $app;
-    $self->{base} ||= dir( $FindBin::Bin, '..' ); # FIXME!
+    $self->{author} = $self->{author} = $ENV{'AUTHOR'}
+      || eval { @{ [ getpwuid($<) ] }[6] }
+      || 'A clever guy';
+    $self->{base} ||= dir( $FindBin::Bin, '..' );
     unless ( $_[0] =~ /^(?:model|view|controller)$/i ) {
         my $helper = shift;
         my @args   = @_;
@@ -275,7 +225,6 @@ sub mk_dir {
 
 sub mk_file {
     my ( $self, $file, $content ) = @_;
-    Carp::confess("No file") unless $file;
     if ( -e $file && -s _ ) {
         print qq/ exists "$file"\n/;
         return 0
@@ -357,53 +306,91 @@ sub _mk_information {
 
 sub _mk_dirs {
     my $self = shift;
-    my @dirs = $self->_build_dir_locations;
-    while (my ($name, $location) = (shift(@dirs), shift(@dirs))) {
-        $self->mk_dir( $location );
+    $self->mk_dir( $self->{dir} );
+    $self->mk_dir( $self->{script} );
+    $self->{lib} = dir( $self->{dir}, 'lib' );
+    $self->mk_dir( $self->{lib} );
+    $self->{root} = dir( $self->{dir}, 'root' );
+    $self->mk_dir( $self->{root} );
+    $self->{static} = dir( $self->{root}, 'static' );
+    $self->mk_dir( $self->{static} );
+    $self->{images} = dir( $self->{static}, 'images' );
+    $self->mk_dir( $self->{images} );
+    $self->{t} = dir( $self->{dir}, 't' );
+    $self->mk_dir( $self->{t} );
+
+    $self->{class} = dir( split( /\:\:/, $self->{name} ) );
+    $self->{mod} = dir( $self->{lib}, $self->{class} );
+    $self->mk_dir( $self->{mod} );
+
+    if ( $self->{short} ) {
+        $self->{m} = dir( $self->{mod}, 'M' );
+        $self->mk_dir( $self->{m} );
+        $self->{v} = dir( $self->{mod}, 'V' );
+        $self->mk_dir( $self->{v} );
+        $self->{c} = dir( $self->{mod}, 'C' );
+        $self->mk_dir( $self->{c} );
     }
+    else {
+        $self->{m} = dir( $self->{mod}, 'Model' );
+        $self->mk_dir( $self->{m} );
+        $self->{v} = dir( $self->{mod}, 'View' );
+        $self->mk_dir( $self->{v} );
+        $self->{c} = dir( $self->{mod}, 'Controller' );
+        $self->mk_dir( $self->{c} );
+    }
+    my $name = $self->{name};
+    $self->{rootname} =
+      $self->{short} ? "$name\::C::Root" : "$name\::Controller::Root";
+    $self->{base} = dir( $self->{dir} )->absolute;
 }
 
 sub _mk_appclass {
     my $self = shift;
-    my $mod  = $self->mod;
+    my $mod  = $self->{mod};
     $self->render_sharedir_file( file('lib', 'MyApp.pm.tt'), "$mod.pm" );
 }
 
 sub _mk_rootclass {
     my $self = shift;
     $self->render_sharedir_file( file('lib', 'MyApp', 'Controller', 'Root.pm.tt'),
-        file( $self->c, "Root.pm" ) );
+        file( $self->{c}, "Root.pm" ) );
 }
 
 sub _mk_makefile {
     my $self = shift;
     $self->{path} = dir( 'lib', split( '::', $self->{name} ) );
     $self->{path} .= '.pm';
-    $self->render_sharedir_file( 'Makefile.PL.tt', file($self->dir, "Makefile.PL") );
+    my $dir = $self->{dir};
+    $self->render_sharedir_file( 'Makefile.PL.tt', file($dir, "Makefile.PL") );
 
     if ( $self->{makefile} ) {
 
         # deprecate the old Build.PL file when regenerating Makefile.PL
         $self->_deprecate_file(
-            file( $self->dir, 'Build.PL' ) );
+            file( $self->{dir}, 'Build.PL' ) );
     }
 }
 
 sub _mk_config {
     my $self      = shift;
+    my $dir       = $self->{dir};
+    my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( 'myapp.conf.tt',
-        file( $self->dir, $self->appprefix . ".conf" ) );
+        file( $dir, "$appprefix.conf" ) );
 }
 
 sub _mk_readme {
     my $self = shift;
-    $self->render_sharedir_file( 'README.tt', file($self->dir, "README") );
+    my $dir  = $self->{dir};
+    $self->render_sharedir_file( 'README.tt', file($dir, "README") );
 }
 
 sub _mk_changes {
     my $self = shift;
+    my $dir  = $self->{dir};
     my $time = strftime('%Y-%m-%d %H:%M:%S', localtime time);
-    $self->render_sharedir_file( 'Changes.tt', file($self->dir, "Changes"), { time => $time } );
+    $self->render_sharedir_file( 'Changes.tt', file($dir, "Changes"), { time => $time } );
 }
 
 sub _mk_apptest {
@@ -416,37 +403,42 @@ sub _mk_apptest {
 
 sub _mk_cgi {
     my $self      = shift;
-    my $fn = file($self->script, $self->appprefix . "_cgi.pl");
-    $self->render_sharedir_file( file('script', 'myapp_cgi.pl.tt'), $fn );
-    chmod 0700, $fn;
+    my $script    = $self->{script};
+    my $appprefix = $self->{appprefix};
+    $self->render_sharedir_file( file('script', 'myapp_cgi.pl.tt'), file($script,"$appprefix\_cgi.pl") );
+    chmod 0700, file($script,"$appprefix\_cgi.pl");
 }
 
 sub _mk_fastcgi {
     my $self      = shift;
-    my $fn = file($self->script, $self->appprefix . "_fastcgi.pl");
-    $self->render_sharedir_file( file('script', 'myapp_fastcgi.pl.tt'), $fn );
-    chmod 0700, $fn;
+    my $script    = $self->{script};
+    my $appprefix = $self->{appprefix};
+    $self->render_sharedir_file( file('script', 'myapp_fastcgi.pl.tt'), file($script, "$appprefix\_fastcgi.pl") );
+    chmod 0700, file($script, "$appprefix\_fastcgi.pl");
 }
 
 sub _mk_server {
     my $self      = shift;
-    my $fn = file($self->script, $self->appprefix . "_server.pl");
-    $self->render_sharedir_file( file('script', 'myapp_server.pl.tt'), $fn );
-    chmod 0700, $fn;
+    my $script    = $self->{script};
+    my $appprefix = $self->{appprefix};
+    $self->render_sharedir_file( file('script', 'myapp_server.pl.tt'), file($script, "$appprefix\_server.pl") );
+    chmod 0700, file($script, "$appprefix\_server.pl");
 }
 
 sub _mk_test {
     my $self      = shift;
-    my $fn = file($self->script, $self->appprefix . "_test.pl");
-    $self->render_sharedir_file( file('script', 'myapp_test.pl.tt'), $fn );
-    chmod 0700, $fn;
+    my $script    = $self->{script};
+    my $appprefix = $self->{appprefix};
+    $self->render_sharedir_file( file('script', 'myapp_test.pl.tt'), file($script, "$appprefix\_test.pl") );
+    chmod 0700, file($script, "$appprefix\_test.pl");
 }
 
 sub _mk_create {
     my $self      = shift;
-    my $fn = file($self->script, $self->appprefix . "_create.pl");
-    $self->render_sharedir_file( file('script', 'myapp_create.pl.tt'), $fn );
-    chmod 0700, $fn;
+    my $script    = $self->{script};
+    my $appprefix = $self->{appprefix};
+    $self->render_sharedir_file( file('script', 'myapp_create.pl.tt'), file($script, "$appprefix\_create.pl") );
+    chmod 0700, file($script, "$appprefix\_create.pl");
 }
 
 sub _mk_compclass {
