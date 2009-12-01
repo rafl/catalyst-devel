@@ -1,9 +1,28 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Update generated scripts to use the new Catalyst::Script:: classes
+          available from Catalyst 5.80014_02.
+          Note: Any applications whos scripts are upgraded will need to depend
+          on at least this version of Catalyst.
+        - Change application templates from being inlined in Catalyst::Helper
+          to being in a share dir making the templates much easier to maintain
+          and patch.
+        - Generate new applications with Moose and Moose style components.
+        - Remove dependency on parent.pm as this has been removed from the generated
+          application template.
+        - Turn off deprecated regex component lookup in the config of new
+          applications.
+        - Test application generation and helper classes properly.
+        - Change tests in generated application and components to use the new
+          done_testing feature rather than having test plans.
+        - Update required versions of dependencies to ensure the installed versions
+          won't cause deprecation warnings with the latest Catalyst.
         - Exclude root/, t/ and hidden dirs from file change monitoring when
           using File::ChangeNotify 0.08+. (dew)
-        - Updated POD of Module/Install/Catalyst.pm and added to the list
-          of ignored files/directories. (Karsten Heymann)
+        - Updated POD of Module/Install/Catalyst.pm (Karsten Heymann)
+        - Added debian package building temp files to the list
+          of ignored files/directories and fix ignore for subversion
+          checkouts. (Karsten Heymann)
 
 1.21   2009-10-18 18:33:33
         - The Restarter code caused stack traces for certain types of errors

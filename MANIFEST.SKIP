@@ -1,3 +1,7 @@
+# Ignore INSTALL.SKIP, used to stop getting .svn directories copied into
+# blib/, but not in a built dist (i.e. not used outside of author mode).
+^INSTALL.SKIP
+
 # Avoid version control files.
 \bRCS\b
 \bCVS\b

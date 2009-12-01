@@ -3,18 +3,24 @@ use inc::Module::Install 0.91;
 name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
 
-requires 'Catalyst'    => '5.8000';
-requires 'Catalyst::Action::RenderView' => '0.04';
-requires 'Catalyst::Plugin::Static::Simple' => '0.16';
-requires 'Catalyst::Plugin::ConfigLoader';
-requires 'Class::Accessor::Fast';
+requires 'Moose';
+requires 'File::ShareDir';
+requires 'namespace::clean';
+requires 'namespace::autoclean';
+requires 'Catalyst'    => '5.8001402';
+requires 'Catalyst::Action::RenderView' => '0.10';
+requires 'Catalyst::Plugin::Static::Simple' => '0.21';
+requires 'Catalyst::Plugin::ConfigLoader' => '0.23';
 requires 'Config::General' => '2.42'; # as of 1.07, we use .conf and not .yaml
 requires 'File::ChangeNotify' => '0.07';
 requires 'File::Copy::Recursive';
 requires 'Module::Install' => '0.91';
-requires 'parent'; # as of 1.04
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
+
+test_requires 'Test::More' => '0.90';
+
+install_share 'share';
 
 if ( $^O eq 'MSWin32' ) {
     # Proc::Background needs this on Win32 but doesn't actually
@@ -30,7 +36,7 @@ if (!$ENV{CATALYST_DEVEL_NO_510_CHECK}) {
     open NULL, '>', File::Spec->devnull;
     my $err = gensym;
     my $pid = open3(gensym, '&>NULL', $err, "$^X -It/lib -MUnknownError -e 1");
-    
+
     my $unknown_error = 0;
 
     while (<$err>) {
@@ -44,7 +50,7 @@ if (!$ENV{CATALYST_DEVEL_NO_510_CHECK}) {
 ############################### WARNING #################################
 #                                                                       #
 # You are using perl 5.10.0 with the "Unknown error" bug. This can make #
-# developing Catalyst applications much more painful, as it will come   # 
+# developing Catalyst applications much more painful, as it will come   #
 # up with no details every time you have a syntax error in a Controller.#
 #                                                                       #
 # For more information see:                                             #
