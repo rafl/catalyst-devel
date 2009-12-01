@@ -88,9 +88,6 @@ sub runperl {
 my @generated_component_tests;
 
 sub test_fn {
-    local $ENV{TEST_POD} = 1;
-    local $ENV{CATALYST_DEBUG} = 0;
-
     my $fn = shift;
     ok -r $fn, "Have $fn in generated app";
     if ($fn =~ /script/) {
@@ -105,6 +102,8 @@ sub test_fn {
 }
 
 sub run_generated_component_tests {
+    local $ENV{TEST_POD} = 1;
+    local $ENV{CATALYST_DEBUG} = 0;
     foreach my $fn (@generated_component_tests) {
         subtest "Generated app test: $fn", sub {
             require $fn;
