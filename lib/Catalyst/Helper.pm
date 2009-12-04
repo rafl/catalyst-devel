@@ -15,6 +15,8 @@ use Path::Class qw/dir file/;
 use File::ShareDir qw/dist_dir/;
 use namespace::autoclean;
 
+with 'MooseX::Emulate::Class::Accessor::Fast';
+
 my %cache;
 
 =head1 NAME

@@ -4,6 +4,7 @@ name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
 
 requires 'Moose';
+requires 'MooseX::Emulate::Class::Accessor::Fast';
 requires 'File::ShareDir';
 requires 'namespace::clean';
 requires 'namespace::autoclean';
