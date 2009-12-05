@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.22  2009-12-05 07:23:00
         - Use MooseX::Emulate::Class::Accessor::Fast so that options
           supplied to ->new are put into the hash even if attributes
           do not exist for them. This fixes -force recreating application
