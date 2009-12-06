@@ -142,7 +142,7 @@ sub run_generated_component_tests {
     local $ENV{CATALYST_DEBUG} = 0;
     foreach my $fn (@generated_component_tests) {
         subtest "Generated app test: $fn", sub {
-            require $fn;
+            do $fn;
         };
     }
 }
