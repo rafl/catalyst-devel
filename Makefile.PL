@@ -1,4 +1,7 @@
+use strict;
+use warnings;
 use inc::Module::Install 0.91;
+use Module::Install::AuthorRequires;
 
 name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
@@ -18,6 +21,8 @@ requires 'File::Copy::Recursive';
 requires 'Module::Install' => '0.91';
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
+
+author_requires 'IPC::Run3';
 
 test_requires 'Test::More' => '0.90';
 
