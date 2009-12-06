@@ -1,30 +1,46 @@
 use strict;
 use warnings;
 use lib ();
-use File::Temp qw/ tempdir tmpnam /;
+use Cwd qw( abs_path );
+use File::Temp qw/ tempdir /;
 use File::Spec;
 use FindBin qw/$Bin/;
 use Catalyst::Devel;
+use Catalyst::Helper;
+use Test::More;
+
+eval "use IPC::Run3";
+plan skip_all => 'These tests require IPC::Run3' if $@;
+
+my $share_dir = abs_path('share');
+plan skip_all => "No share dir at $share_dir!"
+    unless -d $share_dir;
+
+$ENV{CATALYST_DEVEL_SHAREDIR} = $share_dir;
 
 my $dir = tempdir(CLEANUP => 1);
 my $devnull = File::Spec->devnull;
 
-use Test::More;
-
 diag "Generated app is in $dir";
 
+chdir $dir or die "Cannot chdir to $dir: $!";
+
 {
-    my $exit;
-    if ($^O eq 'MSWin32') {
-      $exit = system("cd $dir & catalyst TestApp > $devnull 2>&1");
-    }
-    else {
-      $exit = system("cd $dir; catalyst.pl TestApp > $devnull 2>&1");
-    }
-    is $exit, 0, 'Exit status ok';
+    open my $fh, '>', $devnull or die "Cannot write to $devnull: $!";
+
+    local *STDOUT = $fh;
+
+    my $helper = Catalyst::Helper->new(
+        {
+            name => 'TestApp',
+        }
+    );
+
+    $helper->mk_app('TestApp');
 }
 
-chdir(File::Spec->catdir($dir, 'TestApp'));
+my $app_dir = File::Spec->catdir($dir, 'TestApp');
+chdir($app_dir) or die "Cannot chdir to $app_dir: $!";
 lib->import(File::Spec->catdir($dir, 'TestApp', 'lib'));
 
 my @files = qw|
@@ -60,9 +76,9 @@ foreach my $fn (map { File::Spec->catdir(@$_) } map { [ split /\// ] } @files) {
 }
 create_ok($_, 'My' . $_) for qw/Model View Controller/;
 
-is system($^X, 'Makefile.PL'), 0, 'Ran Makefile.PL';
+command_ok( [ $^X, 'Makefile.PL' ] );
 ok -e "Makefile", "Makefile generated";
-is system("make"), 0, 'Run make';
+command_ok( [ 'make' ] );
 
 run_generated_component_tests();
 
@@ -80,9 +96,24 @@ is $1, $Catalyst::Devel::CATALYST_SCRIPT_GEN, 'Script gen correct';
 chdir('/');
 done_testing;
 
+sub command_ok {
+    my $cmd = shift;
+    my $desc = shift;
+
+    my $stdout;
+    my $stderr;
+    run3( $cmd, \undef, \$stdout, \$stderr );
+
+    $desc ||= "Exit status ok for '@{$cmd}'";
+    unless ( is $? >> 8, 0, $desc ) {
+        diag "STDOUT:\n$stdout" if defined $stdout;
+        diag "STDERR:\n$stderr" if defined $stderr;
+    }
+}
+
 sub runperl {
     my $comment = pop @_;
-    is system($^X, '-I', File::Spec->catdir($Bin, '..', 'lib'), @_), 0, $comment;
+    command_ok( [ $^X, '-I', File::Spec->catdir($Bin, '..', 'lib'), @_ ], $comment );
 }
 
 my @generated_component_tests;
@@ -115,5 +146,5 @@ sub create_ok {
     my ($type, $name) = @_;
     runperl( File::Spec->catdir('script', 'testapp_create.pl'), $type, $name,
         "'script/testapp_create.pl $type $name' ok");
-    test_fn(File::Spec->catdir('t', sprintf("%s_%s.t", $type, $name)));
+    test_fn(File::Spec->catdir('t', sprintf("%s_%s.t", lc $type, $name)));
 }
