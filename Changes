@@ -1,5 +1,10 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Fix Test::More version dependency so that subtest works correctly.
+        - Add a $VERSION to Catalyst::Helper as PAUSE used to pull $VERSION
+          (i.e. 0.01) out of the app template section and use that, so we now
+          can't not have a version number here or it makes pause unhappy.
+
 1.22  2009-12-05 07:23:00
         - Use MooseX::Emulate::Class::Accessor::Fast so that options
           supplied to ->new are put into the hash even if attributes

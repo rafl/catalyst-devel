@@ -19,7 +19,7 @@ requires 'Module::Install' => '0.91';
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
 
-test_requires 'Test::More' => '0.90';
+test_requires 'Test::More' => '0.94';
 
 install_share 'share';
 
