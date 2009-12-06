@@ -8,6 +8,7 @@ use FindBin qw/$Bin/;
 use Catalyst::Devel;
 use Catalyst::Helper;
 use Test::More;
+use Config;
 
 eval "use IPC::Run3";
 plan skip_all => 'These tests require IPC::Run3' if $@;
@@ -78,7 +79,8 @@ create_ok($_, 'My' . $_) for qw/Model View Controller/;
 
 command_ok( [ $^X, 'Makefile.PL' ] );
 ok -e "Makefile", "Makefile generated";
-command_ok( [ 'make' ] );
+#NOTE: do not assume that 'make' is always 'make' as e.g. Win32/strawberry perl uses 'dmake'
+command_ok( [ ($Config{make} || 'make') ] );
 
 run_generated_component_tests();
 
@@ -122,7 +124,10 @@ sub test_fn {
     my $fn = shift;
     ok -r $fn, "Have $fn in generated app";
     if ($fn =~ /script/) {
-        ok -x $fn, "$fn is executable";
+        SKIP: {
+            skip 'Executable file flag test does not make sense on Win32', 1 if ($^O eq 'MSWin32');
+            ok -x $fn, "$fn is executable";
+       }
     }
     if ($fn =~ /\.p[ml]$/) {
         runperl( '-c', $fn, "$fn compiles" );
