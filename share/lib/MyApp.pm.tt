@@ -13,7 +13,7 @@ use Catalyst::Runtime 5.80;
 #                 directory
 
 use Catalyst qw/
-	-Debug
+    -Debug
     ConfigLoader
     Static::Simple
 /;
@@ -33,9 +33,9 @@ $VERSION = eval $VERSION;
 # local deployment.
 
 __PACKAGE__->config(
-	name => '[% name %]',
-	# Disable deprecated behavior needed by old applications
-	disable_component_resolution_regex_fallback => 1, 
+    name => '[% name %]',
+    # Disable deprecated behavior needed by old applications
+    disable_component_resolution_regex_fallback => 1,
 );
 
 # Start the application

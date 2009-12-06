@@ -1,7 +1,7 @@
 [% startperl %]
 
 use Catalyst::ScriptRunner;
-Catalyst::ScriptRunner->run('[% name %]','FastCGI');
+Catalyst::ScriptRunner->run('[% name %]', 'FastCGI');
 
 1;
 

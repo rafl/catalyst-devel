@@ -1,7 +1,7 @@
 [% startperl %]
 
 use Catalyst::ScriptRunner;
-Catalyst::ScriptRunner->run('[% name %]','Test');
+Catalyst::ScriptRunner->run('[% name %]', 'Test');
 
 1;
 
