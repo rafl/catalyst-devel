@@ -10,7 +10,7 @@ This file documents the revision history for Perl extension Catalyst-Devel.
 
 1.23  2009-12-06 12:22:12
         - Fix generated app test to be multi-platform and fix issue with case
-          for generated files.
+          for generated files. (Dave Rolsky)
         - Fix Test::More version dependency so that subtest works correctly.
         - Add a $VERSION to Catalyst::Helper as PAUSE used to pull $VERSION
           (i.e. 0.01) out of the app template section and use that, so we now
