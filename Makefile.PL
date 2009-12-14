@@ -92,7 +92,7 @@ if ($Module::Install::AUTHOR) {
         [ 'IRC'         => 'irc://irc.perl.org/#catalyst' ],
         [ 'license',    => 'http://dev.perl.org/licenses/' ],
         [ 'homepage',   => 'http://dev.catalyst.perl.org/'],
-        [ 'repository', => 'http://dev.catalyst.perl.org/repos/Catalyst/Catalyst-Devel/' ],
+        [ 'repository', => 'git://git.shadowcat.co.uk/catagits/Catalyst-Devel.git' ],
     ];
 
     Meta->{values}{requires} = [ grep {
