@@ -1,5 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.25  2010-01-02 16:13:06
+        - Update repository metadata after moving from svn to git.
+
 1.24  2009-12-07 23:23:36
         - File name for .yml file generated is now correct.
         - Fixes for consistent spacing in generated application template.
