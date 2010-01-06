@@ -12,10 +12,10 @@ use Catalyst::Devel;
 use Catalyst::Utils;
 use Catalyst::Exception;
 use Path::Class qw/dir file/;
-use File::ShareDir qw/dist_dir/;
 use File::HomeDir;
 use Path::Resolver::Resolver::Mux::Ordered;
 use Path::Resolver::Resolver::FileSystem;
+use Path::Resolver::Resolver::DistDir;
 use namespace::autoclean;
 
 with 'MooseX::Emulate::Class::Accessor::Fast';
@@ -68,7 +68,9 @@ Catalyst::Helper - Bootstrap a Catalyst application
                 push @resolvers, $fs_path->('share');
             }
             else {
-                push @resolvers, $fs_path->(dist_dir('Catalyst-Devel'));
+                push @resolvers, Path::Resolver::Resolver::DistDir->new({
+                    dist_name => "Catalyst-Devel"
+                });
             }
 
             $resolver = Path::Resolver::Resolver::Mux::Ordered->new({
