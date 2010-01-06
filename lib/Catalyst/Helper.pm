@@ -34,28 +34,19 @@ Catalyst::Helper - Bootstrap a Catalyst application
 
 sub get_sharedir_file {
     my ($self, @filename) = @_;
-
-    my @try_dirs;
-    if (exists $self->{base}) {
-        push @try_dirs, $self->{base};
-    }
+    my $dist_dir;
     if (exists $ENV{CATALYST_DEVEL_SHAREDIR}) {
-        push @try_dirs, $ENV{CATALYST_DEVEL_SHAREDIR}
+        $dist_dir = $ENV{CATALYST_DEVEL_SHAREDIR};
     }
-    if (-d "inc/.author" && -f "lib/Catalyst/Helper.pm"
+    elsif (-d "inc/.author" && -f "lib/Catalyst/Helper.pm"
             ) { # Can't use sharedir if we're in a checkout
                 # this feels horrible, better ideas?
-        push @try_dirs, 'share';
+        $dist_dir = 'share';
     }
     else {
-        push @try_dirs, dist_dir('Catalyst-Devel');
+        $dist_dir = dist_dir('Catalyst-Devel');
     }
-
-    my $file;
-    foreach my $dist_dir (@try_dirs) {
-      $file = file( $dist_dir, @filename);
-      last if -r $file;
-    }
+    my $file = file( $dist_dir, @filename);
     Carp::confess("Cannot find $file") unless -r $file;
     my $contents = $file->slurp;
     return $contents;
