@@ -20,6 +20,7 @@ requires 'File::ChangeNotify' => '0.07';
 requires 'File::Copy::Recursive';
 requires 'Module::Install' => '0.91';
 requires 'Path::Class' => '0.09';
+requires 'Path::Resolver';
 requires 'Template'    => '2.14';
 
 author_requires 'IPC::Run3';

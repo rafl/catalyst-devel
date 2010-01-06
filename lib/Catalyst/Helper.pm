@@ -13,6 +13,9 @@ use Catalyst::Utils;
 use Catalyst::Exception;
 use Path::Class qw/dir file/;
 use File::ShareDir qw/dist_dir/;
+use File::HomeDir;
+use Path::Resolver::Resolver::Mux::Ordered;
+use Path::Resolver::Resolver::FileSystem;
 use namespace::autoclean;
 
 with 'MooseX::Emulate::Class::Accessor::Fast';
@@ -32,33 +35,58 @@ Catalyst::Helper - Bootstrap a Catalyst application
 
 =cut
 
+# Return the (cached) path resolver
+{
+    my $resolver;
+
+    sub get_resolver {
+        my $self = shift;
+
+        # Avoid typing this over and over
+        my $fs_path = sub {
+            Path::Resolver::Resolver::FileSystem->new({ root => shift })
+        };
+
+        unless ($resolver) {
+            my @resolvers;
+            # Search path: first try the environment variable
+            if (exists $ENV{CATALYST_DEVEL_SHAREDIR}) {
+                push @resolvers, $fs_path->($ENV{CATALYST_DEVEL_SHAREDIR});
+            }
+            # Then the application's "helper" directory
+            if (exists $self->{base}) {
+                push @resolvers, $fs_path->(dir($self->{base}, "helper"));
+            }
+            # Then ~/.catalyst/helper
+            push @resolvers, $fs_path->(
+                dir(File::HomeDir->my_home, ".catalyst", "helper")
+            );
+            # Finally the Catalyst default
+            if (-d "inc/.author" && -f "lib/Catalyst/Helper.pm"
+                    ) { # Can't use sharedir if we're in a checkout
+                        # this feels horrible, better ideas?
+                push @resolvers, $fs_path->('share');
+            }
+            else {
+                push @resolvers, $fs_path->(dist_dir('Catalyst-Devel'));
+            }
+
+            $resolver = Path::Resolver::Resolver::Mux::Ordered->new({
+                resolvers => \@resolvers
+            });
+        }
+
+        return $resolver;
+    }
+}
+
 sub get_sharedir_file {
     my ($self, @filename) = @_;
 
-    my @try_dirs;
-    if (exists $self->{base}) {
-        push @try_dirs, $self->{base};
-    }
-    if (exists $ENV{CATALYST_DEVEL_SHAREDIR}) {
-        push @try_dirs, $ENV{CATALYST_DEVEL_SHAREDIR}
-    }
-    if (-d "inc/.author" && -f "lib/Catalyst/Helper.pm"
-            ) { # Can't use sharedir if we're in a checkout
-                # this feels horrible, better ideas?
-        push @try_dirs, 'share';
-    }
-    else {
-        push @try_dirs, dist_dir('Catalyst-Devel');
-    }
-
-    my $file;
-    foreach my $dist_dir (@try_dirs) {
-      $file = file( $dist_dir, @filename);
-      last if -r $file;
-    }
-    Carp::confess("Cannot find $file") unless -r $file;
-    my $contents = $file->slurp;
-    return $contents;
+    my $filepath = file(@filename);
+    my $file = $self->get_resolver->entity_at("$filepath") # doesn't like object
+        or Carp::confess("Cannot find $filepath");
+    return $file->content;
 }
 
 # Do not touch this method, *EVER*, it is needed for back compat.
@@ -715,4 +743,3 @@ it under the same terms as Perl itself.
 =cut
 
 1;
-
