@@ -13,7 +13,7 @@ requires 'namespace::clean';
 requires 'namespace::autoclean';
 requires 'Catalyst'    => '5.8001402';
 requires 'Catalyst::Action::RenderView' => '0.10';
-requires 'Catalyst::Plugin::Static::Simple' => '0.21';
+requires 'Catalyst::Plugin::Static::Simple' => '0.28';
 requires 'Catalyst::Plugin::ConfigLoader' => '0.23';
 requires 'Config::General' => '2.42'; # as of 1.07, we use .conf and not .yaml
 requires 'File::ChangeNotify' => '0.07';
