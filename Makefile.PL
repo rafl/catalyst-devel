@@ -11,7 +11,7 @@ requires 'MooseX::Emulate::Class::Accessor::Fast';
 requires 'File::ShareDir';
 requires 'namespace::clean';
 requires 'namespace::autoclean';
-requires 'Catalyst'    => '5.8001402';
+requires 'Catalyst'    => '5.80015';
 requires 'Catalyst::Action::RenderView' => '0.10';
 requires 'Catalyst::Plugin::Static::Simple' => '0.28';
 requires 'Catalyst::Plugin::ConfigLoader' => '0.23';
