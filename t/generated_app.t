@@ -80,7 +80,12 @@ create_ok($_, 'My' . $_) for qw/Model View Controller/;
 command_ok( [ $^X, 'Makefile.PL' ] );
 ok -e "Makefile", "Makefile generated";
 #NOTE: do not assume that 'make' is always 'make' as e.g. Win32/strawberry perl uses 'dmake'
-command_ok( [ ($Config{make} || 'make') ] );
+my $make = $Config{make} || 'make';
+command_ok( [ $make ], 'Ran make ok' );
+if (eval { require PAR::Packer }) {
+    command_ok([ $make, 'catalyst_par' ], 'Ran make catalyst_par ok');
+    command_ok([ 'parl', ]); # FIXME - Win32?
+}
 
 run_generated_component_tests();
 

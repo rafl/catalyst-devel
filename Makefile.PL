@@ -24,6 +24,9 @@ requires 'Template'    => '2.14';
 
 author_requires 'IPC::Run3';
 
+author_requires 'PAR::Packer';
+author_requires 'Module::ScanDeps';
+
 test_requires 'Test::More' => '0.94';
 
 install_share 'share';

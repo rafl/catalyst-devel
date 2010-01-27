@@ -221,13 +221,13 @@ sub _catalyst_par {
     my $engine = $ENGINE || 'CGI';
 
     # Check for PAR
-    eval "use PAR ()";
+    eval { require PAR };
     die "Please install PAR\n" if $@;
-    eval "use PAR::Packer ()";
+    eval { require PAR::Packer };
     die "Please install PAR::Packer\n" if $@;
-    eval "use App::Packer::PAR ()";
+    eval { require App::Packer::PAR };
     die "Please install App::Packer::PAR\n" if $@;
-    eval "use Module::ScanDeps ()";
+    eval { require Module::ScanDeps };
     die "Please install Module::ScanDeps\n" if $@;
 
     my $root = $FindBin::Bin;
@@ -308,15 +308,20 @@ else {
     require Getopt::Long;
     require Pod::Usage;
     require Pod::Text;
+    require Catalyst::ScriptRole;
+    require Catalyst::Script::Server;
+    require Catalyst::Script::FastCGI
+    require Catalyst::Script::Test;
+    require Catalyst::Script::Create;
     $classes
 }
 EOF
     $tmp_file->close;
 
     # Create package
-    local $SIG{__WARN__} = sub { };
-    open my $olderr, '>&STDERR';
-    open STDERR, '>', File::Spec->devnull;
+    #local $SIG{__WARN__} = sub { };
+    #open my $olderr, '>&STDERR';
+    #open STDERR, '>', File::Spec->devnull;
     my %opt = (
         'x' => 1,
         'n' => 0,
@@ -334,7 +339,7 @@ EOF
         args      => ['par.pl'],
     )->go;
 
-    open STDERR, '>&', $olderr;
+    #open STDERR, '>&', $olderr;
 
     unlink $par_pl;
     chdir $root;
