@@ -28,16 +28,16 @@ our %PAROPTS   = ();
 =head1 NAME
 
   Module::Install::Catalyst - Module::Install extension for Catalyst
-  
+
 =head1 SYNOPSIS
-  
+
   use inc::Module::Install;
-  
+
   name 'MyApp';
   all_from 'lib/MyApp.pm';
-  
+
   requires 'Catalyst::Runtime' => '5.7014';
-  
+
   catalyst_ignore('.*temp');
   catalyst_ignore('.*tmp');
   catalyst;
@@ -70,8 +70,8 @@ EOF
 
 =head2 catalyst_files
 
-Collect a list of all files a Catalyst application consists of and copy it  
-inside the blib/lib/ directory. Files and directories that match the modules 
+Collect a list of all files a Catalyst application consists of and copy it
+inside the blib/lib/ directory. Files and directories that match the modules
 ignore list are excluded (see L<catalyst_ignore> and L<catalyst_ignore_all>).
 
 =cut
@@ -193,7 +193,7 @@ as arguments of B<pp> command from L<PAR::Packer> package.
 Example:
 
     # part of your Makefile.PL
-    
+
     catalyst_par_options("--verbose=2 -f Bleach -z 9");
     # verbose mode; use filter 'Bleach'; zip with compression level 9
     catalyst;
@@ -201,12 +201,12 @@ Example:
 Note1: There is no reason to use catalyst_par_options() command multiple times
 as you can spacify in "$optstring" as many options as you want. Still, it
 is supported to call catalyst_par_options() more than once. In that case the
-specified options are merged (collisions are handled on principle "later wins"). 
+specified options are merged (collisions are handled on principle "later wins").
 BEWARE: you are discouraged from using parameters -a -A -X -f -F -I -l -M in
-multiple catalyst_par_options() as they are not merged but replaced as you would 
+multiple catalyst_par_options() as they are not merged but replaced as you would
 expected.
 
-Note2: By default the options "-x -p -o=<appname>.par" are set and option "-n" 
+Note2: By default the options "-x -p -o=<appname>.par" are set and option "-n"
 is unset. This default always overrides whatever you specify by
 catalyst_par_options().
 
@@ -222,7 +222,7 @@ sub catalyst_par_options {
     else {
         GetOptionsFromString($optstring, \%o, PAR::Packer->options);
         %PAROPTS = ( %PAROPTS, %o);
-    }	 
+    }	
 }
 
 =head2 catalyst_par_script($script)
@@ -371,7 +371,7 @@ EOF
         'p' => 1,
     );
     # do not replace the whole $opt{'a'} array; just push required default value
-    push @{$opt{'a'}}, grep( !/par.pl/, glob '.' );  
+    push @{$opt{'a'}}, grep( !/par.pl/, glob '.' );
 
     App::Packer::PAR->new(
         frontend  => 'Module::ScanDeps',
