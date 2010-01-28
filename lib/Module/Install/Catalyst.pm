@@ -222,7 +222,7 @@ sub catalyst_par_options {
     else {
         GetOptionsFromString($optstring, \%o, PAR::Packer->options);
         %PAROPTS = ( %PAROPTS, %o);
-    }	
+    }
 }
 
 =head2 catalyst_par_script($script)
