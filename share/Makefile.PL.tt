@@ -3,8 +3,8 @@
 # expected.  You have been warned.
 use inc::Module::Install;
 use Module::Install::Catalyst; # Complain loudly if you don't have
-                    		   # Catalyst::Devel installed or haven't said
-                    		   # 'make dist' to create a standalone tarball.
+                               # Catalyst::Devel installed or haven't said
+                               # 'make dist' to create a standalone tarball.
 
 name '[% dir %]';
 all_from '[% path %]';
