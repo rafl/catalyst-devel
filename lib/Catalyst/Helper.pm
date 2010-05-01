@@ -90,7 +90,7 @@ sub mk_app {
     $self->{appenv          } = Catalyst::Utils::class2env($name);
     $self->{startperl       } = -r '/usr/bin/env'
                                 ? '#!/usr/bin/env perl'
-                                : "#!$Config{perlpath} -w";
+                                : "#!$Config{perlpath}";
     $self->{scriptgen       } = $Catalyst::Devel::CATALYST_SCRIPT_GEN;
     $self->{catalyst_version} = $Catalyst::VERSION;
     $self->{author          } = $self->{author} = $ENV{'AUTHOR'}
