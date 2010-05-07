@@ -121,7 +121,7 @@ for ( 1 .. 5 ) {
 # we need different options so we have to rebuild most
 # of the testing environment
 
-kill 'KILL', $pid or die "Cannot kill $pid: $!";
+kill 9, $pid or die "Cannot send kill signal to $pid: $!";
 close $server or die "Cannot close handle to server process: $!";
 wait;
 
@@ -166,7 +166,7 @@ for ( 1 .. 5 ) {
           'Non-error restart with multiple watched dirs' );
 }
 
-kill 'KILL', $pid;
+kill 9, $pid;
 close $server;
 wait;
 
@@ -185,8 +185,8 @@ sub start_server {
     my $pid = open3(
         undef, $server, undef,
         $^X,   "-I$FindBin::Bin/../lib",
-        "$FindBin::Bin/../t/tmp/TestApp/script/testapp_server.pl", '-port',
-        $port,                                                     '-restart'
+        "$FindBin::Bin/../t/tmp/TestApp/script/testapp_server.pl", '--port',
+        $port,                                                     '--restart'
     ) or die "Unable to spawn standalone HTTP server: $!";
 
     # switch to non-blocking reads so we can fail gracefully instead
