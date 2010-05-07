@@ -25,6 +25,11 @@ has _watcher => (
     isa => 'File::ChangeNotify::Watcher',
 );
 
+has _filter => (
+    is      => 'rw',
+    isa     => 'RegexpRef',
+);
+
 has _child => (
     is  => 'rw',
     isa => 'Int',
@@ -69,6 +74,10 @@ sub BUILD {
         qr(/\.[^/]*/?$),    # match hidden dirs
     ];
 
+    # keep filter regexp to make shure we don't restart on deleted
+    # files or directories where we can't check -d
+    $self->_filter( $p->{filter} );
+
     # We could make this lazily, but this lets us check that we
     # received valid arguments for the watcher up front.
     $self->_watcher( File::ChangeNotify->instantiate_watcher( %{$p} ) );
@@ -101,22 +110,34 @@ sub _handle_events {
     my $self   = shift;
     my @events = @_;
 
-    print STDERR "\n";
-    print STDERR "Saw changes to the following files:\n";
-
+    my @files;
     for my $event (@events) {
         my $path = $event->path();
         my $type = $event->type();
-
-        print STDERR " - $path ($type)\n";
+        if (   ( $type ne 'delete' && -f $path )
+            || ( $type eq 'delete' && $path =~ $self->_filter ) )
+        {
+            push @files, { path => $path, type => $type };
+        }
     }
 
-    print STDERR "\n";
-    print STDERR "Attempting to restart the server\n\n";
+    if (@files) {
+        print STDERR "\n";
+        print STDERR "Saw changes to the following files:\n";
 
-    $self->_kill_child;
+        for my $f (@files) {
+            my $path = $f->{path};
+            my $type = $f->{type};
+            print STDERR " - $path ($type)\n";
+        }
 
-    $self->_fork_and_start;
+        print STDERR "\n";
+        print STDERR "Attempting to restart the server\n\n";
+
+        $self->_kill_child;
+
+        $self->_fork_and_start;
+    }
 }
 
 sub DEMOLISH {
