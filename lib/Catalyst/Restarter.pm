@@ -74,7 +74,7 @@ sub BUILD {
         qr(/\.[^/]*/?$),    # match hidden dirs
     ];
 
-    # keep filter regexp to make shure we don't restart on deleted
+    # keep filter regexp to make sure we don't restart on deleted
     # files or directories where we can't check -d
     $self->_filter( $p->{filter} );
 
@@ -111,6 +111,8 @@ sub _handle_events {
     my @events = @_;
 
     my @files;
+    # Filter out any events which are the creation / deletion of directories
+    # so that creating an empty directory won't cause a restart
     for my $event (@events) {
         my $path = $event->path();
         my $type = $event->type();
