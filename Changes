@@ -2,7 +2,7 @@ This file documents the revision history for Perl extension Catalyst-Devel.
 
         - Fix the pod-coverage version required by the generated app tests.
         - Fix the restarter to only act upon file events (and ergo ignore
-          the creation of empty directories.
+          the creation of empty directories).
 
 1.27  2010-02-23 10:44:20
         - Add the catalyst_par_options option.
