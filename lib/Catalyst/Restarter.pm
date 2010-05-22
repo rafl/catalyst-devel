@@ -202,7 +202,7 @@ the child, forks again, and starts a new server.
 
 =head1 SEE ALSO
 
-L<Catalyst>, <File::ChangeNotify>
+L<Catalyst>, L<File::ChangeNotify>
 
 =head1 AUTHORS
 
