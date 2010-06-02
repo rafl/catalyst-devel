@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Modify Root controller template to use Chained actions.  (antgel)
         - Fix link in the Pod for Catalyst::Restarter (RT#57362)
         - Fix the pod-coverage version required by the generated app tests.
         - Fix the restarter to only act upon file events (and ergo ignore
