@@ -22,8 +22,7 @@ __PACKAGE__->config(namespace => '');
 
 =head2 base
 
-The root of the chain, offers flexibility to the below actions depending on
-whether / has an argument (sub default) or not (sub index).
+The root of the chain, common app-wide functionality generally goes here.
 
 =cut
 
@@ -46,11 +45,23 @@ sub index :Chained('/base') PathPart('') Args(0) {
 
 =head2 default
 
-Standard 404 error page
+The default (catch-all) action. Detaches control to the C<not_found>
+action to generate a 404 page.
 
 =cut
 
 sub default : Chained('/base') PathPart('') Args {
+    my ( $self, $c ) = @_;
+    $c->detach('not_found');
+}
+
+=head2 not_found
+
+Simple 404 error page.
+
+=cut
+
+sub not_found : Action {
     my ( $self, $c ) = @_;
     $c->response->body( 'Page not found' );
     $c->response->status(404);
