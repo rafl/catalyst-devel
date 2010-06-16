@@ -1,5 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Fix generated Pod tests so that the first check is if the TEST_POD
+          environment variable is set. (RT#58433)
         - Fix link in the Pod for Catalyst::Restarter (RT#57362)
         - Fix the pod-coverage version required by the generated app tests.
         - Fix the restarter to only act upon file events (and ergo ignore
