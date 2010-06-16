@@ -23,6 +23,8 @@ requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
 
 author_requires 'IPC::Run3';
+author_requires 'Module::Info';
+author_requires 'File::Find::Rule';
 
 test_requires 'Test::More' => '0.94';
 
