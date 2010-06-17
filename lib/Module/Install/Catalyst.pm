@@ -10,7 +10,7 @@ use File::Find;
 use FindBin;
 use File::Copy::Recursive 'rcopy';
 use File::Spec ();
-use Getopt::Long qw(GetOptionsFromString :config no_ignore_case);
+use Getopt::Long ();
 use Data::Dumper;
 
 my $SAFETY = 0;
@@ -214,13 +214,17 @@ catalyst_par_options().
 
 sub catalyst_par_options {
     my ( $self, $optstring ) = @_;
-    my %o = ();
     eval "use PAR::Packer ()";
     if ($@) {
         warn "WARNING: catalyst_par_options ignored - you need PAR::Packer\n"
     }
     else {
-        GetOptionsFromString($optstring, \%o, PAR::Packer->options);
+        my $p = Getopt::Long::Parser->new(config => ['no_ignore_case']);
+        my %o;
+        {
+            local @ARGV = $optstring;
+            $p->getoptions(\%o, PAR::Packer->options);
+        }
         %PAROPTS = ( %PAROPTS, %o);
     }
 }

@@ -1,5 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - don't pollute M::I plugin detector with GetOptions symbol from
+          GetOpt::Long
+
 1.28 2010-06-16 02:43:00
         - Fix generated Pod tests so that the first check is if the TEST_POD
           environment variable is set. (RT#58433)
