@@ -222,7 +222,7 @@ sub catalyst_par_options {
         my $p = Getopt::Long::Parser->new(config => ['no_ignore_case']);
         my %o;
         {
-            local @ARGV = $optstring;
+            local @ARGV = split ' ', $optstring;
             $p->getoptions(\%o, PAR::Packer->options);
         }
         %PAROPTS = ( %PAROPTS, %o);
