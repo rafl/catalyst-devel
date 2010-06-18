@@ -221,8 +221,9 @@ sub catalyst_par_options {
     else {
         my $p = Getopt::Long::Parser->new(config => ['no_ignore_case']);
         my %o;
+        require Text::ParseWords;
         {
-            local @ARGV = split ' ', $optstring;
+            local @ARGV = Text::ParseWords::shellwords($optstring);
             $p->getoptions(\%o, PAR::Packer->options);
         }
         %PAROPTS = ( %PAROPTS, %o);
