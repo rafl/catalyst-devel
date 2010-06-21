@@ -13,6 +13,7 @@ use Catalyst::Utils;
 use Catalyst::Exception;
 use Path::Class qw/dir file/;
 use File::ShareDir qw/dist_dir/;
+use YAML::Tiny;
 use namespace::autoclean;
 
 with 'MooseX::Emulate::Class::Accessor::Fast';
@@ -78,13 +79,31 @@ sub mk_app {
     # Needs to be here for PAR
     require Catalyst;
 
+    if($name eq '.') {
+        if(!-e 'META.yml') {
+            system perl => 'Makefile.PL'
+                and Catalyst::Exception->throw(message => q(
+                    Failed to run "perl Makefile.PL".
+                ));
+        }
+
+        $name = YAML::Tiny->read('META.yml')->[0]->{'name'};
+        $name =~ s/-/::/g;
+        $self->{dir} = '.';
+    }
+
     if ( $name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
         warn "Error: Invalid application name.\n";
         return 0;
     }
+
+
+    if(!defined $self->{'dir'}) {
+        $self->{dir} = $name;
+        $self->{dir} =~ s/\:\:/-/g;
+    }
+
     $self->{name            } = $name;
-    $self->{dir             } = $name;
-    $self->{dir             } =~ s/\:\:/-/g;
     $self->{script          } = dir( $self->{dir}, 'script' );
     $self->{appprefix       } = Catalyst::Utils::appprefix($name);
     $self->{appenv          } = Catalyst::Utils::class2env($name);
