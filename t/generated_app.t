@@ -37,7 +37,7 @@ chdir $dir or die "Cannot chdir to $dir: $!";
         }
     );
 
-    $helper->mk_app('TestApp');
+    $helper->mk_app;
 }
 
 my $app_dir = File::Spec->catdir($dir, 'TestApp');

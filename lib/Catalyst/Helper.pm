@@ -79,7 +79,9 @@ sub mk_app {
     # Needs to be here for PAR
     require Catalyst;
 
-    if($name eq '.') {
+    $self->{name} ||= $name;
+
+    if($self->{name} eq '.') {
         if(!-e 'META.yml') {
             system perl => 'Makefile.PL'
                 and Catalyst::Exception->throw(message => q(
@@ -87,26 +89,27 @@ sub mk_app {
                 ));
         }
 
-        $name = YAML::Tiny->read('META.yml')->[0]->{'name'};
-        $name =~ s/-/::/g;
+        $self->{name} = YAML::Tiny->read('META.yml')->[0]->{'name'};
+        $self->{name} =~ s/-/::/g;
         $self->{dir} = '.';
     }
 
-    if ( $name =~ /[^\w:]/ || $name =~ /^\d/ || $name =~ /\b:\b|:{3,}/) {
+    if (   $self->{name} =~ /[^\w:]/
+        || $self->{name} =~ /^\d/
+        || $self->{name} =~ /\b:\b|:{3,}/
+    ) {
         warn "Error: Invalid application name.\n";
         return 0;
     }
 
-
     if(!defined $self->{'dir'}) {
-        $self->{dir} = $name;
+        $self->{dir} = $self->{name};
         $self->{dir} =~ s/\:\:/-/g;
     }
 
-    $self->{name            } = $name;
     $self->{script          } = dir( $self->{dir}, 'script' );
-    $self->{appprefix       } = Catalyst::Utils::appprefix($name);
-    $self->{appenv          } = Catalyst::Utils::class2env($name);
+    $self->{appprefix       } = Catalyst::Utils::appprefix($self->{name});
+    $self->{appenv          } = Catalyst::Utils::class2env($self->{name});
     $self->{startperl       } = -r '/usr/bin/env'
                                 ? '#!/usr/bin/env perl'
                                 : "#!$Config{perlpath}";
