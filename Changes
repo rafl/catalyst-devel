@@ -1,6 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
-        - don't pollute M::I plugin detector with GetOptions symbol from
+        - Note that plugin order is important in the generated skeleton.
+        - Don't pollute M::I plugin detector with GetOptions symbol from
           GetOpt::Long
         - Fix typo in share/script/myapp_server.pl.tt (RT #58475)
 
