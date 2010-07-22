@@ -112,7 +112,7 @@ sub mk_app {
                                 : "#!$Config{perlpath}";
     $self->{scriptgen       } = $Catalyst::Devel::CATALYST_SCRIPT_GEN;
     $self->{catalyst_version} = $Catalyst::VERSION;
-    $self->{author          } = $self->{author} = $ENV{'AUTHOR'}
+    $self->{author          } ||= $ENV{'AUTHOR'}
       || eval { @{ [ getpwuid($<) ] }[6] }
       || 'Catalyst developer';
 
