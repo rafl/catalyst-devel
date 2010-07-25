@@ -122,7 +122,8 @@ sub mk_app {
 
     if ($gen_app) {
         for ( qw/ _mk_dirs _mk_config _mk_appclass _mk_rootclass _mk_readme
-              _mk_changes _mk_apptest _mk_images _mk_favicon/ ) {
+              _mk_changes _mk_apptest _mk_podtest _mk_podcoveragetest
+              _mk_images _mk_favicon/ ) {
             
             $self->$_;
         }
@@ -424,7 +425,17 @@ sub _mk_apptest {
     my $self = shift;
     my $t    = $self->{t};
     $self->render_sharedir_file( file('t', '01app.t.tt'),         file($t, "01app.t") );
+}
+
+sub _mk_podtest {
+    my $self = shift;
+    my $t    = $self->{t};
     $self->render_sharedir_file( file('t', '02pod.t.tt'),         file($t, "02pod.t") );
+}
+
+sub _mk_podcoveragetest {
+    my $self = shift;
+    my $t    = $self->{t};
     $self->render_sharedir_file( file('t', '03podcoverage.t.tt'), file($t, "03podcoverage.t") );
 }
 
