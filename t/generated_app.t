@@ -84,8 +84,9 @@ command_ok( [ ($Config{make} || 'make') ] );
 
 run_generated_component_tests();
 
+my $server_script_file = File::Spec->catdir(qw/script testapp_server.pl/);
 my $server_script = do {
-    open(my $fh, '<', File::Spec->catdir(qw/script testapp_server.pl/)) or fail $!;
+    open(my $fh, '<', $server_script_file) or fail $!;
     local $/;
     <$fh>;
 };
@@ -94,6 +95,28 @@ ok $server_script;
 ok $server_script =~ qr/CATALYST_SCRIPT_GEN}\s+=\s+(\d+)/,
     'SCRIPT_GEN found in generated output';
 is $1, $Catalyst::Devel::CATALYST_SCRIPT_GEN, 'Script gen correct';
+
+{
+    open(my $fh, '>', $server_script_file) or fail $!;
+    print $fh "MOO\n";
+}
+my $helper = Catalyst::Helper->new(
+    {
+        '.newfiles' => 0,
+        'makefile'  => 0,
+        'scripts'   => 1,
+        name => '.',
+    }
+);
+$helper->mk_app( '.' ) or fail;
+
+my $server_script_new = do {
+    open(my $fh, '<', $server_script_file) or fail $!;
+    local $/;
+    <$fh>;
+};
+
+is $server_script, $server_script_new;
 
 chdir('/');
 done_testing;
