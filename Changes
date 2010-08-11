@@ -1,5 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Allow catalyst.pl . to work for already created applications
+          when in the application's directory.
         - Note that plugin order is important in the generated skeleton.
         - Don't pollute M::I plugin detector with GetOptions symbol from
           GetOpt::Long
