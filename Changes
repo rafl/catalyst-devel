@@ -1,5 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Allow the author to be defined in the call to ->new to help things
+          which want to call Catalyst::Helper programatically.
         - Remove $VERSION = eval $VERSION handwave in generated code as:
           - Gives a perl critic violation.
           - If you're shipping a dev release, best practice is you should do
