@@ -1,5 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Split method for creating tests into multiple methods to allow
+          subclasses to override the generation of some tests.
         - Allow the author to be defined in the call to ->new to help things
           which want to call Catalyst::Helper programatically.
         - Remove $VERSION = eval $VERSION handwave in generated code as:
