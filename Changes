@@ -15,6 +15,8 @@ This file documents the revision history for Perl extension Catalyst-Devel.
           GetOpt::Long
         - Fix typo in share/script/myapp_server.pl.tt (RT #58475)
         - Increased Catalyst::Plugin::ConfigLoader dependency to 0.30
+        - Include File::Copy::Recursive in inc/ when building a dist of an
+          application.
 
 1.28 2010-06-16 02:43:00
         - Fix generated Pod tests so that the first check is if the TEST_POD

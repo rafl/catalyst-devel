@@ -8,7 +8,7 @@ require Module::Install::Base;
 
 use File::Find;
 use FindBin;
-use File::Copy::Recursive 'rcopy';
+use File::Copy::Recursive;
 use File::Spec ();
 use Getopt::Long ();
 use Data::Dumper;
@@ -58,6 +58,14 @@ command called in C<Makefile.PL>.
 
 sub catalyst {
     my $self = shift;
+
+    if($Module::Install::AUTHOR) {
+        $self->admin->copy_package(
+            'File::Copy::Recursive',
+            $INC{"File/Copy/Recursive.pm"},
+        );
+    }
+
     print <<EOF;
 *** Module::Install::Catalyst
 EOF
