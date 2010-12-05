@@ -1,0 +1,21 @@
+use strict;
+use warnings;
+
+use [% name %];
+use Plack::Middleware::Conditional;
+use Plack::Middleware::ReverseProxy;
+
+my $app = [% name %]->raw_psgi_app;
+
+$app = Plack::Middleware::Conditional->wrap(
+    $app,
+    builder   => sub { Plack::Middleware::ReverseProxy->wrap($_[0]) },
+    condition => sub {
+        my ($env) = @_;
+        return if [% name %]->config->{ignore_frontend_proxy};
+        return $env->{REMOTE_ADDR} eq '127.0.0.1'
+            || [% name %]->config->{using_frontend_proxy};
+    },
+);
+
+$app
