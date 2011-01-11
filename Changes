@@ -1,5 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Don't bother with the BEGIN { use_ok dance for created tests
+          - the test will fail to compile (and ergo fail) using just use,
+          and that's less typing (and less copy-pasting)
         - Split method for creating tests into multiple methods to allow
           subclasses to override the generation of some tests.
         - Allow the author to be defined in the call to ->new to help things
