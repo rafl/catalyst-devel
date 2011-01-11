@@ -14,13 +14,19 @@ requires 'namespace::autoclean';
 requires 'Catalyst'    => '5.80015';
 requires 'Catalyst::Action::RenderView' => '0.10';
 requires 'Catalyst::Plugin::Static::Simple' => '0.28';
-requires 'Catalyst::Plugin::ConfigLoader' => '0.23';
+requires 'Catalyst::Plugin::ConfigLoader' => '0.30';
 requires 'Config::General' => '2.42'; # as of 1.07, we use .conf and not .yaml
 requires 'File::ChangeNotify' => '0.07';
 requires 'File::Copy::Recursive';
-requires 'Module::Install' => '0.91';
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
+
+# The Catalyst applications this module distribution have a Makefile.PL using
+# Module::Install as well as the Module::Install::Catalyst extension included in
+# this distribution. Therefore we really *depend* on Module::Install to be
+# installed, even though we also use it to build this distribution and include
+# it in its inc/ directory for releases.
+requires 'Module::Install' => '0.91';
 
 author_requires 'IPC::Run3';
 author_requires 'Module::Info';
