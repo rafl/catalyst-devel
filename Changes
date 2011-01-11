@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.29 2011-01-11 23:51:00
         - Add documentation for the --proc_title option to the generated
           fastcgi scripts
         - Don't bother with the BEGIN { use_ok dance for created tests
