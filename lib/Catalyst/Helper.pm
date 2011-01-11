@@ -19,7 +19,7 @@ use namespace::autoclean;
 with 'MooseX::Emulate::Class::Accessor::Fast';
 
 # Change Catalyst/Devel.pm also
-our $VERSION = '1.29';
+our $VERSION = '1.30';
 
 my %cache;
 
