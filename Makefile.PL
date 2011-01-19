@@ -2,6 +2,7 @@ use strict;
 use warnings;
 use inc::Module::Install 0.91;
 use Module::Install::AuthorRequires;
+use Module::Install::AuthorTests;
 
 name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
@@ -35,6 +36,8 @@ author_requires 'File::Find::Rule';
 test_requires 'Test::More' => '0.94';
 
 install_share 'share';
+
+author_tests 't/author';
 
 if ( $^O eq 'MSWin32' ) {
     # Proc::Background needs this on Win32 but doesn't actually
