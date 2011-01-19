@@ -9,7 +9,7 @@ use Module::Info;
 use Test::More;
 
 my %versions;
-for my $pm_file ( File::Find::Rule->file->name( qr/\.pm$/ )->in(File::Spec->catdir($Bin, '..', 'lib') ) ) {
+for my $pm_file ( File::Find::Rule->file->name( qr/\.pm$/ )->in(File::Spec->catdir($Bin, '..', '..', 'lib') ) ) {
     my $mod = Module::Info->new_from_file($pm_file);
 
     ( my $stripped_file = $pm_file ) =~ s{.*lib/}{};

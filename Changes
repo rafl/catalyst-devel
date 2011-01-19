@@ -1,5 +1,9 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Fix for copying generated files into installed apps + tests
+          to ensure it keeps working. abraxxa++
+        - Make Pod tests author only
+
 1.30 2011-01-11 23:54:00
         - Increased Catalyst::Plugin::ConfigLoader dependency to 0.30
         - Include File::Copy::Recursive in inc/ when building a dist of an
