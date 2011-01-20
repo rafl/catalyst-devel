@@ -19,7 +19,13 @@ plan skip_all => "No share dir at $share_dir!"
 
 $ENV{CATALYST_DEVEL_SHAREDIR} = $share_dir;
 my $instdir = tempdir(CLEANUP => 1);
+
 $ENV{PERL_MM_OPT} = "INSTALL_BASE=$instdir";
+$ENV{INSTALL_BASE} = $instdir;
+if ($ENV{MAKEFLAGS}) {
+    $ENV{MAKEFLAGS} =~ s/PREFIX=[^\s]+//;
+    $ENV{MAKEFLAGS} =~ s/INSTALL_BASE=[^\s]+//;
+}
 
 my $dir = tempdir(CLEANUP => 1);
 my $devnull = File::Spec->devnull;
