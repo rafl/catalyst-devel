@@ -1,5 +1,21 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.31 2011-01-20 01:08:00
+        - Fix for copying generated files into installed apps + tests
+          to ensure it keeps working. abraxxa++
+        - Make Pod tests author only
+
+1.30 2011-01-11 23:54:00
+        - Increased Catalyst::Plugin::ConfigLoader dependency to 0.30
+        - Include File::Copy::Recursive in inc/ when building a dist of an
+          application.
+
+1.29 2011-01-11 23:51:00
+        - Add documentation for the --proc_title option to the generated
+          fastcgi scripts
+        - Don't bother with the BEGIN { use_ok dance for created tests
+          - the test will fail to compile (and ergo fail) using just use,
+          and that's less typing (and less copy-pasting)
         - Split method for creating tests into multiple methods to allow
           subclasses to override the generation of some tests.
         - Allow the author to be defined in the call to ->new to help things
@@ -14,9 +30,6 @@ This file documents the revision history for Perl extension Catalyst-Devel.
         - Don't pollute M::I plugin detector with GetOptions symbol from
           GetOpt::Long
         - Fix typo in share/script/myapp_server.pl.tt (RT #58475)
-        - Increased Catalyst::Plugin::ConfigLoader dependency to 0.30
-        - Include File::Copy::Recursive in inc/ when building a dist of an
-          application.
 
 1.28 2010-06-16 02:43:00
         - Fix generated Pod tests so that the first check is if the TEST_POD

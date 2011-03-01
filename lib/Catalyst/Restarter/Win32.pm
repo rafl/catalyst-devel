@@ -31,6 +31,8 @@ sub _kill_child {
     $self->_child->die;
 }
 
+__PACKAGE__->meta->make_immutable;
+
 1;
 
 __END__

@@ -18,6 +18,14 @@ plan skip_all => "No share dir at $share_dir!"
     unless -d $share_dir;
 
 $ENV{CATALYST_DEVEL_SHAREDIR} = $share_dir;
+my $instdir = tempdir(CLEANUP => 1);
+
+$ENV{PERL_MM_OPT} = "INSTALL_BASE=$instdir";
+$ENV{INSTALL_BASE} = $instdir;
+if ($ENV{MAKEFLAGS}) {
+    $ENV{MAKEFLAGS} =~ s/PREFIX=[^\s]+//;
+    $ENV{MAKEFLAGS} =~ s/INSTALL_BASE=[^\s]+//;
+}
 
 my $dir = tempdir(CLEANUP => 1);
 my $devnull = File::Spec->devnull;
@@ -73,7 +81,7 @@ my @files = qw|
     script/testapp_create.pl
 |;
 
-foreach my $fn (map { File::Spec->catdir(@$_) } map { [ split /\// ] } @files) {
+foreach my $fn (map { File::Spec->catdir(@$_) } map { [ File::Spec::Unix->splitdir($_) ] } @files) {
     test_fn($fn);
 }
 create_ok($_, 'My' . $_) for qw/Model View Controller/;
@@ -118,6 +126,39 @@ my $server_script_new = do {
 };
 
 is $server_script, $server_script_new;
+
+diag "Installed app is in $instdir";
+command_ok( [ ($Config{make} || 'make', 'install') ] );
+
+my $inst_app_dir = File::Spec->catdir($instdir);
+chdir($inst_app_dir) or die "Cannot chdir to $inst_app_dir: $!";
+lib->import(File::Spec->catdir($instdir, 'lib', 'perl5'));
+
+my @installed_files = qw|
+    lib/perl5/TestApp.pm
+    lib/perl5/TestApp/testapp.conf
+    lib/perl5/TestApp/Controller/Root.pm
+    lib/perl5/TestApp/root/static/images/catalyst_logo.png
+    lib/perl5/TestApp/root/static/images/btn_120x50_built.png
+    lib/perl5/TestApp/root/static/images/btn_120x50_built_shadow.png
+    lib/perl5/TestApp/root/static/images/btn_120x50_powered.png
+    lib/perl5/TestApp/root/static/images/btn_120x50_powered_shadow.png
+    lib/perl5/TestApp/root/static/images/btn_88x31_built.png
+    lib/perl5/TestApp/root/static/images/btn_88x31_built_shadow.png
+    lib/perl5/TestApp/root/static/images/btn_88x31_powered.png
+    lib/perl5/TestApp/root/static/images/btn_88x31_powered_shadow.png
+    lib/perl5/TestApp/root/favicon.ico
+    bin/testapp_cgi.pl
+    bin/testapp_fastcgi.pl
+    bin/testapp_server.pl
+    bin/testapp_test.pl
+    bin/testapp_create.pl
+|;
+
+foreach my $fn (map { File::Spec->catdir(@$_) } map { [ File::Spec::Unix->splitdir($_) ] } @installed_files) {
+    my $ffn = File::Spec->catfile($inst_app_dir, $fn);
+    ok -r $ffn, "'$fn' installed in correct location";
+}
 
 chdir('/');
 done_testing;
