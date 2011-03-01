@@ -5,7 +5,7 @@ use [% name %];
 use Plack::Middleware::Conditional;
 use Plack::Middleware::ReverseProxy;
 
-my $app = [% name %]->raw_psgi_app;
+my $app = [% name %]->psgi_app;
 
 $app = Plack::Middleware::Conditional->wrap(
     $app,
