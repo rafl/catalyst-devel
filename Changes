@@ -1,6 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
         - Fix RT#65907: missing build require: Test::Exception
+        - Fix RT#57019: Fix bundling of File::Copy::Recursive in inc/
+          by Module::Install::Catalyst
 
 1.31 2011-01-20 01:08:00
         - Fix for copying generated files into installed apps + tests
