@@ -34,6 +34,7 @@ author_requires 'Module::Info';
 author_requires 'File::Find::Rule';
 
 test_requires 'Test::More' => '0.94';
+test_requires 'Test::Fatal' => '0.003';
 
 install_share 'share';
 
