@@ -6,7 +6,7 @@ use Cwd qw( abs_path );
 use File::ChangeNotify;
 use File::Spec;
 use FindBin;
-use Catalyst::Utils qw/ ensure_class_loaded /;
+use Catalyst::Utils;
 use namespace::clean -except => 'meta';
 
 has start_sub => (
@@ -49,7 +49,7 @@ sub pick_subclass {
 
     $subclass = 'Catalyst::Restarter::' . $subclass;
 
-    ensure_class_loaded($subclass);
+    Catalyst::Utils::ensure_class_loaded($subclass);
 
     return $subclass;
 }

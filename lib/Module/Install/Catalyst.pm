@@ -60,10 +60,7 @@ sub catalyst {
     my $self = shift;
 
     if($Module::Install::AUTHOR) {
-        $self->admin->copy_package(
-            'File::Copy::Recursive',
-            $INC{"File/Copy/Recursive.pm"},
-        );
+        $self->include("File::Copy::Recursive");
     }
 
     print <<EOF;

@@ -23,7 +23,7 @@ Catalyst::ScriptRunner->run('[% name %]', 'Create');
 
  Examples:
    [% appprefix %]_create.pl controller My::Controller
-   [% appprefix %]_create.pl -mechanize controller My::Controller
+   [% appprefix %]_create.pl --mechanize controller My::Controller
    [% appprefix %]_create.pl view My::View
    [% appprefix %]_create.pl view HTML TT
    [% appprefix %]_create.pl model My::Model
