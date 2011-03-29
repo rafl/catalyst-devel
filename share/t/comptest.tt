@@ -18,7 +18,7 @@ use [% class %];
 
 ok( request('[% uri %]')->is_success, 'Request should succeed' );
 [%- END -%]
-[% ELSE %]use Test::More;
+[% ELSE %]
 
 BEGIN { use_ok '[% class %]' }
 [% END -%]
