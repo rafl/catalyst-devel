@@ -445,7 +445,7 @@ sub _mk_cgi {
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( file('script', 'myapp_cgi.pl.tt'),
-        file($script,"$appprefix\_cgi.pl"), undef, 0700 );
+        file($script,"$appprefix\_cgi.pl"), undef, 0755 );
 }
 
 sub _mk_fastcgi {
@@ -453,7 +453,7 @@ sub _mk_fastcgi {
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( file('script', 'myapp_fastcgi.pl.tt'),
-        file($script, "$appprefix\_fastcgi.pl"), undef, 0700 );
+        file($script, "$appprefix\_fastcgi.pl"), undef, 0755 );
 }
 
 sub _mk_server {
@@ -461,7 +461,7 @@ sub _mk_server {
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( file('script', 'myapp_server.pl.tt'),
-        file($script, "$appprefix\_server.pl"), undef, 0700 );
+        file($script, "$appprefix\_server.pl"), undef, 0755 );
 }
 
 sub _mk_test {
@@ -469,7 +469,7 @@ sub _mk_test {
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( file('script', 'myapp_test.pl.tt'),
-        file($script, "$appprefix\_test.pl"), undef, 0700 );
+        file($script, "$appprefix\_test.pl"), undef, 0755 );
 }
 
 sub _mk_create {
@@ -477,7 +477,7 @@ sub _mk_create {
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
     $self->render_sharedir_file( file('script', 'myapp_create.pl.tt'),
-        file($script, "$appprefix\_create.pl"), undef, 0700 );
+        file($script, "$appprefix\_create.pl"), undef, 0755 );
 }
 
 sub _mk_compclass {
