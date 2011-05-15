@@ -271,7 +271,7 @@ sub mk_file {
         binmode $f;
         print $f $content;
         print qq/created "$file"\n/;
-        return 1;
+        return $file;
     }
 
     Catalyst::Exception->throw( message => qq/Couldn't create "$file", "$!"/ );
@@ -302,20 +302,20 @@ sub next_test {
 ## compatability.  otherwise, we'd have no way to pass stuff from __DATA__
 
 sub render_file {
-    my ( $self, $file, $path, $vars ) = @_;
+    my ( $self, $file, $path, $vars, $perms ) = @_;
     my $template = $self->get_file( ( caller(0) )[0], $file );
-    $self->render_file_contents($template, $path, $vars);
+    $self->render_file_contents($template, $path, $vars, $perms);
 }
 
 sub render_sharedir_file {
-    my ( $self, $file, $path, $vars ) = @_;
+    my ( $self, $file, $path, $vars, $perms ) = @_;
     my $template = $self->get_sharedir_file( $file );
     die("Cannot get template from $file for $self\n") unless $template;
-    $self->render_file_contents($template, $path, $vars);
+    $self->render_file_contents($template, $path, $vars, $perms);
 }
 
 sub render_file_contents {
-    my ( $self, $template, $path, $vars ) = @_;
+    my ( $self, $template, $path, $vars, $perms ) = @_;
     $vars ||= {};
     my $t = Template->new;
     return 0 unless $template;
@@ -323,7 +323,9 @@ sub render_file_contents {
     $t->process( \$template, { %{$self}, %$vars }, \$output )
       || Catalyst::Exception->throw(
         message => qq/Couldn't process "$template", / . $t->error() );
-    $self->mk_file( $path, $output );
+    my $file = $self->mk_file( $path, $output );
+    chmod $perms, file($file) if defined $perms;
+    return $file;
 }
 
 sub _mk_information {
@@ -450,40 +452,40 @@ sub _mk_cgi {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_cgi.pl.tt'), file($script,"$appprefix\_cgi.pl") );
-    chmod 0700, file($script,"$appprefix\_cgi.pl");
+    $self->render_sharedir_file( file('script', 'myapp_cgi.pl.tt'),
+        file($script,"$appprefix\_cgi.pl"), undef, 0755 );
 }
 
 sub _mk_fastcgi {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_fastcgi.pl.tt'), file($script, "$appprefix\_fastcgi.pl") );
-    chmod 0700, file($script, "$appprefix\_fastcgi.pl");
+    $self->render_sharedir_file( file('script', 'myapp_fastcgi.pl.tt'),
+        file($script, "$appprefix\_fastcgi.pl"), undef, 0755 );
 }
 
 sub _mk_server {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_server.pl.tt'), file($script, "$appprefix\_server.pl") );
-    chmod 0700, file($script, "$appprefix\_server.pl");
+    $self->render_sharedir_file( file('script', 'myapp_server.pl.tt'),
+        file($script, "$appprefix\_server.pl"), undef, 0755 );
 }
 
 sub _mk_test {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_test.pl.tt'), file($script, "$appprefix\_test.pl") );
-    chmod 0700, file($script, "$appprefix\_test.pl");
+    $self->render_sharedir_file( file('script', 'myapp_test.pl.tt'),
+        file($script, "$appprefix\_test.pl"), undef, 0755 );
 }
 
 sub _mk_create {
     my $self      = shift;
     my $script    = $self->{script};
     my $appprefix = $self->{appprefix};
-    $self->render_sharedir_file( file('script', 'myapp_create.pl.tt'), file($script, "$appprefix\_create.pl") );
-    chmod 0700, file($script, "$appprefix\_create.pl");
+    $self->render_sharedir_file( file('script', 'myapp_create.pl.tt'),
+        file($script, "$appprefix\_create.pl"), undef, 0755 );
 }
 
 sub _mk_compclass {
@@ -665,12 +667,13 @@ There is no fallback for this method.
 These are the methods that the Helper classes can call on the
 <$helper> object passed to them.
 
-=head2 render_file ($file, $path, $vars)
+=head2 render_file ($file, $path, $vars, $perms)
 
 Render and create a file from a template in DATA using Template
 Toolkit. $file is the relevent chunk of the __DATA__ section, $path is
-the path to the file and $vars is the hashref as expected by
-L<Template Toolkit|Template>.
+the path to the file, $vars is the hashref as expected by
+L<Template Toolkit|Template> and $perms are desired permissions (or system
+defaults if not set).
 
 =head2 get_file ($class, $file)
 

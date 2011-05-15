@@ -13,9 +13,14 @@ use File::Temp qw/tempfile/;
 my ($fh, $fn) = tempfile;
 close $fh;
 
-ok( $helper->render_file_contents('example1',  $fn, { test_var => 'test_val' }), "file contents rendered" ); 
+ok( $helper->render_file_contents('example1',  $fn,
+        { test_var => 'test_val' }, 0677
+    ),
+    "file contents rendered" ); 
 ok -r $fn;
 ok -s $fn;
+my $perms = ( stat $fn )[2] & 07777;
+is $perms, 0677;
 unlink $fn;
 
 done_testing;
