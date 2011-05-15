@@ -326,6 +326,7 @@ sub render_file_contents {
         message => qq/Couldn't process "$template", / . $t->error() );
     my $file = $self->mk_file( $path, $output );
     chmod $perms, file($file) if defined $perms;
+    return $file;
 }
 
 sub _mk_information {
