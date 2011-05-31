@@ -2,6 +2,8 @@ This file documents the revision history for Perl extension Catalyst-Devel.
 
         - Fix scripts being generated mode 0700, rather than 0755
         - Fix duplicate 'use Test::More' statement in generated components.
+        - Fix Pod for catalyst_ignore function in Module::Install::Catalyst
+          RT#68563
 
 1.33 2011-03-24 15:10:00
         - Fix a regression introduced in 1.32 that caused Catalyst::Restarter

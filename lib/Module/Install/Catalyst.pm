@@ -114,7 +114,7 @@ sub catalyst_ignore_all {
     @IGNORE = @$ignore;
 }
 
-=head2 catalyst_ignore(\@ignore)
+=head2 catalyst_ignore(@ignore)
 
 Add a regexp to the list of ignored patterns. Can be called multiple times.
 
