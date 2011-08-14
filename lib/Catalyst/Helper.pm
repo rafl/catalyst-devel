@@ -121,10 +121,9 @@ sub mk_app {
     my $gen_app = ( $self->{scripts} || $self->{makefile} ) ? 0 : 1;
 
     if ($gen_app) {
-        for ( qw/ _mk_dirs _mk_config _mk_appclass _mk_rootclass _mk_readme
-              _mk_changes _mk_apptest _mk_podtest _mk_podcoveragetest
+        for ( qw/ _mk_dirs _mk_config _mk_psgi _mk_appclass _mk_rootclass
+              _mk_readme _mk_changes _mk_apptest _mk_podtest _mk_podcoveragetest
               _mk_images _mk_favicon/ ) {
-            
             $self->$_;
         }
     }
@@ -132,7 +131,7 @@ sub mk_app {
         $self->_mk_makefile;
     }
     if ($gen_scripts) {
-        for ( qw/ _mk_cgi _mk_fastcgi _mk_server 
+        for ( qw/ _mk_cgi _mk_fastcgi _mk_server
                   _mk_test _mk_create _mk_information
         / ) {
               $self->$_;
@@ -141,7 +140,7 @@ sub mk_app {
     return $self->{dir};
 }
 
-## not much of this can really be changed, mk_compclass must be left for 
+## not much of this can really be changed, mk_compclass must be left for
 ## backcompat
 sub mk_component {
     my $self = shift;
@@ -400,6 +399,14 @@ sub _mk_makefile {
         $self->_deprecate_file(
             file( $self->{dir}, 'Build.PL' ) );
     }
+}
+
+sub _mk_psgi {
+    my $self      = shift;
+    my $dir       = $self->{dir};
+    my $appprefix = $self->{appprefix};
+    $self->render_sharedir_file( 'myapp.psgi.tt',
+        file( $dir, "$appprefix.psgi" ) );
 }
 
 sub _mk_config {

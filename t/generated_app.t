@@ -55,6 +55,7 @@ lib->import(File::Spec->catdir($dir, 'TestApp', 'lib'));
 my @files = qw|
     Makefile.PL
     testapp.conf
+    testapp.psgi
     lib/TestApp.pm
     lib/TestApp/Controller/Root.pm
     README

@@ -21,6 +21,8 @@ requires 'File::ChangeNotify' => '0.07';
 requires 'File::Copy::Recursive';
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
+requires 'MooseX::Daemonize'; # Optional in scripts
+requires 'Starman'; # Optional in scripts
 
 # The Catalyst applications this module distribution have a Makefile.PL using
 # Module::Install as well as the Module::Install::Catalyst extension included in
