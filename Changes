@@ -1,6 +1,10 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
-1.34 2011-09-16 09:02:00
+1.35 ????
+        - Removed stderr hiding from 'make catalyst_par' to display errors 
+          from PAR::Packer
+
+1.34 2011-08-16 09:02:00
         - Bump required version of Catalyst to 5.9
         - Merge psgi support. catalyst.pl will now generate a default
           myapp.psgi file with the default middlewares applied.
