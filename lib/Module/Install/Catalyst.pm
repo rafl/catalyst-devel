@@ -370,8 +370,8 @@ EOF
 
     # Create package
     local $SIG{__WARN__} = sub { };
-    open my $olderr, '>&STDERR';
-    open STDERR, '>', File::Spec->devnull;
+
+    # STDERR used to be redirected to null, but this hid errors from PAR::Packer
     my %opt = (
         %{$PAROPTS},
         # take user defined options first and override them with harcoded defaults
@@ -390,8 +390,6 @@ EOF
         backopts  => \%opt,
         args      => ['par.pl'],
     )->go;
-
-    open STDERR, '>&', $olderr;
 
     unlink $par_pl;
     chdir $root;
