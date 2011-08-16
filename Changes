@@ -1,5 +1,9 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.34 2011-09-16 09:02:00
+        - Bump required version of Catalyst to 5.9
+        - Merge psgi support. catalyst.pl will now generate a default
+          myapp.psgi file with the default middlewares applied.
         - Fix scripts being generated mode 0700, rather than 0755
         - Fix duplicate 'use Test::More' statement in generated components.
         - Fix Pod for catalyst_ignore function in Module::Install::Catalyst
