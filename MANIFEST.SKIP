@@ -4,6 +4,8 @@
 
 ^Catalyst-Devel
 
+^MYMETA
+
 # Avoid version control files.
 \bRCS\b
 \bCVS\b
