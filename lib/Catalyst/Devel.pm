@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # Change Catalyst::Helper also.
-our $VERSION             = '1.34';
+our $VERSION             = '1.35';
 our $CATALYST_SCRIPT_GEN = 40;
 
 $VERSION = eval $VERSION;
