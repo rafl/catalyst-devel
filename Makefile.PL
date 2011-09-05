@@ -21,8 +21,11 @@ requires 'File::ChangeNotify' => '0.07';
 requires 'File::Copy::Recursive';
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
-requires 'MooseX::Daemonize'; # Optional in scripts
-requires 'Starman'; # Optional in scripts
+
+if (!$Module::Install::AUTHOR && $^O ne 'MSWin32') {
+    requires 'MooseX::Daemonize'; # Optional in scripts
+    requires 'Starman'; # Optional in scripts
+}
 
 # The Catalyst applications this module distribution have a Makefile.PL using
 # Module::Install as well as the Module::Install::Catalyst extension included in
@@ -41,13 +44,6 @@ test_requires 'Test::Fatal' => '0.003';
 install_share 'share';
 
 author_tests 't/author';
-
-if ( $^O eq 'MSWin32' ) {
-    # Proc::Background needs this on Win32 but doesn't actually
-    # require it, if it's missing it just dies in the Makefile.PL.
-    requires 'Win32::Process' => '0.04';
-    requires 'Proc::Background';
-}
 
 if (!$ENV{CATALYST_DEVEL_NO_510_CHECK}) {
     use Symbol 'gensym';
