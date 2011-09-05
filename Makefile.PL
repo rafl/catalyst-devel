@@ -37,6 +37,8 @@ requires 'Module::Install' => '0.91';
 author_requires 'IPC::Run3';
 author_requires 'Module::Info';
 author_requires 'File::Find::Rule';
+author_requires 'Test::Pod';
+author_requires 'Test::Pod::Coverage';
 
 test_requires 'Test::More' => '0.94';
 test_requires 'Test::Fatal' => '0.003';
