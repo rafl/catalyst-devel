@@ -20,7 +20,9 @@ ok( $helper->render_file_contents('example1',  $fn,
 ok -r $fn;
 ok -s $fn;
 my $perms = ( stat $fn )[2] & 07777;
-is $perms, 0677;
+unless ($^O eq 'MSWin32') {
+    is $perms, 0677;
+}
 unlink $fn;
 
 done_testing;
