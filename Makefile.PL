@@ -32,7 +32,7 @@ if (!$Module::Install::AUTHOR && $^O ne 'MSWin32') {
 # this distribution. Therefore we really *depend* on Module::Install to be
 # installed, even though we also use it to build this distribution and include
 # it in its inc/ directory for releases.
-requires 'Module::Install' => '0.91';
+requires 'Module::Install' => '1.02';
 
 author_requires 'IPC::Run3';
 author_requires 'Module::Info';
