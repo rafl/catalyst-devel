@@ -1,6 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
         - bump Module::Install dep to 1.02
+        - Removed stderr hiding from 'make catalyst_par' to display errors 
+          from PAR::Packer
 
 1.35 2011-09-05 13:05:00
         - Stop requiring Starman and MooseX::Daemonize on Win32 as they're
