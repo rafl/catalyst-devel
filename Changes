@@ -1,5 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Fix tests generated for controllers generated with --mechanize
+          to work with newer versions of Test::WWW::Mechanize::Catalyst
         - bump Module::Install dep to 1.02
         - Removed stderr hiding from 'make catalyst_par' to display errors 
           from PAR::Packer
