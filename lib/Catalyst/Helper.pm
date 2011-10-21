@@ -388,7 +388,7 @@ sub _mk_rootclass {
 
 sub _mk_makefile {
     my $self = shift;
-    $self->{path} = dir( 'lib', split( '::', $self->{name} ) );
+    $self->{path} = join('/', 'lib', split( '::', $self->{name} ) );
     $self->{path} .= '.pm';
     my $dir = $self->{dir};
     $self->render_sharedir_file( 'Makefile.PL.tt', file($dir, "Makefile.PL") );

@@ -1,5 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Fix generated Makefile.PL to always contain unix style paths,
+          even on Win32. RT#65456
         - Fix tests generated for controllers generated with --mechanize
           to work with newer versions of Test::WWW::Mechanize::Catalyst
         - bump Module::Install dep to 1.02
