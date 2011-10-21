@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Fix leaking temporary files in tests. RT#59166
         - Fix generated Makefile.PL to always contain unix style paths,
           even on Win32. RT#65456
         - Fix tests generated for controllers generated with --mechanize

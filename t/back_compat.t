@@ -25,7 +25,7 @@ package MyTestHelper;
 use Test::More;
 use File::Temp qw/tempfile/;
 
-my ($fh, $fn) = tempfile;
+my ($fh, $fn) = tempfile( UNLINK => 1 );
 close $fh;
 $helper->render_file('example1',  $fn, { test_var => 'test_val' });
 open $fh, $fn or die $@;
