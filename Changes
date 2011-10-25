@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.36 2011-10-24 17:58:00
         - New apps send an X-Catalyst header by default (this can be
           disabled by changing the config in the generated app)
         - Fix leaking temporary files in tests. RT#59166
