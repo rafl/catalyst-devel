@@ -1,5 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - New apps send an X-Catalyst header by default (this can be
+          disabled by changing the config in the generated app)
         - Fix leaking temporary files in tests. RT#59166
         - Fix generated Makefile.PL to always contain unix style paths,
           even on Win32. RT#65456
