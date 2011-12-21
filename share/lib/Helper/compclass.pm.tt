@@ -2,7 +2,7 @@ package [% class %];
 use Moose;
 use namespace::autoclean;
 
-[% IF long_type == 'Controller' %]BEGIN {[% END %]extends 'Catalyst::[% long_type %]';[% IF long_type == 'Controller' %] }[% END %]
+[% IF long_type == 'Controller' %]BEGIN { [% END %]extends 'Catalyst::[% long_type %]';[% IF long_type == 'Controller' %] }[% END %]
 
 =head1 NAME
 
