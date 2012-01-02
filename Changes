@@ -1,5 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Use iomode => ":raw" to stop PNG files getting corrupted
+          when being slurped on windows as noted on the mailing list.
+
 1.36 2011-10-24 17:58:00
         - New apps send an X-Catalyst header by default (this can be
           disabled by changing the config in the generated app)

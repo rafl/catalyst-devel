@@ -49,7 +49,7 @@ sub get_sharedir_file {
     }
     my $file = file( $dist_dir, @filename);
     Carp::confess("Cannot find $file") unless -r $file;
-    my $contents = $file->slurp;
+    my $contents = $file->slurp(iomode =>  "<:raw");
     return $contents;
 }
 
